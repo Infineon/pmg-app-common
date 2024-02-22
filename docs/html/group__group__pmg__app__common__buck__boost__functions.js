@@ -1,0 +1,26 @@
+var group__group__pmg__app__common__buck__boost__functions =
+[
+    [ "Cy_App_BuckBoost_InitPort1", "group__group__pmg__app__common__buck__boost__functions.html#gacb4bca8c05da81332b4fa59c6a7feb01", null ],
+    [ "Cy_App_BuckBoost_InitPort2", "group__group__pmg__app__common__buck__boost__functions.html#ga33f0320e81a7ccb79c8f35f3613834f7", null ],
+    [ "Cy_App_BuckBoost_SetVoltPort1", "group__group__pmg__app__common__buck__boost__functions.html#ga2508d9dba0cb99a2c2c0fe9ea21f979a", null ],
+    [ "Cy_App_BuckBoost_SetVoltPort2", "group__group__pmg__app__common__buck__boost__functions.html#gaf9029dc1de1c378f421a06d59eaa022e", null ],
+    [ "Cy_App_BuckBoost_SetOutputPort1", "group__group__pmg__app__common__buck__boost__functions.html#gac283f2eddfa098774d98257e3db0c470", null ],
+    [ "Cy_App_BuckBoost_SetOutputPort2", "group__group__pmg__app__common__buck__boost__functions.html#ga9ba3eee96a5a34eacd02fda2c9435f58", null ],
+    [ "Cy_App_MP4247_Init", "group__group__pmg__app__common__buck__boost__functions.html#ga20ce5c9a01b1cb9cde8082086c764a1c", null ],
+    [ "Cy_App_MP4247_Enable", "group__group__pmg__app__common__buck__boost__functions.html#gad20ea2c7aa694723ced49c31059236bc", null ],
+    [ "Cy_App_MP4247_Disable", "group__group__pmg__app__common__buck__boost__functions.html#ga4d1d5b7bd129f00c81b5971fb32d1c44", null ],
+    [ "Cy_App_MP4247_SetVolt", "group__group__pmg__app__common__buck__boost__functions.html#gaec28de4a4174f99a1d4e2b35bd35ce49", null ],
+    [ "Cy_App_MP4247_SetCurrentLimit", "group__group__pmg__app__common__buck__boost__functions.html#ga4bfce2e4e87e2071f0cec5c6d80334dd", null ],
+    [ "Cy_App_MP4247_SetSlewRateRise", "group__group__pmg__app__common__buck__boost__functions.html#ga6bead10c035e98722460baf7d3592880", null ],
+    [ "Cy_App_MP4247_SetSlewRateFall", "group__group__pmg__app__common__buck__boost__functions.html#ga17e2d5b300f4b2900f058ecffd55c6ef", null ],
+    [ "Cy_App_RT6190_Init", "group__group__pmg__app__common__buck__boost__functions.html#ga85c1e9c58edbbf4fdd53baa76cb06868", null ],
+    [ "Cy_App_RT6190_SetVolt", "group__group__pmg__app__common__buck__boost__functions.html#ga1ce83d43ac1ea7ca95926208913aee5e", null ],
+    [ "Cy_App_RT6190_GetVolt", "group__group__pmg__app__common__buck__boost__functions.html#ga3b6e1a00ccbaa815d2da7c4e58ce4a2e", null ],
+    [ "Cy_App_RT6190_Enable", "group__group__pmg__app__common__buck__boost__functions.html#ga3ccd7558797aac4c6a796e64d952e75c", null ],
+    [ "Cy_App_RT6190_Disable", "group__group__pmg__app__common__buck__boost__functions.html#gab91305c3f50d563932a4b495c3c1e927", null ],
+    [ "Cy_App_RT6190_SetCurrentLimit", "group__group__pmg__app__common__buck__boost__functions.html#ga29cf6a6b6433038c95ea0153f2521a1b", null ],
+    [ "Cy_App_RT6190_GetCurrentLimit", "group__group__pmg__app__common__buck__boost__functions.html#gaa0dbde95fb13364fb8a3ca52a0ce104a", null ],
+    [ "Cy_App_RT6190_SetMode", "group__group__pmg__app__common__buck__boost__functions.html#ga3ea0be7731fc92f1a8204f5e27504368", null ],
+    [ "Cy_App_RT6190_GetMode", "group__group__pmg__app__common__buck__boost__functions.html#gadd13aa9c245380a735e668a73199fef7", null ],
+    [ "Cy_App_RT6190_GetErrorStatus", "group__group__pmg__app__common__buck__boost__functions.html#gab4b9a5e9ca148be8a672991b4b2150c1", null ]
+];

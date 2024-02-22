@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['calc_5fimg_5fdigest',['calc_img_digest',['../structattr__struct__t.html#a9b30f21250784bf9f2a8cfe65442cd0e',1,'attr_struct_t']]],
+  ['capchangeretrytimerid',['capChangeRetryTimerId',['../structcy__stc__app__smart__power__context__t.html#ac9104033553ff893ab7280cafb0f1d86',1,'cy_stc_app_smart_power_context_t']]],
+  ['cc_5fov',['cc_ov',['../group__group__pmg__app__common__log__data__structures.html#aa3ea1dbbcf98ae1032682137d35125d4',1,'cy_stc_app_port_faults_t']]],
+  ['cc_5fsc',['cc_sc',['../group__group__pmg__app__common__log__data__structures.html#a87b56f6b1bebe732740248fb9e8f6670',1,'cy_stc_app_port_faults_t']]],
+  ['cdtt_5fchecksum',['cdtt_checksum',['../group__group__pmg__app__common__dmc__data__structures.html#a198be0f8a728757a574a312c7d23a6d5',1,'cy_stc_app_dmc_dock_metadata_t']]],
+  ['cdtt_5fver',['cdtt_ver',['../structdmc__fwct__hdr__t.html#a53c8877eae22670e033f5149fb0c1a6a',1,'dmc_fwct_hdr_t']]],
+  ['check_5ffw_5fversion',['check_fw_version',['../structcy__stc__app__dmc__update__opern__t.html#a9867723962c44325ab0e3efac7cf7017',1,'cy_stc_app_dmc_update_opern_t']]],
+  ['checksum',['checksum',['../group__group__pmg__app__common__dmc__data__structures.html#adce6c8f936ee41020365140f4af20d6e',1,'cy_stc_app_dmc_dock_metadata_t::checksum()'],['../structdmc__fwct__hdr__t.html#a522c1427c047f1a33c8334df6141aa30',1,'dmc_fwct_hdr_t::checksum()']]],
+  ['checksum_5fdynamic',['checksum_dynamic',['../group__group__pmg__app__common__log__data__structures.html#a148b8810116bd5274a02227f028e2e91',1,'cy_stc_app_flash_log_t']]],
+  ['checksum_5fstatic',['checksum_static',['../group__group__pmg__app__common__log__data__structures.html#a28e7273ba4bcfeca22d44ec71feb1351',1,'cy_stc_app_flash_log_t']]],
+  ['common_5ffaults',['common_faults',['../group__group__pmg__app__common__log__data__structures.html#a6fb2a57a04152d94fb1bfa33fcb69758',1,'cy_stc_app_flash_log_t']]],
+  ['comp_5fid',['comp_id',['../group__group__pmg__app__common__dmc__data__structures.html#a9a9f523f2adb5a0af83a605fa1ccdd65',1,'cy_stc_app_dmc_devx_status_t::comp_id()'],['../structdmc__fwct__img__info__t.html#a94b12bfcffd0795f19e37b95516f00eb',1,'dmc_fwct_img_info_t::comp_id()']]],
+  ['composite_5fver',['composite_ver',['../group__group__pmg__app__common__dmc__data__structures.html#a09acd6ad3d120e924d716e055b0d32ef',1,'cy_stc_app_dmc_dock_status_t::composite_ver()'],['../structdmc__fwct__hdr__t.html#a3a72d250d930740813dd7a4d2ff69455',1,'dmc_fwct_hdr_t::composite_ver()']]],
+  ['compsitever',['compsiteVer',['../group__group__pmg__app__common__dmc__data__structures.html#a945305ddd5ccd7d95325bc2114ba3605',1,'cy_stc_dmc_params_t']]],
+  ['config',['config',['../group__group__pmg__app__common__dmc__data__structures.html#a5ffa0b37d77efdddddff93b38bfc5040',1,'cy_stc_app_dmc_dev_hw_cfg_t']]],
+  ['config_5ffw_5fsize',['config_fw_size',['../group__group__pmg__app__common__system__boot__data__structures.html#acfb72a37d60bf4817e53c71f59dd3b3e',1,'cy_stc_sys_fw_metadata_t']]],
+  ['config_5ffw_5fstart',['config_fw_start',['../group__group__pmg__app__common__system__boot__data__structures.html#a82ce0ae00d0d25163d7be18b8aa2765e',1,'cy_stc_sys_fw_metadata_t']]],
+  ['context',['context',['../group__group__pmg__app__common__dmc__data__structures.html#ad7b20bc83420a36ac819b8ec9e47b7a2',1,'cy_stc_app_dmc_dev_hw_cfg_t']]],
+  ['crc_5ferr',['crc_err',['../group__group__pmg__app__common__log__data__structures.html#a3ec143ada06c747938a4121ac255ff46',1,'cy_stc_app_port_faults_t']]],
+  ['crit_5fupdate',['crit_update',['../structdmc__fwct__hdr__t.html#aacb8b8a06c730d1c7e2187579325ba03',1,'dmc_fwct_hdr_t']]],
+  ['cur_5ffb_5fenabled',['cur_fb_enabled',['../group__group__pmg__app__common__app__data__structures.html#a556a790efcde994c04a11e77a860a870',1,'cy_stc_app_status_t']]],
+  ['cur_5ffwct_5fimg_5foffset',['cur_fwct_img_offset',['../structattr__struct__t.html#ac8538951d0a29918747f7d1e54c748e4',1,'attr_struct_t']]],
+  ['cur_5fimg',['cur_img',['../group__group__pmg__app__common__dmc__data__structures.html#a89150f043da9a75ff1a74e6e12e44606',1,'cy_stc_app_dmc_devx_status_t']]],
+  ['cur_5frow_5fid',['cur_row_id',['../structattr__struct__t.html#a7fc553bd540a45583fe3ab13a7a9512e',1,'attr_struct_t']]]
+];

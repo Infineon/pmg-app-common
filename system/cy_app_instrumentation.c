@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_instrumentation.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements functions to monitor CPU resource (execution time
@@ -33,9 +33,6 @@
 #endif /* defined(__ARMCC_VERSION) */
 
 cy_app_instrumentation_cb_t gl_instrumentation_cb = NULL;
-
-/* Pointer to the Timer context */
-static cy_stc_pdutils_sw_timer_t *glPtrTimerCtx;
 
 #if CY_APP_RESET_ON_ERROR_ENABLE
 
@@ -73,6 +70,9 @@ volatile uint32_t gl_main_loop_delay = 0;
 
 /* Margin (in ms) available until watchdog reset */
 volatile uint16_t gl_min_reset_margin = CY_APP_WATCHDOG_RESET_PERIOD_MS;
+
+/* Pointer to the Timer context */
+static cy_stc_pdutils_sw_timer_t *glPtrTimerCtx;
 
 /* Timer callback to reset device if main loop has not been run as expected */
 void watchdog_timer_cb (
@@ -125,8 +125,12 @@ void Cy_App_Instrumentation_Init(cy_stc_pdutils_sw_timer_t *ptrTimerContext)
     /* Added to avoid compiler warning if all features are disabled */
     (void)wdr_cnt;
 
+#if CY_APP_RESET_ON_ERROR_ENABLE
     /* Store the timer context. */
     glPtrTimerCtx = ptrTimerContext;
+#else
+    (void)ptrTimerContext;
+#endif /* CY_APP_RESET_ON_ERROR_ENABLE */
 
 #if CY_APP_STACK_USAGE_CHECK_ENABLE
     uint32_t *addr_p;

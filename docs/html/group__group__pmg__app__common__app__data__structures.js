@@ -39,5 +39,13 @@ var group__group__pmg__app__common__app__data__structures =
       [ "user_custom_pid_valid", "group__group__pmg__app__common__app__data__structures.html#aac4b0c736267cce62bd5d6edf25e0e1c", null ],
       [ "source_info", "group__group__pmg__app__common__app__data__structures.html#ac91b3deb1a9bf9fa14cf8f831f4aa762", null ],
       [ "spec_revision", "group__group__pmg__app__common__app__data__structures.html#a6509e55abdda3334209c68c131ab3d13", null ]
+    ] ],
+    [ "cy_app_sln_cbk_t", "structcy__app__sln__cbk__t.html", [
+      [ "type_a_is_idle", "structcy__app__sln__cbk__t.html#aac087f7de1c81ed53dd9582459c3d5b0", null ],
+      [ "type_a_update_status", "structcy__app__sln__cbk__t.html#a18b08174880ec25f51895035fcbcead4", null ],
+      [ "type_a_set_voltage", "structcy__app__sln__cbk__t.html#afd45da6229289b5d9772d58d47a6e2a3", null ],
+      [ "type_a_enable_disable_vbus", "structcy__app__sln__cbk__t.html#a818921712342856770c425646bb09da5", null ],
+      [ "type_a_port_enable_disable", "structcy__app__sln__cbk__t.html#af80212c820f5abf6a75b61ddbac4d350", null ],
+      [ "type_a_detect_disconnect", "structcy__app__sln__cbk__t.html#aeaf4c161898ac347962f8bebd4eaf96b", null ]
     ] ]
 ];

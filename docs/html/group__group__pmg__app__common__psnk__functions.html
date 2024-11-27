@@ -102,6 +102,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga75f48a6e7b5c695394028c4f251c08c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__psnk__functions.html#ga75f48a6e7b5c695394028c4f251c08c3">Cy_App_Sink_Disable</a> (cy_stc_pdstack_context_t *context, cy_pdstack_sink_discharge_off_cbk_t snk_discharge_off_handler)</td></tr>
 <tr class="memdesc:ga75f48a6e7b5c695394028c4f251c08c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables the VBUS power sink path and discharge VBUS supply down to a safe level.  <a href="#ga75f48a6e7b5c695394028c4f251c08c3">More...</a><br /></td></tr>
 <tr class="separator:ga75f48a6e7b5c695394028c4f251c08c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaccc557fd2c7c76dd862604cab295b82a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__psnk__functions.html#gaccc557fd2c7c76dd862604cab295b82a">Cy_App_Sink_VbusCFetOnCtrl</a> (cy_stc_pdstack_context_t *context, uint8_t *ctrl_p)</td></tr>
+<tr class="memdesc:gaccc557fd2c7c76dd862604cab295b82a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function allows VBus consumer FET control over the HPI interface.  <a href="#gaccc557fd2c7c76dd862604cab295b82a">More...</a><br /></td></tr>
+<tr class="separator:gaccc557fd2c7c76dd862604cab295b82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga059563ce60d2ede47116a5706f728915"></a>
@@ -246,6 +249,44 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>None </dd></dl>
+
+</div>
+</div>
+<a id="gaccc557fd2c7c76dd862604cab295b82a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaccc557fd2c7c76dd862604cab295b82a">&#9670;&nbsp;</a></span>Cy_App_Sink_VbusCFetOnCtrl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Cy_App_Sink_VbusCFetOnCtrl </td>
+          <td>(</td>
+          <td class="paramtype">cy_stc_pdstack_context_t *&#160;</td>
+          <td class="paramname"><em>context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>ctrl_p</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Function allows VBus consumer FET control over the HPI interface. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">context</td><td>Pointer to the PDStack context </td></tr>
+    <tr><td class="paramname">ctrl_p</td><td>Pointer to the control command </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the operation is success otherwise false. </dd></dl>
 
 </div>
 </div>

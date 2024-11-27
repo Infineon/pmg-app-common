@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_timer_id.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Provides application software timer identifier definitions
@@ -223,6 +223,9 @@ typedef enum {
 
     CY_APP_VCONN_TURN_ON_DELAY_TIMER,
     /**< Timer is used for providing delay for VConn gate pull up enable */
+
+    CY_APP_MOISTURE_DETECT_TIMER_ID,
+    /**< Timer used to start moisture detection after typec attach wait */
 
     CY_APP_PD_GET_REVISION_COMMAND_RETRY_TIMER,
     /**< Timer is used to retry get revision command */

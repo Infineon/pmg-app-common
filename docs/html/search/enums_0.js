@@ -1,7 +1,16 @@
 var searchData=
 [
   ['cy_5fen_5fapp_5fnb_5fsys_5fpwr_5fstate_5ft',['cy_en_app_nb_sys_pwr_state_t',['../group__group__pmg__app__common__app__enums.html#gaa02f3a396d59de9280e505fa66e328a9',1,'cy_app.h']]],
+  ['cy_5fen_5fapp_5fpd_5fresp_5fdata_5fcmd_5ft',['cy_en_app_pd_resp_data_cmd_t',['../group__group__pmg__app__common__hpi__enums.html#ga6583b99d0873399086a6d6c0290746ce',1,'cy_app_hpi.h']]],
+  ['cy_5fen_5fapp_5fpd_5fresp_5fid_5ft',['cy_en_app_pd_resp_id_t',['../group__group__pmg__app__common__hpi__enums.html#gad40d491990e76d235187bd9e3fbea969',1,'cy_app_hpi.h']]],
   ['cy_5fen_5fapp_5fport_5ffault_5fstatus_5fmask_5ft',['cy_en_app_port_fault_status_mask_t',['../group__group__pmg__app__common__app__enums.html#ga726b73ad3fef7a5eeb820bb4735416aa',1,'cy_app.h']]],
+  ['cy_5fen_5fbc_5fapple_5fbrick_5fid_5ft',['cy_en_bc_apple_brick_id_t',['../group__group__pmg__app__common__bch__enums.html#ga68eb89daa8dc124bca36edaea9506bb7',1,'cy_app_battery_charging.h']]],
+  ['cy_5fen_5fbc_5fapple_5fterm_5ft',['cy_en_bc_apple_term_t',['../group__group__pmg__app__common__bch__enums.html#gab63b2521e6496dc1af76c02f47c9a8e9',1,'cy_app_battery_charging.h']]],
+  ['cy_5fen_5fbc_5fcharge_5fmode_5ft',['cy_en_bc_charge_mode_t',['../group__group__pmg__app__common__bch__enums.html#gafee8826020a14dfaca2ec9e1a3bc6fae',1,'cy_app_battery_charging.h']]],
+  ['cy_5fen_5fbc_5fd_5fstatus_5ft',['cy_en_bc_d_status_t',['../group__group__pmg__app__common__bch__enums.html#ga0b92b82a71c32692c23a473032d4c95b',1,'cy_app_battery_charging.h']]],
+  ['cy_5fen_5fbc_5ffsm_5fevt_5ft',['cy_en_bc_fsm_evt_t',['../group__group__pmg__app__common__bch__enums.html#ga84e04c0cbb160d80a8b2d4ef546fb2d7',1,'cy_app_battery_charging.h']]],
+  ['cy_5fen_5fbc_5fsink_5ftimer_5ft',['cy_en_bc_sink_timer_t',['../group__group__pmg__app__common__bch__enums.html#ga86d343494713b2a9ec13b12b8cc98274',1,'cy_app_battery_charging.h']]],
+  ['cy_5fen_5fbc_5fstate_5ft',['cy_en_bc_state_t',['../group__group__pmg__app__common__bch__enums.html#ga0aa58b2424887074f3f0051d2b0a6be5',1,'cy_app_battery_charging.h']]],
   ['cy_5fen_5fdebug_5fopcodes_5ft',['cy_en_debug_opcodes_t',['../group__group__pmg__app__common__log__enums.html#ga84d0d37ae0e54730bcbbceb755a0603e',1,'cy_app_debug.h']]],
   ['cy_5fen_5fdebug_5fscb_5fintf_5ft',['cy_en_debug_scb_intf_t',['../group__group__pmg__app__common__log__enums.html#ga95d400a6225c0dec96e3b4c64629529f',1,'cy_app_debug.h']]],
   ['cy_5fen_5fdebug_5fscb_5foperation_5ft',['cy_en_debug_scb_operation_t',['../group__group__pmg__app__common__log__enums.html#gaf5f4388e03687f5fa561f278777d8e0a',1,'cy_app_debug.h']]],

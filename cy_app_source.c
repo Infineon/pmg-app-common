@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_source.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements functions associated with the power
@@ -22,7 +22,6 @@
 #include "cy_app_source.h"
 #include "cy_app_timer_id.h"
 #include "cy_app_fault_handlers.h"
-#include "cy_app_buck_boost.h"
 #include "cy_pdutils_sw_timer.h"
 #include "cy_pdstack_timer_id.h"
 #include "cy_pdstack_dpm.h"
@@ -34,7 +33,11 @@
 #define CUR_LEVEL_DEF   90
 
 /* VBUS absolute maximum voltage in mV units */
+#if CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE
+#define VBUS_MAX_VOLTAGE  (50000u)
+#else
 #define VBUS_MAX_VOLTAGE  (30000u)
+#endif
 
 #if (VBUS_OCP_ENABLE)
 static const uint32_t cc_rp_to_cur_map[] = {
@@ -61,7 +64,7 @@ bool app_psrc_vbus_rcp_cbk(void * cbkContext, bool comp_out);
 
 void psrc_select_voltage(cy_stc_pdstack_context_t *context);
 
-#if defined(CY_DEVICE_PMG1S3)
+#if (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY))
 void vbus_fet_on_cbk (cy_timer_id_t id,  void * context)
 {
     cy_stc_pdstack_context_t *ptrPdStackContext = (cy_stc_pdstack_context_t *)context;
@@ -71,7 +74,7 @@ void vbus_fet_on_cbk (cy_timer_id_t id,  void * context)
 
     (void) id;
 }
-#endif /* defined(CY_DEVICE_PMG1S3) */
+#endif /* (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY)) */
 
 #if VBUS_SOFT_START_ENABLE
 static void Vbus_NgdoSoftStartOn(cy_stc_pdstack_context_t *context)
@@ -102,48 +105,47 @@ __attribute__ ((weak)) void soln_vbus_fet_off (cy_stc_pdstack_context_t *context
     (void)context;
 }
 
-__attribute__ ((weak)) void soln_src_set_voltage (cy_stc_pdstack_context_t *context)
-{
-    (void)context;
-}
-
 static void vbus_fet_on(cy_stc_pdstack_context_t *context)
 {
     /* If FET is already on then no need to enable it again */    
     if(Cy_App_GetStatus(context->port)->is_vbus_on == false)
     {
-            Cy_App_GetStatus(context->port)->is_vbus_on = true;
+        Cy_App_GetStatus(context->port)->is_vbus_on = true;
 
-            /*
-             * In case of CY_APP_REGULATOR_REQUIRE_STABLE_ON_TIME, the regulator is
-             * already turned on. 
-             * Turn off sink FET causes the regulator to get wrongly
-             * shutdown and disables the sink.
-             */
+        /*
+         * In case of CY_APP_REGULATOR_REQUIRE_STABLE_ON_TIME, the regulator is
+         * already turned on. 
+         * Turn off sink FET causes the regulator to get wrongly
+         * shutdown and disables the sink.
+         */
 #if (!(CY_APP_REGULATOR_REQUIRE_STABLE_ON_TIME))
-            Cy_USBPD_Vbus_GdrvCfetOff(context->ptrUsbPdContext, false);
-            Cy_SysLib_DelayUs(10);
+        Cy_USBPD_Vbus_GdrvCfetOff(context->ptrUsbPdContext, false);
+        Cy_SysLib_DelayUs(10);
 #endif /* (!(CY_APP_REGULATOR_REQUIRE_STABLE_ON_TIME)) */
 
-#if defined(CY_DEVICE_PMG1S3)
+#if (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY))
         Cy_PdUtils_SwTimer_Stop(context->ptrTimerContext, CY_APP_GET_TIMER_ID(context, CY_APP_VBUS_FET_OFF_TIMER));
 #if VBUS_SOFT_START_ENABLE
         Vbus_NgdoSoftStartOn(context);
 #endif /* VBUS_SOFT_START_ENABLE */
-#endif /* defined(CY_DEVICE_PMG1S3) */
+#endif /* (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY)) */
 
-            Cy_USBPD_Vbus_GdrvPfetOn(context->ptrUsbPdContext, true);
+#if defined(CY_DEVICE_CCG3PA)
+        Cy_USBPD_Vbus_GdrvPfetOn(context->ptrUsbPdContext, CY_APP_VBUS_P_FET_CTRL);
+#else
+        Cy_USBPD_Vbus_GdrvPfetOn(context->ptrUsbPdContext, true);
+#endif /* defined(CY_DEVICE_CCG3PA) */
 
-#if defined(CY_DEVICE_PMG1S3)
-            Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context, CY_APP_GET_TIMER_ID(context, CY_APP_VBUS_FET_ON_TIMER),
-                    CY_APP_VBUS_FET_ON_TIMER_PERIOD, vbus_fet_on_cbk);
-#endif /* defined(CY_DEVICE_PMG1S3) */
+#if (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY))
+        Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context, CY_APP_GET_TIMER_ID(context, CY_APP_VBUS_FET_ON_TIMER),
+                CY_APP_VBUS_FET_ON_TIMER_PERIOD, vbus_fet_on_cbk);
+#endif /* (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY)) */
     }
 
     soln_vbus_fet_on (context);
 }
 
-#if defined(CY_DEVICE_PMG1S3)
+#if (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY))
 void vbus_fet_off_cbk (cy_timer_id_t id,  void * context)
 {
     cy_stc_pdstack_context_t *ptrPdStackContext = (cy_stc_pdstack_context_t *)context;
@@ -154,13 +156,13 @@ void vbus_fet_off_cbk (cy_timer_id_t id,  void * context)
 
     (void) id;
 }
-#endif /* defined(CY_DEVICE_PMG1S3) */
+#endif /* (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY))*/
 
 static void vbus_fet_off(cy_stc_pdstack_context_t *context)
 {
     Cy_App_GetStatus(context->port)->is_vbus_on = false;
 
-#if defined(CY_DEVICE_PMG1S3)
+#if (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY))
     /* Stop the VBUS_FET_ON_TIMER */
     Cy_PdUtils_SwTimer_Stop(context->ptrTimerContext, CY_APP_GET_TIMER_ID(context, CY_APP_VBUS_FET_ON_TIMER));
 
@@ -169,9 +171,11 @@ static void vbus_fet_off(cy_stc_pdstack_context_t *context)
 
     Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context, CY_APP_GET_TIMER_ID(context, CY_APP_VBUS_FET_OFF_TIMER),
             CY_APP_VBUS_FET_OFF_TIMER_PERIOD, vbus_fet_off_cbk);
+#elif defined(CY_DEVICE_CCG3PA)
+    Cy_USBPD_Vbus_GdrvPfetOff(context->ptrUsbPdContext, CY_APP_VBUS_P_FET_CTRL);
 #else
-        Cy_USBPD_Vbus_GdrvPfetOff(context->ptrUsbPdContext, true);
-#endif /* defined(CY_DEVICE_PMG1S3) */
+    Cy_USBPD_Vbus_GdrvPfetOff(context->ptrUsbPdContext, true);
+#endif /* (defined(CY_DEVICE_PMG1S3) && (!CY_PD_SINK_ONLY)) */
 
     soln_vbus_fet_off (context);
 }
@@ -554,9 +558,20 @@ bool app_psrc_vbus_ovp_cbk(void *cbkContext, bool compOut)
 }
 #endif /* ((VBUS_OVP_ENABLE) || (VBUS_UVP_ENABLE)) */
 
+__attribute__ ((weak)) void soln_set_volt_port1 (uint16_t vol_in_mv)
+{
+    (void)vol_in_mv;
+}
+
+#if PMG1_PD_DUALPORT_ENABLE
+__attribute__ ((weak)) void soln_set_volt_port2 (uint16_t vol_in_mv)
+{
+    (void)vol_in_mv;
+}
+#endif /* PMG1_PD_DUALPORT_ENABLE */
+
 void psrc_select_voltage(cy_stc_pdstack_context_t *context)
 {
-#if CY_APP_PROG_SOURCE_ENABLE
     uint8_t port = context->port;
     cy_stc_app_status_t *app_stat = Cy_App_GetStatus(port);
     uint16_t select_volt = app_stat->psrc_volt;
@@ -577,23 +592,14 @@ void psrc_select_voltage(cy_stc_pdstack_context_t *context)
 
     if(port == TYPEC_PORT_0_IDX)
     {
-        Cy_App_BuckBoost_SetVoltPort1 (select_volt);
+        soln_set_volt_port1 (select_volt);
     }
 #if PMG1_PD_DUALPORT_ENABLE
     else
     {
-        Cy_App_BuckBoost_SetVoltPort2 (select_volt);
+        soln_set_volt_port2 (select_volt);
     }
 #endif /* PMG1_PD_DUALPORT_ENABLE */
-
-#else /* CY_APP_PROG_SOURCE_ENABLE */
-
-    uint32_t intr_state = Cy_SysLib_EnterCriticalSection ();
-
-    soln_src_set_voltage (context);
-
-    Cy_SysLib_ExitCriticalSection(intr_state);
-#endif  /* CY_APP_PROG_SOURCE_ENABLE */
 }
 
 void Cy_App_Source_SetVoltage(cy_stc_pdstack_context_t * context, uint16_t volt_mV)
@@ -666,6 +672,18 @@ void Cy_App_Source_SetCurrent (cy_stc_pdstack_context_t *context, uint16_t cur_1
                     /* PDP value is in 1W units and the max volt is in 100 mV units. Convert pdp in 100 mW units
                      * and divide by voltage gives the current in amps then multiplied by 100 to convert in 10 mA units. */  
                     ocp_cur = ((dpm_stat->srcSelPdo.epr_avs_src.pdp * 10) / dpm_stat->srcSelPdo.epr_avs_src.maxVolt) * 100;
+                }
+                else if(dpm_stat->srcSelPdo.spr_avs_src.apdoType == CY_PDSTACK_APDO_SPR_AVS)
+                {
+                    /* Set the current limit based on the contract voltage. */
+                    if(dpm_stat->srcRdo.rdo_spr_avs.outVolt <= (CY_PD_VSAFE_15V / 25U))
+                    {
+                        ocp_cur = dpm_stat->srcSelPdo.spr_avs_src.maxCur1;
+                    }
+                    else
+                    {
+                        ocp_cur = dpm_stat->srcSelPdo.spr_avs_src.maxCur2;
+                    }
                 }
                 else
                 {

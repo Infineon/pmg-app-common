@@ -1,6 +1,6 @@
  /***************************************************************************//**
 * \file cy_app_dmc_common.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the common definitions and structures used in DMC
@@ -80,10 +80,10 @@
 *
 ********************************************************************************
 *
-* \defgroup group_pmg_app_common_dmc_macros macros
-* \defgroup group_pmg_app_common_dmc_enums enumerated types
-* \defgroup group_pmg_app_common_dmc_data_structures data structures
-* \defgroup group_pmg_app_common_dmc_functions functions
+* \defgroup group_pmg_app_common_dmc_macros Macros
+* \defgroup group_pmg_app_common_dmc_enums Enumerated Types
+* \defgroup group_pmg_app_common_dmc_data_structures Data Structures
+* \defgroup group_pmg_app_common_dmc_functions Functions
 */
 
 /**
@@ -723,6 +723,9 @@ typedef struct
 
     /** Application event handler */
     void (*app_event_handler) (cy_en_dmc_app_evt_t evt, uint8_t *data, uint8_t size);
+    
+    /** Get public key Id. */
+    uint8_t (*get_public_key_id)(void);
 
 } cy_stc_dmc_app_cbk_t;
 

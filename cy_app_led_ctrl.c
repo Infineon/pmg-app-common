@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_led_ctrl.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the functions associated with application level

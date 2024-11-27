@@ -2,7 +2,6 @@ var searchData=
 [
   ['factory_5fupdate_5fdone',['factory_update_done',['../structdmc__handle__t.html#a642e8572036038d7d3435b0f96e57b87',1,'dmc_handle_t']]],
   ['failure_5fdetails',['failure_details',['../group__group__pmg__app__common__log__data__structures.html#a53ae02d3ad7f58411c94b0b0fb03a8b6',1,'cy_stc_app_flash_log_t']]],
-  ['fbratio',['fbRatio',['../group__group__pmg__app__common__buck__boost__data__structures.html#a3e11db09b38d97a28e0674d81389e85b',1,'cy_stc_app_mp4247_context_t']]],
   ['finish_5fupdate',['finish_update',['../structcy__stc__app__dmc__update__opern__t.html#a80030147193af5795168050d973cfc28',1,'cy_stc_app_dmc_update_opern_t']]],
   ['first_5ffailure_5foffset',['first_failure_offset',['../group__group__pmg__app__common__log__data__structures.html#a6849f081d87a5ba0b1191955a058513d',1,'cy_stc_app_flash_log_t']]],
   ['flash_5fenter_5fmode',['flash_enter_mode',['../structcy__stc__dmc__app__cbk__t.html#a53bc3ca7b336ff7e63994fbb8a10e762',1,'cy_stc_dmc_app_cbk_t']]],

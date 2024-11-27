@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_led_ctrl.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines data structures and function prototypes
@@ -60,10 +60,10 @@
 * 6. Use the following API to change the LED control mode
 *    \snippet led_control_sut.c snippet_led_control_switch_mode
 *
-* \defgroup group_pmg_app_common_led_macros macros
-* \defgroup group_pmg_app_common_led_enums enumerated types
-* \defgroup group_pmg_app_common_led_data_structures data structures
-* \defgroup group_pmg_app_common_led_functions functions
+* \defgroup group_pmg_app_common_led_macros Macros
+* \defgroup group_pmg_app_common_led_enums Enumerated Types
+* \defgroup group_pmg_app_common_led_data_structures Data Structures
+* \defgroup group_pmg_app_common_led_functions Functions
 */
 /** \} group_pmg_app_common_led*/
 

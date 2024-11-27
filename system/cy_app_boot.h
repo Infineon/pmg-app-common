@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_boot.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Bootloader support header file
@@ -312,6 +312,7 @@ uint32_t Cy_App_Boot_GetBootSeq(uint8_t fwid);
  */
 void Cy_App_Boot_UpdateFwStatus(void);
 
+#if (defined (CY_IP_M0S8CRYPTOLITE))
 /**
  * @brief Function calculates firmware image hash value using cryptolite APIs
  *
@@ -324,6 +325,7 @@ void Cy_App_Boot_UpdateFwStatus(void);
 cy_en_app_status_t Cy_App_Boot_CalculateFwImageHash(cy_stc_sys_fw_metadata_t *fw_metadata,
                                                     uint8_t *final_hash,
                                                     cy_stc_cryptolite_sha_context_t *sha_ctx);
+#endif /* (defined (CY_IP_M0S8CRYPTOLITE)) */
 
 /** \} group_pmg_app_common_system_boot_functions */
 /** \} group_pmg_app_common_system_functions */

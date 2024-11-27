@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_i2c_master.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the functions associated with i2c master

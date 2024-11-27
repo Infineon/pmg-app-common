@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_system.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Support functions and definitions for bootloader and flash updates
@@ -117,10 +117,10 @@
 *
 ********************************************************************************
 *
-* \defgroup group_pmg_app_common_system_macros macros
-* \defgroup group_pmg_app_common_system_enums enumerated types
-* \defgroup group_pmg_app_common_system_data_structures data structures
-* \defgroup group_pmg_app_common_system_functions functions
+* \defgroup group_pmg_app_common_system_macros Macros
+* \defgroup group_pmg_app_common_system_enums Enumerated Types
+* \defgroup group_pmg_app_common_system_data_structures Data Structures
+* \defgroup group_pmg_app_common_system_functions Functions
 */
 /** \} group_pmg_app_common_system */
 

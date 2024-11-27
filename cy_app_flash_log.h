@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_flash_log.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines APIs and macros for flash logging

@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_uart_debug.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements UART-based debug APIs

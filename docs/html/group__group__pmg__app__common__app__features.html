@@ -83,7 +83,7 @@ $(document).ready(function(){initNavTree('group__group__pmg__app__common__app__f
   <div class="summary">
 <a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
-<div class="title">Feature Configuration<div class="ingroups"><a class="el" href="group__group__pmg__app__common__app.html">Common</a></div></div>  </div>
+<div class="title">Feature configuration<div class="ingroups"><a class="el" href="group__group__pmg__app__common__app.html">Common</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -96,10 +96,6 @@ Macros</h2></td></tr>
 <tr class="memitem:ga92eb886678eed72c425c81fb89f272bb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga92eb886678eed72c425c81fb89f272bb">CY_APP_POWER_ROLE_PREFERENCE_ENABLE</a>&#160;&#160;&#160;(1u)</td></tr>
 <tr class="memdesc:ga92eb886678eed72c425c81fb89f272bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Power role preference enable.  <a href="#ga92eb886678eed72c425c81fb89f272bb">More...</a><br /></td></tr>
 <tr class="separator:ga92eb886678eed72c425c81fb89f272bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4443a910c10e2496e513fc5082247f2c"><td class="memItemLeft" align="right" valign="top"><a id="ga4443a910c10e2496e513fc5082247f2c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga4443a910c10e2496e513fc5082247f2c">CY_APP_PROG_SOURCE_ENABLE</a>&#160;&#160;&#160;(1u)</td></tr>
-<tr class="memdesc:ga4443a910c10e2496e513fc5082247f2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Programmable source enable. <br /></td></tr>
-<tr class="separator:ga4443a910c10e2496e513fc5082247f2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga54e73c83cf09a8fa998da80e1ee257d1"><td class="memItemLeft" align="right" valign="top"><a id="ga54e73c83cf09a8fa998da80e1ee257d1"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga54e73c83cf09a8fa998da80e1ee257d1">CY_APP_PD_PDO_SEL_ALGO</a>&#160;&#160;&#160;(0u)</td></tr>
 <tr class="memdesc:ga54e73c83cf09a8fa998da80e1ee257d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">PDO selection algorithm: 0: Pick the source PDO which delivers maximum amount of power 1: Pick the fixed source PDO which delivers maximum amount of power 2: Pick the fixed source PDO which delivers the maximum current 3: Pick the fixed source PDO which delivers power at maximum voltage. <br /></td></tr>
@@ -111,6 +107,10 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#gac0b75fe1fb1d287d78414981605d311c">CY_APP_PD_USB4_SUPPORT_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
 <tr class="memdesc:gac0b75fe1fb1d287d78414981605d311c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable/disable the USB4 support feature at the application level. <br /></td></tr>
 <tr class="separator:gac0b75fe1fb1d287d78414981605d311c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga759a4bc545b9da27fb479b85a408e3b2"><td class="memItemLeft" align="right" valign="top"><a id="ga759a4bc545b9da27fb479b85a408e3b2"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga759a4bc545b9da27fb479b85a408e3b2">CY_APP_SINK_FET_CTRL_GPIO_EN</a>&#160;&#160;&#160;(0u)</td></tr>
+<tr class="memdesc:ga759a4bc545b9da27fb479b85a408e3b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">This macro should be set to '1' if consumer path is controlled by GPIO. <br /></td></tr>
+<tr class="separator:ga759a4bc545b9da27fb479b85a408e3b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1df6c23905bf26262c10ac6f98cc452a"><td class="memItemLeft" align="right" valign="top"><a id="ga1df6c23905bf26262c10ac6f98cc452a"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga1df6c23905bf26262c10ac6f98cc452a">CY_APP_VBUS_TURN_ON_MARGIN</a>&#160;&#160;&#160;(-20)</td></tr>
 <tr class="memdesc:ga1df6c23905bf26262c10ac6f98cc452a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allowed VBUS valid margin as percentage of expected voltage. <br /></td></tr>
@@ -131,13 +131,16 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga70aaa4c103a7a35eb851fbb68eb4eaa6">VBUS_SOFT_START_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
 <tr class="memdesc:ga70aaa4c103a7a35eb851fbb68eb4eaa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set to '1' to enable VBUS soft start feature. <br /></td></tr>
 <tr class="separator:ga70aaa4c103a7a35eb851fbb68eb4eaa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga55c4f0b14fa7b2fdedbdbbff674c6afc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga55c4f0b14fa7b2fdedbdbbff674c6afc">CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
+<tr class="memdesc:ga55c4f0b14fa7b2fdedbdbbff674c6afc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable to set VBUS_MAX_VOLTAGE to 50V for EPR voltages.  <a href="#ga55c4f0b14fa7b2fdedbdbbff674c6afc">More...</a><br /></td></tr>
+<tr class="separator:ga55c4f0b14fa7b2fdedbdbbff674c6afc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae429d2d4358f921c901feac54992c52d"><td class="memItemLeft" align="right" valign="top"><a id="gae429d2d4358f921c901feac54992c52d"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#gae429d2d4358f921c901feac54992c52d">CY_APP_WATCHDOG_HARDWARE_RESET_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#gae429d2d4358f921c901feac54992c52d">CY_APP_WATCHDOG_HARDWARE_RESET_ENABLE</a>&#160;&#160;&#160;(1u)</td></tr>
 <tr class="memdesc:gae429d2d4358f921c901feac54992c52d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable watchdog hardware reset for CPU lock-up recovery. <br /></td></tr>
 <tr class="separator:gae429d2d4358f921c901feac54992c52d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad4212ba5bcfe6c58e6e4b18d86d45820"><td class="memItemLeft" align="right" valign="top"><a id="gad4212ba5bcfe6c58e6e4b18d86d45820"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#gad4212ba5bcfe6c58e6e4b18d86d45820">CY_APP_RESET_ON_ERROR_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
-<tr class="memdesc:gad4212ba5bcfe6c58e6e4b18d86d45820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable PMG device reset on error (watchdog expiry or hard fault) <br /></td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#gad4212ba5bcfe6c58e6e4b18d86d45820">CY_APP_RESET_ON_ERROR_ENABLE</a>&#160;&#160;&#160;(1u)</td></tr>
+<tr class="memdesc:gad4212ba5bcfe6c58e6e4b18d86d45820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable PMG device reset on error (watchdog expiry or hard fault) <br /></td></tr>
 <tr class="separator:gad4212ba5bcfe6c58e6e4b18d86d45820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga292dc5b351c2aceffe799a9b735c95fb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga292dc5b351c2aceffe799a9b735c95fb">CY_APP_WATCHDOG_RESET_PERIOD_MS</a>&#160;&#160;&#160;(750u)</td></tr>
 <tr class="memdesc:ga292dc5b351c2aceffe799a9b735c95fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Watchdog reset period in milliseconds.  <a href="#ga292dc5b351c2aceffe799a9b735c95fb">More...</a><br /></td></tr>
@@ -146,6 +149,30 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga9dcec15fa051eb11ad9b986905c04606">CY_APP_STACK_USAGE_CHECK_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
 <tr class="memdesc:ga9dcec15fa051eb11ad9b986905c04606"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable tracking of maximum stack usage. <br /></td></tr>
 <tr class="separator:ga9dcec15fa051eb11ad9b986905c04606"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga05c38776068a6894520c75c7ae21986b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga05c38776068a6894520c75c7ae21986b">CY_CORROSION_MITIGATION_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
+<tr class="memdesc:ga05c38776068a6894520c75c7ae21986b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set this to 1 to enable corrosion mitigation feature By default, SBU lines are used for moisture detection.  <a href="#ga05c38776068a6894520c75c7ae21986b">More...</a><br /></td></tr>
+<tr class="separator:ga05c38776068a6894520c75c7ae21986b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga35f53917e6070ffd5b7623126357be1e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga35f53917e6070ffd5b7623126357be1e">CY_APP_MOISTURE_DETECT_IN_ATTACH_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
+<tr class="memdesc:ga35f53917e6070ffd5b7623126357be1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set this to 1 to enable moisture detection in attach wait state.  <a href="#ga35f53917e6070ffd5b7623126357be1e">More...</a><br /></td></tr>
+<tr class="separator:ga35f53917e6070ffd5b7623126357be1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga51e62d44cdca779c35a2ecd21d1aed91"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga51e62d44cdca779c35a2ecd21d1aed91">CY_APP_MOISTURE_DETECT_USING_DP_DM</a>&#160;&#160;&#160;(0u)</td></tr>
+<tr class="memdesc:ga51e62d44cdca779c35a2ecd21d1aed91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set this to 1 to use DP/DM lines for moisture detection.  <a href="#ga51e62d44cdca779c35a2ecd21d1aed91">More...</a><br /></td></tr>
+<tr class="separator:ga51e62d44cdca779c35a2ecd21d1aed91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae02d1448c069a45a8a9821ec1f1863a9"><td class="memItemLeft" align="right" valign="top"><a id="gae02d1448c069a45a8a9821ec1f1863a9"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#gae02d1448c069a45a8a9821ec1f1863a9">APPLE_SOURCE_DISABLE</a>&#160;&#160;&#160;(1u)</td></tr>
+<tr class="memdesc:gae02d1448c069a45a8a9821ec1f1863a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable Apple charging as source. <br /></td></tr>
+<tr class="separator:gae02d1448c069a45a8a9821ec1f1863a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2090ea8705827aeab2003e9b6e549937"><td class="memItemLeft" align="right" valign="top"><a id="ga2090ea8705827aeab2003e9b6e549937"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga2090ea8705827aeab2003e9b6e549937">APPLE_SINK_DISABLE</a>&#160;&#160;&#160;(1u)</td></tr>
+<tr class="memdesc:ga2090ea8705827aeab2003e9b6e549937"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disable Apple charging as sink. <br /></td></tr>
+<tr class="separator:ga2090ea8705827aeab2003e9b6e549937"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga146d1f3d8c943c963340f84c94c872ea"><td class="memItemLeft" align="right" valign="top"><a id="ga146d1f3d8c943c963340f84c94c872ea"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga146d1f3d8c943c963340f84c94c872ea">LEGACY_APPLE_SRC_SLN_TERM_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
+<tr class="memdesc:ga146d1f3d8c943c963340f84c94c872ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable solution terminations for Apple charging. <br /></td></tr>
+<tr class="separator:ga146d1f3d8c943c963340f84c94c872ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5a25efdcebbd562f9eae9f398b4575c0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga5a25efdcebbd562f9eae9f398b4575c0">APPLE_SRC_EXT_TERM_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
+<tr class="memdesc:ga5a25efdcebbd562f9eae9f398b4575c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable external terminations through GPIO for Apple charging.  <a href="#ga5a25efdcebbd562f9eae9f398b4575c0">More...</a><br /></td></tr>
+<tr class="separator:ga5a25efdcebbd562f9eae9f398b4575c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga90c6fca0b6ea7adc5e9d767dda1bb4c7"><td class="memItemLeft" align="right" valign="top"><a id="ga90c6fca0b6ea7adc5e9d767dda1bb4c7"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#ga90c6fca0b6ea7adc5e9d767dda1bb4c7">CY_APP_FLASH_LOG_ROW_NUM</a>&#160;&#160;&#160;(0x3F5)</td></tr>
 <tr class="memdesc:ga90c6fca0b6ea7adc5e9d767dda1bb4c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flash address row number where the logs are stored. <br /></td></tr>
@@ -201,6 +228,9 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#gad78929f54b828b5b3de2217d997d1511">CY_APP_SMART_POWER_ENABLE</a>&#160;&#160;&#160;(0u)</td></tr>
 <tr class="memdesc:gad78929f54b828b5b3de2217d997d1511"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable/disable Smart Power algorithm. <br /></td></tr>
 <tr class="separator:gad78929f54b828b5b3de2217d997d1511"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacb2d5e1b3d17af32731915ec34dd1364"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__features.html#gacb2d5e1b3d17af32731915ec34dd1364">CY_APP_RTOS_ENABLED</a>&#160;&#160;&#160;(0u)</td></tr>
+<tr class="memdesc:gacb2d5e1b3d17af32731915ec34dd1364"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set '1' to enable the RTOS support.  <a href="#gacb2d5e1b3d17af32731915ec34dd1364">More...</a><br /></td></tr>
+<tr class="separator:gacb2d5e1b3d17af32731915ec34dd1364"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="ga44d639d8746f5ebdcb8b3c1e16e336ce"></a>
@@ -253,6 +283,22 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a id="ga55c4f0b14fa7b2fdedbdbbff674c6afc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga55c4f0b14fa7b2fdedbdbbff674c6afc">&#9670;&nbsp;</a></span>CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE&#160;&#160;&#160;(0u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable to set VBUS_MAX_VOLTAGE to 50V for EPR voltages. </p>
+
+</div>
+</div>
 <a id="ga292dc5b351c2aceffe799a9b735c95fb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga292dc5b351c2aceffe799a9b735c95fb">&#9670;&nbsp;</a></span>CY_APP_WATCHDOG_RESET_PERIOD_MS</h2>
 
@@ -266,7 +312,73 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Watchdog reset period in milliseconds. </p>
-<p>This should be set to a value greater than 500 ms to avoid significant increase in the power consumption. </p>
+<p>A periodic timer (CY_PDUTILS_WATCHDOG_TIMER) is run using this as a period. This timer resets the device if the main loop has not been run as expected for three consecutive times. </p>
+
+</div>
+</div>
+<a id="ga05c38776068a6894520c75c7ae21986b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga05c38776068a6894520c75c7ae21986b">&#9670;&nbsp;</a></span>CY_CORROSION_MITIGATION_ENABLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CY_CORROSION_MITIGATION_ENABLE&#160;&#160;&#160;(0u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set this to 1 to enable corrosion mitigation feature By default, SBU lines are used for moisture detection. </p>
+<p>Set CY_APP_MOISTURE_DETECT_USING_DP_DM to 1 use DP/DM instead of SBU lines. </p>
+
+</div>
+</div>
+<a id="ga35f53917e6070ffd5b7623126357be1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga35f53917e6070ffd5b7623126357be1e">&#9670;&nbsp;</a></span>CY_APP_MOISTURE_DETECT_IN_ATTACH_ENABLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CY_APP_MOISTURE_DETECT_IN_ATTACH_ENABLE&#160;&#160;&#160;(0u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set this to 1 to enable moisture detection in attach wait state. </p>
+
+</div>
+</div>
+<a id="ga51e62d44cdca779c35a2ecd21d1aed91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga51e62d44cdca779c35a2ecd21d1aed91">&#9670;&nbsp;</a></span>CY_APP_MOISTURE_DETECT_USING_DP_DM</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CY_APP_MOISTURE_DETECT_USING_DP_DM&#160;&#160;&#160;(0u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set this to 1 to use DP/DM lines for moisture detection. </p>
+
+</div>
+</div>
+<a id="ga5a25efdcebbd562f9eae9f398b4575c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5a25efdcebbd562f9eae9f398b4575c0">&#9670;&nbsp;</a></span>APPLE_SRC_EXT_TERM_ENABLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define APPLE_SRC_EXT_TERM_ENABLE&#160;&#160;&#160;(0u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enable external terminations through GPIO for Apple charging. </p>
+<p>LEGACY_APPLE_SRC_SLN_TERM_ENABLE should be enabled along with this. </p>
 
 </div>
 </div>
@@ -283,6 +395,22 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Set to '1' to initiate the get revision PD message by the device to determine the PD revision used by the port partner. </p>
+
+</div>
+</div>
+<a id="gacb2d5e1b3d17af32731915ec34dd1364"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacb2d5e1b3d17af32731915ec34dd1364">&#9670;&nbsp;</a></span>CY_APP_RTOS_ENABLED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CY_APP_RTOS_ENABLED&#160;&#160;&#160;(0u)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set '1' to enable the RTOS support. </p>
 
 </div>
 </div>

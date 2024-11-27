@@ -1,7 +1,6 @@
 var searchData=
 [
   ['sbu_5fov',['sbu_ov',['../group__group__pmg__app__common__log__data__structures.html#a912f46459e336732dbf3d9c5e9d7f5f4',1,'cy_stc_app_port_faults_t']]],
-  ['scbbase',['scbBase',['../group__group__pmg__app__common__buck__boost__data__structures.html#a77b7c04d002e7f9861aa5c88c717ab71',1,'cy_stc_app_mp4247_context_t::scbBase()'],['../group__group__pmg__app__common__buck__boost__data__structures.html#a0e0b48b143dffb00e5f5abfb8beff805',1,'cy_stc_app_rt6190_context_t::scbBase()']]],
   ['secured_5fonly',['secured_only',['../group__group__pmg__app__common__dmc__data__structures.html#ae78f2a3ce6d02ef4b3350f9f96527dd0',1,'cy_stc_app_dmc_dock_metadata_t']]],
   ['seg_5flen',['seg_len',['../structattr__struct__t.html#aefb855493b3291a818ae3af282570942',1,'attr_struct_t']]],
   ['seg_5fstart_5frow',['seg_start_row',['../structattr__struct__t.html#aefa7f5010d7381d2263744f39c9222a0',1,'attr_struct_t']]],
@@ -23,7 +22,7 @@ var searchData=
   ['spifactorypkgaddr',['spiFactoryPkgAddr',['../group__group__pmg__app__common__dmc__data__structures.html#a8b62b9fc0cba8fac7a8228fb766fe2c6',1,'cy_stc_dmc_params_t']]],
   ['spiprimarypkgaddr',['spiPrimaryPkgAddr',['../group__group__pmg__app__common__dmc__data__structures.html#aa44a3000ee248ced4a12ed2d88b0e721',1,'cy_stc_dmc_params_t']]],
   ['start_5frow',['start_row',['../structdmc__fwct__seg__info__t.html#a4913c1f4250153e86e27d8ddc607aa89',1,'dmc_fwct_seg_info_t']]],
-  ['state',['state',['../structdmc__handle__t.html#a2acccec096a573a4c62768982ecde5f0',1,'dmc_handle_t']]],
+  ['state',['state',['../group__group__pmg__app__common__bch__data__structures.html#a7ab0065cb8bd602637e7d51179b78b93',1,'cy_stc_bc_dp_dm_state_t::state()'],['../structdmc__handle__t.html#a2acccec096a573a4c62768982ecde5f0',1,'dmc_handle_t::state()']]],
   ['status',['status',['../group__group__pmg__app__common__dmc__data__structures.html#a4ac21a5c0e238812ca5471e706bcdf18',1,'cy_stc_app_dmc_dock_metadata_t::status()'],['../group__group__pmg__app__common__system__boot__data__structures.html#a2e5bc522368c2c5fd235b26d5018855e',1,'cy_stc_fw_img_status_t::status()']]],
   ['status_5flength',['status_length',['../group__group__pmg__app__common__dmc__data__structures.html#a15f8009c4c1072a9fc9d963598aae164',1,'cy_stc_app_dmc_dock_status_t']]],
   ['swapresponse',['swapResponse',['../group__group__pmg__app__common__app__data__structures.html#a9d9180e4f3690498c45aaad4240a8fce',1,'cy_stc_app_params_t']]],

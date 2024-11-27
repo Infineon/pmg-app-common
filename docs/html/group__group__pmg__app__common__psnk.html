@@ -101,7 +101,7 @@ Configuration Considerations</h1>
 </li>
 <li>Initialize the functions to the application callback structure. <div class="fragment"><div class="line"><span class="comment">/* Register Application callback functions with the PdStack Middleware.</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">const</span> cy_stc_pdstack_app_cbk_t app_callback =</div><div class="line">{</div><div class="line">    .psnk_set_voltage = <a class="code" href="group__group__pmg__app__common__psnk__functions.html#ga059563ce60d2ede47116a5706f728915">Cy_App_Sink_SetVoltage</a>,</div><div class="line">    .psnk_set_current = <a class="code" href="group__group__pmg__app__common__psnk__functions.html#ga19e719d93aa67a9d9bd12d8f41bb77c9">Cy_App_Sink_SetCurrent</a>,</div><div class="line">    .psnk_enable = <a class="code" href="group__group__pmg__app__common__psnk__functions.html#ga814325203a7f314821e2d0260045bd25">Cy_App_Sink_Enable</a>,</div><div class="line">    .psnk_disable = <a class="code" href="group__group__pmg__app__common__psnk__functions.html#ga75f48a6e7b5c695394028c4f251c08c3">Cy_App_Sink_Disable</a>,</div><div class="line">};</div></div><!-- fragment --> <br />
 </li>
-<li>Register the application callback to the PDStack middleware library. See the <a class="el" href="index.html#section_pmg_app_common_quick_start">Quick Start Guide</a> section. </li>
+<li>Register the application callback to the PDStack middleware library. See the <a class="el" href="index.html#section_pmg_app_common_quick_start">Quick start guide</a> section. </li>
 </ol>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="groups"></a>

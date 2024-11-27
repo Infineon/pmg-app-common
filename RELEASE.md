@@ -1,12 +1,15 @@
-# PmgAppCommon Middleware Library 1.0
+# PmgAppCommon Middleware Library 2.0
 
-## What's Included?
+## What's included?
 
-See the [README.md](./README.md) and the [API Reference Guide](https://infineon.github.io/pmg-app-common/html/index.html) for a complete description of the PmgAppCommon middleware.
+See the [README.md](./README.md) and the [API reference guide](https://infineon.github.io/pmg-app-common/html/index.html) for a complete description of the PmgAppCommon middleware.
 
-## New Features
+## New features
 
-* Initial release
+* Added support for Legacy charging protocols BC 1.2, Quick Charge (QC) 2.0 and 3.0, Adaptive Fast Charge (AFC), and Apple Charging.
+* Added support for Liquid Corrosion Mitigation mode.
+* Removed buck-boost drivers from the middleware.
+
 
 ## Supported software and tools
 
@@ -14,23 +17,23 @@ This version of the PmgAppCommon middleware is validated for the compatibility w
 
 | Software and tools                                      | Version |
 | :---                                                    | :----:  |
-| ModusToolbox(TM) software environment                   | 3.1.0   |
-| CAT2 peripheral driver library                          | 2.8.0   |
-| PDStack middleware                                      | 3.20.0  |
-| PDUtils middleware                                      | 1.20.0  |
+| ModusToolbox&trade;                                     | 3.3.0   |
+| CAT2 Peripheral Driver Library                          | 2.13.0  |
+| PDStack middleware                                      | 4.0.0   |
+| PDUtils middleware                                      | 1.30.0  |
 | PdAltMode middleware                                    | 1.0.0   |
-| USB Device middleware library                           | 2.10.0  |
-| HPI middleware                                          | 1.0.0   |
+| USB device middleware library                           | 2.10.0  |
+| HPI middleware                                          | 1.1.0   |
 | Core library                                            | 1.4.1   |
-| GCC compiler                                            | 10.3.1  |
+| GCC Compiler                                            | 11.3.1  |
 
 ## More information
 
 For more information, see the following documents:
 
 * [PmgAppCommon Middleware README.md](./README.md)
-* [PmgAppCommon API Reference Guide](https://infineon.github.io/pmg-app-common/html/index.html)
-* [ModusToolbox Software Environment, Quick Start Guide, Documentation, and Videos](https://www.infineon.com/cms/en/design-support/tools/sdk/modustoolbox-software)
+* [PmgAppCommon API reference guide](https://infineon.github.io/pmg-app-common/html/index.html)
+* [ModusToolbox&trade;, quick start guide, documentation, and videos](https://www.infineon.com/modustoolbox)
 * [Infineon Technologies AG](https://www.infineon.com)
 
 ---

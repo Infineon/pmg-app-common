@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_debug.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines APIs and macros for the debug module
@@ -81,10 +81,10 @@
 * Cy_App_Debug_FlashReadLogs().
 * \snippet snippet/debug_snippet.c snippet_debug_retrieve
 * 
-* \defgroup group_pmg_app_common_log_macros macros
-* \defgroup group_pmg_app_common_log_enums enumerated types
-* \defgroup group_pmg_app_common_log_data_structures data structures
-* \defgroup group_pmg_app_common_log_functions functions
+* \defgroup group_pmg_app_common_log_macros Macros
+* \defgroup group_pmg_app_common_log_enums Enumerated Types
+* \defgroup group_pmg_app_common_log_data_structures Data Structures
+* \defgroup group_pmg_app_common_log_functions Functions
 */
 
 /**

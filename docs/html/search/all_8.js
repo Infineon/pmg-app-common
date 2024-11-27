@@ -4,8 +4,6 @@ var searchData=
   ['instrumentation',['instrumentation',['../group__group__pmg__app__common__system__instrumentation__data__structures.html',1,'']]],
   ['instrumentation',['instrumentation',['../group__group__pmg__app__common__system__instrumentation__enums.html',1,'']]],
   ['instrumentation',['instrumentation',['../group__group__pmg__app__common__system__instrumentation__functions.html',1,'']]],
-  ['i2caddr',['i2cAddr',['../group__group__pmg__app__common__buck__boost__data__structures.html#ab171125a20a0e0b56fd850bd58149439',1,'cy_stc_app_mp4247_context_t::i2cAddr()'],['../group__group__pmg__app__common__buck__boost__data__structures.html#a66fd08cf28e675917afc4ab5d27333ae',1,'cy_stc_app_rt6190_context_t::i2cAddr()']]],
-  ['i2ccontext',['i2cContext',['../group__group__pmg__app__common__buck__boost__data__structures.html#a22c8a8a2b357801f01d86329877c88df',1,'cy_stc_app_mp4247_context_t::i2cContext()'],['../group__group__pmg__app__common__buck__boost__data__structures.html#a30e50d6b9db1d809053023deb64440a3',1,'cy_stc_app_rt6190_context_t::i2cContext()']]],
   ['image_5fid',['image_id',['../structdmc__fwct__seg__info__t.html#a79763262ff9435702ef563740674595f',1,'dmc_fwct_seg_info_t']]],
   ['image_5fmode',['image_mode',['../group__group__pmg__app__common__dmc__data__structures.html#abea860140d52fc5bce9bd899be079cab',1,'cy_stc_app_dmc_devx_status_t']]],
   ['image_5fspi_5faddress',['image_spi_address',['../structattr__struct__t.html#a1586d1e76b29948430b4a4ed7a5c121b',1,'attr_struct_t']]],

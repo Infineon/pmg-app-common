@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_flash.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the flash module functions
@@ -246,6 +246,9 @@ void Cy_App_Flash_EnterMode(bool is_enable, cy_en_flash_interface_t mode, bool d
         gl_flash_write_in_place = false;
 #endif /* (!CY_APP_BOOT_ENABLE) */
     }
+#if (CY_APP_BOOT_ENABLE)
+    (void)data_in_place;
+#endif /* (CY_APP_BOOT_ENABLE) */
 }
 
 bool Cy_App_Flash_AccessGetStatus (uint8_t modes)

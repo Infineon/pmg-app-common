@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_source.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines function prototypes for power provided

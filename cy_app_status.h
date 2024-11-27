@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_status.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines the return status definitions

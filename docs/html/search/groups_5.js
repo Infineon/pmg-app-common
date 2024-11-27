@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['i2c_20master',['I2C master',['../group__group__pmg__app__common__i2cm.html',1,'']]],
-  ['instrumentation',['instrumentation',['../group__group__pmg__app__common__system__instrumentation__data__structures.html',1,'']]],
-  ['instrumentation',['instrumentation',['../group__group__pmg__app__common__system__instrumentation__enums.html',1,'']]],
-  ['instrumentation',['instrumentation',['../group__group__pmg__app__common__system__instrumentation__functions.html',1,'']]]
+  ['hpi_20pd_20response_20handler',['HPI PD Response handler',['../group__group__pmg__app__common__hpi.html',1,'']]]
 ];

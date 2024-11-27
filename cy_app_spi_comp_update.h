@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_spi_comp_update.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the SPI component firmware update interfaces

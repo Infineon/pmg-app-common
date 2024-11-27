@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_pdo.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements functions associated source capability (PDO) evaluation
@@ -381,14 +381,10 @@ static cy_pd_pd_do_t form_rdo(cy_stc_pdstack_context_t* context, uint8_t pdo_no,
     if (dpm->specRevSopLive >= CY_PD_REV3)
     {
         snkRdo.rdo_gen.unchunkSup = true;
-    }
-
 #if (CY_PD_EPR_ENABLE)
-    if (dpm->specRevSopLive >= CY_PD_REV3)
-    {
         snkRdo.rdo_gen.eprModeCapable = dpmExtStat->epr.snkEnable;
-    }
 #endif /* CY_PD_EPR_ENABLE */
+    }
 #endif /* (CY_PD_REV3_ENABLE) */
 
     return snkRdo;
@@ -416,7 +412,7 @@ void Cy_App_Pdo_EvalSrcCap(cy_stc_pdstack_context_t* context, const cy_stc_pdsta
 
     if(srcCap->hdr.hdr.extd)
     {
-        src_pdo_len = srcCap->hdr.hdr.dataSize / 4u;
+        src_pdo_len = srcCap->hdr.hdr.dataSize >> 2u;
 
         if(dpmExt->eprActive)
         {
@@ -561,26 +557,27 @@ void Cy_App_Pdo_EvalSrcCap(cy_stc_pdstack_context_t* context, const cy_stc_pdsta
  */
 void Cy_App_Pdo_EvalRdo(cy_stc_pdstack_context_t* context, cy_pd_pd_do_t rdo, cy_pdstack_app_resp_cbk_t app_resp_handler)
 {
+    uint8_t port = context->port;
 #if (CY_PD_REV3_ENABLE && (!CY_PD_EPR_ENABLE))
     /* If EPR is not supported and the MSB of RDO is set in a PD 3.0 contract, trigger hard reset. */
     if ((context->dpmConfig.specRevSopLive >= CY_PD_REV3) && ((rdo.val & 0x80000000u) != 0))
     {
-        Cy_App_GetRespBuffer(context->port)->reqStatus = CY_PDSTACK_REQ_SEND_HARD_RESET;
-        app_resp_handler(context, Cy_App_GetRespBuffer(context->port));
+        Cy_App_GetRespBuffer(port)->reqStatus = CY_PDSTACK_REQ_SEND_HARD_RESET;
+        app_resp_handler(context, Cy_App_GetRespBuffer(port));
         return;
     }
 #endif /* CY_PD_REV3_ENABLE && (!CY_PD_EPR_ENABLE) */
 
     if (Cy_PdStack_Dpm_IsRdoValid(context, rdo) == CY_PDSTACK_STAT_SUCCESS)
     {
-        Cy_App_GetRespBuffer(context->port)->reqStatus = CY_PDSTACK_REQ_ACCEPT;
+        Cy_App_GetRespBuffer(port)->reqStatus = CY_PDSTACK_REQ_ACCEPT;
     }
     else
     {
-        Cy_App_GetRespBuffer(context->port)->reqStatus = CY_PDSTACK_REQ_REJECT;
+        Cy_App_GetRespBuffer(port)->reqStatus = CY_PDSTACK_REQ_REJECT;
     }
 
-    app_resp_handler(context, Cy_App_GetRespBuffer(context->port));
+    app_resp_handler(context, Cy_App_GetRespBuffer(port));
 }
 #endif /* (!CY_PD_SINK_ONLY) */
 

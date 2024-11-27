@@ -83,7 +83,7 @@ $(document).ready(function(){initNavTree('group__group__pmg__app__common__system
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">bootloader<div class="ingroups"><a class="el" href="group__group__pmg__app__common__system.html">System</a> &raquo; <a class="el" href="group__group__pmg__app__common__system__functions.html">functions</a></div></div>  </div>
+<div class="title">bootloader<div class="ingroups"><a class="el" href="group__group__pmg__app__common__system.html">System</a> &raquo; <a class="el" href="group__group__pmg__app__common__system__functions.html">Functions</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -117,9 +117,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga90f8adc46de56a8e3fcc42b6bd3f0f05"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__system__boot__functions.html#ga90f8adc46de56a8e3fcc42b6bd3f0f05">Cy_App_Boot_UpdateFwStatus</a> (void)</td></tr>
 <tr class="memdesc:ga90f8adc46de56a8e3fcc42b6bd3f0f05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to validate firmware images and update image status.  <a href="#ga90f8adc46de56a8e3fcc42b6bd3f0f05">More...</a><br /></td></tr>
 <tr class="separator:ga90f8adc46de56a8e3fcc42b6bd3f0f05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4d0611eecfc220a77403de2c3cfca6af"><td class="memItemLeft" align="right" valign="top">cy_en_app_status_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__system__boot__functions.html#ga4d0611eecfc220a77403de2c3cfca6af">Cy_App_Boot_CalculateFwImageHash</a> (<a class="el" href="group__group__pmg__app__common__system__boot__data__structures.html#structcy__stc__sys__fw__metadata__t">cy_stc_sys_fw_metadata_t</a> *fw_metadata, uint8_t *final_hash, cy_stc_cryptolite_sha_context_t *sha_ctx)</td></tr>
-<tr class="memdesc:ga4d0611eecfc220a77403de2c3cfca6af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function calculates firmware image hash value using cryptolite APIs.  <a href="#ga4d0611eecfc220a77403de2c3cfca6af">More...</a><br /></td></tr>
-<tr class="separator:ga4d0611eecfc220a77403de2c3cfca6af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="gaeca030ae5a0e5f5dd57c1f500e246b15"></a>
@@ -342,51 +339,6 @@ Functions</h2></td></tr>
 <p>Function to validate firmware images and update image status. </p>
 <p>This function is used to validate the firmware images in the device flash and update their status in the image status/boot-mode reason field.</p>
 <dl class="section return"><dt>Returns</dt><dd>None </dd></dl>
-
-</div>
-</div>
-<a id="ga4d0611eecfc220a77403de2c3cfca6af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga4d0611eecfc220a77403de2c3cfca6af">&#9670;&nbsp;</a></span>Cy_App_Boot_CalculateFwImageHash()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">cy_en_app_status_t Cy_App_Boot_CalculateFwImageHash </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__group__pmg__app__common__system__boot__data__structures.html#structcy__stc__sys__fw__metadata__t">cy_stc_sys_fw_metadata_t</a> *&#160;</td>
-          <td class="paramname"><em>fw_metadata</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>final_hash</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">cy_stc_cryptolite_sha_context_t *&#160;</td>
-          <td class="paramname"><em>sha_ctx</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Function calculates firmware image hash value using cryptolite APIs. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">fw_metadata</td><td>Pointer to metadata table of the FW which has to be validated </td></tr>
-    <tr><td class="paramname">final_hash</td><td>Pointer to calculated hash buffer </td></tr>
-    <tr><td class="paramname">sha_ctx</td><td>Pointer to the SHA context</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>CY_APP_STAT_SUCCESS if the hash calculation success; CY_APP_STAT_FAILURE otherwise. </dd></dl>
 
 </div>
 </div>

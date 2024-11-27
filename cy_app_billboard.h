@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_billboard.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Billboard control interface header file
@@ -32,9 +32,9 @@
 *
 * The USB module operates on top of the USB device middleware library. It provides support for vendor, billboard and HID interfaces.
 *
-* \defgroup group_pmg_app_common_usb_enums enumerated types
-* \defgroup group_pmg_app_common_usb_data_structures data structures
-* \defgroup group_pmg_app_common_usb_functions functions
+* \defgroup group_pmg_app_common_usb_enums Enumerated Types
+* \defgroup group_pmg_app_common_usb_data_structures Data Structures
+* \defgroup group_pmg_app_common_usb_functions Functions
 */
 
 /**

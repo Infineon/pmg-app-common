@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_smart_power.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines data structures and function prototypes for smart power management

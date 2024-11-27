@@ -82,6 +82,7 @@ var group__group__pmg__app__common__app__enums =
       [ "CY_APP_VBUS_FET_ON_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a1511959750f93eed3defaf6776c43d20", null ],
       [ "CY_APP_VBUS_FET_OFF_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a9a190b2459e3405555653e08fdd8c14d", null ],
       [ "CY_APP_VCONN_TURN_ON_DELAY_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a609e4bbff1f64dcd2e72a1f7ea1d7937", null ],
+      [ "CY_APP_MOISTURE_DETECT_TIMER_ID", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a7a36576f2b600571e503c92702649308", null ],
       [ "CY_APP_PD_GET_REVISION_COMMAND_RETRY_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a21f7c6d7ed62a69752e3bc693a715c0e", null ],
       [ "CY_APP_GOSHEN_AUTH_RESP_WAIT_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62af67d9d20ddd906b1b0a3e91c6da9ed45", null ],
       [ "CY_APP_FXVL_UPD_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a0a515678e636aa28f6e214b46a4849e6", null ],

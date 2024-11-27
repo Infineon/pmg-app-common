@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_pdo.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Define functions associated source capability (PDO) evaluation

@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_vdm.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements handlers for vendor defined messages (VDMs)
@@ -48,6 +48,7 @@ cy_pdstack_app_resp_cbk_t app_ridge_resp_callback = NULL;
 #endif /* GATKEX_CREEK */
 #endif /* (CY_PD_USB4_SUPPORT_ENABLE && CY_APP_PD_USB4_SUPPORT_ENABLE) */
 
+#if (!CY_PD_VDM_DISABLE)
 /* Stores the VDM information from the config table into the RAM variables */
 void Cy_App_Vdm_Init(cy_stc_pdstack_context_t * context, const cy_stc_app_params_t *appParams)
 {
@@ -78,7 +79,7 @@ void Cy_App_Vdm_Init(cy_stc_pdstack_context_t * context, const cy_stc_app_params
         /* Updates the D_ID response pointer */
         pdAppStatusPtr->vdmIdVdoP = (cy_pd_pd_do_t *)((const uint8_t *)pd_get_ptr_disc_id(context->ptrUsbPdContext) + 4);
 #else
-        pdAppStatusPtr->vdmIdVdoP = (cy_pd_pd_do_t *)((const uint8_t *)appParams->discIdResp + 4);
+        pdAppStatusPtr->vdmIdVdoP = (cy_pd_pd_do_t *)((const uint8_t *)appParams->discIdResp);
 #endif /* CY_USE_CONFIG_TABLE */
 
         /* Copies the actual discover identity response */
@@ -140,6 +141,19 @@ void Cy_App_Vdm_Init(cy_stc_pdstack_context_t * context, const cy_stc_app_params
     (void)appParams;
 #endif /* CY_USE_CONFIG_TABLE  */
 }
+
+#if UVDM_SUPP
+__attribute__ ((weak)) bool uvdm_cmd_handler (cy_stc_pdstack_context_t * context, uint32_t *rx_pkt, cy_pd_pd_do_t **vdm_rspn_pkt,
+    uint8_t *vdo_count)
+{
+    (void)context;
+    (void)rx_pkt;
+    (void)vdm_rspn_pkt;
+    (void)vdo_count;
+
+    return false;
+}
+#endif /* UVDM_SUPP */
 
 void Cy_App_Vdm_EvalVdmMsg(cy_stc_pdstack_context_t * context, const cy_stc_pdstack_pd_packet_t *vdm, cy_pdstack_vdm_resp_cbk_t vdm_resp_handler)
 {
@@ -303,12 +317,11 @@ void Cy_App_Vdm_EvalVdmMsg(cy_stc_pdstack_context_t * context, const cy_stc_pdst
 
                     case CY_PDSTACK_VDM_CMD_EXIT_MODE:
                         break;
-
+#endif /* (DFP_ALT_MODE_SUPP || UFP_ALT_MODE_SUPP) */
                     case CY_PDSTACK_VDM_CMD_ATTENTION:
                         /* Ignores attention VDM */
                         pdAppStatusPtr->vdmResp.noResp = CY_PDSTACK_VDM_AMS_RESP_NOT_REQ;
                         break;
-#endif /* (DFP_ALT_MODE_SUPP || UFP_ALT_MODE_SUPP) */
 
                     default:
                         break;
@@ -363,72 +376,67 @@ void Cy_App_Vdm_EvalVdmMsg(cy_stc_pdstack_context_t * context, const cy_stc_pdst
         }
         else
         {
-#if DFP_ALT_MODE_SUPP
             if (vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.cmd == CY_PDSTACK_VDM_CMD_ATTENTION) 
             {
+#if DFP_ALT_MODE_SUPP
                 if(ptrAltModeContext->altModeAppStatus->vdmTaskEn == true)
                 {
                     /* Evaluates attention VDM */
                     Cy_PdAltMode_Mngr_EvalRecVdm(ptrAltModeContext, vdm);
                 }
+#endif /* DFP_ALT_MODE_SUPP */
                 /* No response to VDMs received on PD 2.0 connection in the DFP state */
                 pdAppStatusPtr->vdmResp.noResp = CY_PDSTACK_VDM_AMS_RESP_NOT_REQ;
             }
             else
-#else
-                if (vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.cmd != CY_PDSTACK_VDM_CMD_ATTENTION)
-#endif /* DFP_ALT_MODE_SUPP */
-                {
-                    /*
-                      In DFP; NAK structured VDM requests are:
-                       a. Discover identity
-                       b. Discover SVIDs
-                       c. Discover modes
-                       d. Enter or exit mode requests
-                       e. Non-attention messages addressed to unknown SVIDs
-                       */
-                    if (
-                            (vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.cmd <= CY_PDSTACK_VDM_CMD_EXIT_MODE) ||
-                            (
+            {
+                /*
+                  In DFP; NAK structured VDM requests are:
+                   a. Discover identity
+                   b. Discover SVIDs
+                   c. Discover modes
+                   d. Enter or exit mode requests
+                   e. Non-attention messages addressed to unknown SVIDs
+                   */
+                if (
+                        (vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.cmd <= CY_PDSTACK_VDM_CMD_EXIT_MODE) ||
+                        (
 #if DP_DFP_SUPP
-                             ((vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.svid & 0xFFFEu) != 0xFF00)
+                         ((vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.svid & 0xFFFEu) != 0xFF00)
 #else
-                             (vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.svid != 0xFF00)
+                         (vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.svid != 0xFF00)
 #endif /* DP_DFP_SUPP */
-                             &&
+                         &&
 #if TBT_DFP_SUPP
-                             (vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.svid != 0x8087)
+                         (vdm->dat[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.svid != 0x8087)
 #else
-                             (1u)
+                         (1u)
 #endif /* TBT_DFP_SUPP */
-                            )
-                       )
-                    {
-                        /* Sends a NAK response */
-                    }
-                    else
-                    {
-                        /* No response to VDMs received on PD 2.0 connection in DFP state */
-                        pdAppStatusPtr->vdmResp.noResp = CY_PDSTACK_VDM_AMS_RESP_NOT_REQ;
-                    }
+                        )
+                   )
+                {
+                    /* Sends a NAK response */
                 }
+                else
+                {
+                    /* No response to VDMs received on PD 2.0 connection in DFP state */
+                    pdAppStatusPtr->vdmResp.noResp = CY_PDSTACK_VDM_AMS_RESP_NOT_REQ;
+                }
+            }
         }
 
-#if (DFP_ALT_MODE_SUPP || UFP_ALT_MODE_SUPP)
         /* Sets the VDM version for the response */
-        pdAppStatusPtr->vdmResp.respBuf[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.stVer = ptrAltModeContext->appStatusContext->vdmVersion;
+        pdAppStatusPtr->vdmResp.respBuf[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.stVer = pdAppStatusPtr->vdmVersion;
 #if MINOR_SVDM_VER_SUPPORT
-        pdAppStatusPtr->vdmResp.respBuf[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.stMinVer = ptrAltModeContext->appStatusContext->vdmMinorVersion;
+        pdAppStatusPtr->vdmResp.respBuf[CY_PD_VDM_HEADER_IDX].std_vdm_hdr.stMinVer = pdAppStatusPtr->vdmMinorVersion;
 #endif /* MINOR_SVDM_VER_SUPPORT */
-#endif /* (DFP_ALT_MODE_SUPP || UFP_ALT_MODE_SUPP) */
     }
     else
     {
 #if UVDM_SUPP
-        if (Cy_PdAltMode_Mngr_EvalRecVdm(port, vdm) == false)
+        if (uvdm_cmd_handler (context, (uint32_t *)(&vdm->hdr), &dobj, &count) == false)
         {
-            /* If UVDM not successful then ignore this UVDM */
-            pdAppStatusPtr->vdmResp.noResp = VDM_AMS_RESP_FROM_EC;
+            return;
         }
 #else /* !UVDM_SUPP */
         if (
@@ -467,7 +475,7 @@ void ridge_mux_delay_for_usb4_cbk (cy_timer_id_t id, void * ptrContext)
 {
     cy_stc_pdstack_context_t *ptrPdStackContext = (cy_stc_pdstack_context_t*) ptrContext;
     cy_stc_pdaltmode_context_t *ptrAltModeContext = ptrPdStackContext->ptrAltModeContext;
-#if UFP_ALT_MODE_SUPP
+#if (UFP_ALT_MODE_SUPP && (CCG_BB_ENABLE != 0))
     uint8_t port = ptrPdStackContext->port;
 #endif /* UFP_ALT_MODE_SUPP */
 
@@ -583,5 +591,6 @@ void Cy_App_Vdm_EvalEnterUsb(cy_stc_pdstack_context_t * context, const cy_stc_pd
     }
 }
 #endif /* (CY_PD_USB4_SUPPORT_ENABLE && CY_APP_PD_USB4_SUPPORT_ENABLE) */
+#endif /* (!CY_PD_VDM_DISABLE) */
 
 /* [] END OF FILE */

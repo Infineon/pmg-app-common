@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_boot.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Bootloader support functions
@@ -26,20 +26,30 @@
 #include "cy_app_flash_config.h"
 #include "cy_app_config.h"
 
-/* Structure to hold reason for boot mode */
-cy_stc_fw_img_status_t gl_img_status;
 
-#if CY_APP_DUALAPP_DISABLE
+#define Bootloader_1_MD_BTLDB_ACTIVE_0         0U
+#define Bootloader_1_MD_BTLDB_ACTIVE_1         1U
+
+/* Structure to hold reason for boot mode */
+#if defined(__ARMCC_VERSION)
+CY_SECTION(".bss.cy_boot_img_status") __USED
+#else
+CY_SECTION(".cy_boot_img_status") __USED
+#endif /* defined(__ARMCC_VERSION) */
+volatile cy_stc_fw_img_status_t gl_img_status;
+
+#if (CY_APP_BOOT_ENABLE != 0)
+extern uint32_t cyBtldrRunType;
+
 /* If dual-app bootloading is disabled, provide stub variable to keep the compiler happy. */
 volatile uint8_t Bootloader_1_activeApp = 0;
-#endif
+#endif /* (CY_APP_BOOT_ENABLE != 0) */
 
-#if (CY_APP_BOOT_WAIT_WINDOW_DISABLE != 0)
+#if (CY_APP_BOOT_WAIT_WINDOW_DISABLE == 0)
 /* Boot-wait duration specified by firmware metadata */
 static volatile uint16_t gl_boot_wait_delay = CY_APP_SYS_BL_WAIT_DEFAULT;
-#endif
-
-#if (!(CCG_SROM_CODE_ENABLE)) 
+#endif /* (CY_APP_BOOT_WAIT_WINDOW_DISABLE != 0) */
+ 
 /* Pointer to image 1 FW metadata table */
 cy_stc_sys_fw_metadata_t *gl_img1_fw_metadata = 
         (cy_stc_sys_fw_metadata_t *)(CY_APP_SYS_IMG1_FW_METADATA_ADDR);
@@ -49,7 +59,6 @@ cy_stc_sys_fw_metadata_t *gl_img1_fw_metadata =
 cy_stc_sys_fw_metadata_t *gl_img2_fw_metadata = 
         (cy_stc_sys_fw_metadata_t *)(CY_APP_SYS_IMG2_FW_METADATA_ADDR);
 #endif /* (!CY_APP_DUALAPP_DISABLE) */
-#endif /* (!CCG_SROM_CODE_ENABLE) */
 
 cy_stc_fw_img_status_t Cy_App_Boot_GetBootModeReason(void)
 {
@@ -112,7 +121,7 @@ cy_en_app_status_t Cy_App_Boot_ValidateCfgtable(uint8_t *table_p)
 
 cy_en_app_status_t Cy_App_Boot_ValidateFw(cy_stc_sys_fw_metadata_t *fw_metadata)
 {
-    cy_en_app_status_t status;
+    cy_en_app_status_t status = CY_APP_STAT_SUCCESS;
     /* Address of FW image start */
     uint32_t fw_start;
     /* Size of FW image in bytes */
@@ -138,7 +147,14 @@ cy_en_app_status_t Cy_App_Boot_ValidateFw(cy_stc_sys_fw_metadata_t *fw_metadata)
     }
     else
     {
-        status = Cy_App_Boot_ValidateCfgtable ((uint8_t *)(fw_metadata->config_fw_start));
+        /* In an application architecture where the configuration table is not available,
+         * the fw_start and config_fw_start addresses will be the same. In this case the 
+	 * configuration table validation is not required.
+         */
+        if(fw_metadata->fw_start != fw_metadata->config_fw_start)
+        {
+            status = Cy_App_Boot_ValidateCfgtable ((uint8_t *)(fw_metadata->config_fw_start));
+        }
     }
 
     return status;
@@ -251,8 +267,8 @@ static void boot_set_wait_timeout(cy_stc_sys_fw_metadata_t *md_p)
         if (md_p->boot_app_id != CY_APP_SYS_FWMETA_APPID_WAIT_DEF)
         {
             /* Get the boot-wait delay from metadata, applying the MIN and MAX limits. */
-            gl_boot_wait_delay = GET_MAX (CY_APP_SYS_BL_WAIT_MAXIMUM, GET_MIN (CY_APP_SYS_BL_WAIT_MINUMUM,
-                        md_p->boot_app_id));
+            gl_boot_wait_delay = CY_PDUTILS_GET_MAX (CY_APP_SYS_BL_WAIT_MAXIMUM, 
+                                                     CY_PDUTILS_GET_MIN (CY_APP_SYS_BL_WAIT_MINUMUM,md_p->boot_app_id));
         }
     }
 }
@@ -367,6 +383,7 @@ bool Cy_App_Boot_Start(void)
 #endif /* CY_APP_BOOT_WAIT_WINDOW_DISABLE */
 
         Bootloader_1_activeApp = img;
+
         return true;
     }
 
@@ -377,7 +394,7 @@ bool Cy_App_Boot_Start(void)
 void Cy_App_Boot_JumpToFw(void)
 {
     /* Schedule the FW and undergo a reset */
-    Bootloader_1_SET_RUN_TYPE (Bootloader_1_START_APP);
+    cyBtldrRunType = 0x80;
     CySoftwareReset ();
 }
 #else /* !CY_APP_BOOT_ENABLE */
@@ -436,11 +453,10 @@ uint32_t Cy_App_Boot_GetBootSeq(uint8_t fwid)
     return 0;
 }
 
+#if (defined (CY_IP_M0S8CRYPTOLITE))
 cy_en_app_status_t Cy_App_Boot_CalculateFwImageHash(cy_stc_sys_fw_metadata_t *fw_metadata, uint8_t *final_hash, cy_stc_cryptolite_sha_context_t *sha_ctx)
 {
     cy_en_app_status_t status = CY_APP_STAT_SUCCESS;
-
-#if (defined (CY_IP_M0S8CRYPTOLITE))
 
     /*
      * PMG1S3 includes CRYPTOLITE IP which includes the SHA-256 block. Use the CRYPTOLITE IP
@@ -493,8 +509,9 @@ cy_en_app_status_t Cy_App_Boot_CalculateFwImageHash(cy_stc_sys_fw_metadata_t *fw
         /* Initialization of SHA context failed */
         status = CY_APP_STAT_FAILURE;
     }
-#endif /* CY_IP_M0S8CRYPTOLITE */
+
     return status;
 }
+#endif /* (defined (CY_IP_M0S8CRYPTOLITE)) */
 
 /* [] END OF FILE */

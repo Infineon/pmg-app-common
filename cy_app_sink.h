@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_sink.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines function prototypes for power consumer
@@ -111,6 +111,15 @@ void Cy_App_Sink_Enable (cy_stc_pdstack_context_t * context);
  * @return None
  */
 void Cy_App_Sink_Disable (cy_stc_pdstack_context_t * context, cy_pdstack_sink_discharge_off_cbk_t snk_discharge_off_handler);
+
+/**
+ * @brief Function allows VBus consumer FET control over the HPI interface.
+ *
+ * @param context Pointer to the PDStack context
+ * @param ctrl_p Pointer to the control command
+ * @return true if the operation is success otherwise false.
+ */
+bool Cy_App_Sink_VbusCFetOnCtrl(cy_stc_pdstack_context_t *context, uint8_t *ctrl_p);
 
 /** \} group_pmg_app_common_psnk_functions */
 #endif /* _CY_APP_SINK_H_ */

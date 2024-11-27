@@ -26,5 +26,9 @@ var group__group__pmg__app__common__app__functions =
     [ "Cy_App_SendSrcInfo", "group__group__pmg__app__common__app__functions.html#gac4ffe5faf98122bb73470d15885a017f", null ],
     [ "Cy_App_ValidateCfgTableOffsets", "group__group__pmg__app__common__app__functions.html#ga5752611c3d22e188ad036f6db9ebb4f9", null ],
     [ "Cy_App_SupplyChangeCallback", "group__group__pmg__app__common__app__functions.html#ga2ad4ce2b6af25aa44a019ccdab886f3b", null ],
+    [ "Cy_App_DisablePdPort", "group__group__pmg__app__common__app__functions.html#gaa9c4d63ded421bab894f9d0fcf9c290f", null ],
+    [ "Cy_App_GetRtosEvent", "group__group__pmg__app__common__app__functions.html#gae0bf8e4b3938f285c9dfa235bbf80fef", null ],
+    [ "Cy_App_SendRtosEvent", "group__group__pmg__app__common__app__functions.html#gab427a4521b50aa4ea1fe4a29e470ba47", null ],
+    [ "Cy_App_RegisterSlnCallback", "group__group__pmg__app__common__app__functions.html#ga57ede3bb445f6a3f175411ec14dd3a20", null ],
     [ "sln_pd_event_handler", "group__group__pmg__app__common__app__functions.html#ga72e89461be3b772f36c3e68e0aca3615", null ]
 ];

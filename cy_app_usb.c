@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_usb.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the function for USB operation

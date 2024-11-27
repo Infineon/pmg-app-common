@@ -97,7 +97,8 @@ var group__group__pmg__app__common__dmc__data__structures =
       [ "usb_get_ep0_buffer", "structcy__stc__dmc__app__cbk__t.html#ac3ec0e14601269798e007cad85da9c21", null ],
       [ "app_fw_update_complete_handler", "structcy__stc__dmc__app__cbk__t.html#a22d9b7725c5112733a3f49ac5bb25747", null ],
       [ "led_set_mode", "structcy__stc__dmc__app__cbk__t.html#a07e8e0936f0b7716983a1bfaf84da3b7", null ],
-      [ "app_event_handler", "structcy__stc__dmc__app__cbk__t.html#a280113b838d48a05c68aa28bcff2bbfa", null ]
+      [ "app_event_handler", "structcy__stc__dmc__app__cbk__t.html#a280113b838d48a05c68aa28bcff2bbfa", null ],
+      [ "get_public_key_id", "structcy__stc__dmc__app__cbk__t.html#aa28e17e5b0bb68ac363940ac54dd13df", null ]
     ] ],
     [ "cy_stc_dmc_params_t", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__dmc__params__t", [
       [ "ptrCdttCfg", "group__group__pmg__app__common__dmc__data__structures.html#a047ed6a32225a9bb5be1a6c4f1fd0277", null ],

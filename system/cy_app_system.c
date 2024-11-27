@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_system.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Support functions for bootloader and flash updates

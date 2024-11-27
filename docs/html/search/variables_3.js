@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['d',['d',['../group__group__pmg__app__common__bch__data__structures.html#a275efaa7f6fa9be9e0c0096cd75abcae',1,'cy_stc_bc_dp_dm_state_t']]],
   ['data',['data',['../group__group__pmg__app__common__dmc__data__structures.html#afbfba8997ad4ccb98ec8e52010352430',1,'cy_stc_app_dmc_cust_info_t::data()'],['../group__group__pmg__app__common__dmc__data__structures.html#a72734cbc16611fa87c9f212b6e37f557',1,'cy_stc_app_dmc_int_ep_status_t::data()']]],
   ['debug_5facc_5fattached',['debug_acc_attached',['../group__group__pmg__app__common__app__data__structures.html#a1c80a6baaeb62f568d93344425eb254f',1,'cy_stc_app_status_t']]],
   ['deinit',['deinit',['../structcy__stc__app__dmc__update__opern__t.html#a45a2dd55f2cd2e44f5279add341c11b9',1,'cy_stc_app_dmc_update_opern_t']]],
@@ -17,5 +18,6 @@ var searchData=
   ['dmc_5ffaults',['dmc_faults',['../group__group__pmg__app__common__log__data__structures.html#ad712d0dd271722fcda6950e8ded5acbc',1,'cy_stc_app_flash_log_t']]],
   ['dock_5fstatus',['dock_status',['../group__group__pmg__app__common__dmc__data__structures.html#a7f7f2e2e4ffba91d58b861df03391c4d',1,'cy_stc_app_dmc_dock_status_t']]],
   ['docktotalcurrentcbk',['dockTotalCurrentCbk',['../structcy__stc__app__smart__power__context__t.html#adba3dd649f6a45bf27da42699e3ac148',1,'cy_stc_app_smart_power_context_t']]],
+  ['dp_5fdm_5fstatus',['dp_dm_status',['../group__group__pmg__app__common__bch__data__structures.html#a4f9ab6b2f1fe5ef03106fe75f057ea29',1,'cy_stc_bc_status_t']]],
   ['drvconfig',['drvConfig',['../group__group__pmg__app__common__usb__data__structures.html#a77e37344c97343a8d0a426752ed69229',1,'cy_stc_usb_init_ctxt_t']]]
 ];

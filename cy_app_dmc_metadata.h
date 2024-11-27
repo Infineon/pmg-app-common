@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_dmc_metadata.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Dock metadata handler function prototypes

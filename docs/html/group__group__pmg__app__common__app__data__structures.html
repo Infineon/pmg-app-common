@@ -83,7 +83,7 @@ $(document).ready(function(){initNavTree('group__group__pmg__app__common__app__d
   <div class="summary">
 <a href="#nested-classes">Data Structures</a>  </div>
   <div class="headertitle">
-<div class="title">Data Structures<div class="ingroups"><a class="el" href="group__group__pmg__app__common__app.html">Common</a></div></div>  </div>
+<div class="title">Data structures<div class="ingroups"><a class="el" href="group__group__pmg__app__common__app.html">Common</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -91,11 +91,14 @@ $(document).ready(function(){initNavTree('group__group__pmg__app__common__app__d
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:structcy__stc__app__params__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__data__structures.html#structcy__stc__app__params__t">cy_stc_app_params_t</a></td></tr>
-<tr class="memdesc:structcy__stc__app__params__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">This structure holds the application specific parameters.  <a href="group__group__pmg__app__common__app__data__structures.html#structcy__stc__app__params__t">More...</a><br /></td></tr>
+<tr class="memdesc:structcy__stc__app__params__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">This structure holds the application-specific parameters.  <a href="group__group__pmg__app__common__app__data__structures.html#structcy__stc__app__params__t">More...</a><br /></td></tr>
 <tr class="separator:structcy__stc__app__params__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structcy__stc__app__status__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__pmg__app__common__app__data__structures.html#structcy__stc__app__status__t">cy_stc_app_status_t</a></td></tr>
 <tr class="memdesc:structcy__stc__app__status__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">This structure holds all variables related to the application layer functionality.  <a href="group__group__pmg__app__common__app__data__structures.html#structcy__stc__app__status__t">More...</a><br /></td></tr>
 <tr class="separator:structcy__stc__app__status__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcy__app__sln__cbk__t.html">cy_app_sln_cbk_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This structure hold all solution level functions used as a part of application layer.  <a href="structcy__app__sln__cbk__t.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/><h2 class="groupheader">Data Structure Documentation</h2>
 <a name="structcy__stc__app__params__t" id="structcy__stc__app__params__t"></a>
@@ -116,7 +119,7 @@ Data Structures</h2></td></tr>
 <td class="fieldname">
 appVbusPollAdcId</td>
 <td class="fielddoc">
-VBUS ADC Id. </td></tr>
+VBUS ADC ID. </td></tr>
 <tr><td class="fieldtype">
 <a id="a19532076c20f4488e382d3d10822dcf2"></a>cy_en_usbpd_adc_input_t</td>
 <td class="fieldname">
@@ -193,13 +196,13 @@ Buffer for APP responses. </td></tr>
 <td class="fieldname">
 psrc_volt</td>
 <td class="fielddoc">
-Current Psource voltage in mV. </td></tr>
+Current power source voltage in mV. </td></tr>
 <tr><td class="fieldtype">
 <a id="a658978961317cb7ad7945c889458f15d"></a>uint16_t</td>
 <td class="fieldname">
 psrc_volt_old</td>
 <td class="fielddoc">
-Old Psource voltage in mV. </td></tr>
+Old power source voltage in mV. </td></tr>
 <tr><td class="fieldtype">
 <a id="ad4ca19a37ddc01669bd447691f770846"></a>uint16_t</td>
 <td class="fieldname">
@@ -211,7 +214,7 @@ Current PSink voltage in mV units. </td></tr>
 <td class="fieldname">
 psnk_cur</td>
 <td class="fielddoc">
-Current PSink current in 10mA units. </td></tr>
+Current PSink current in 10 mA units. </td></tr>
 <tr><td class="fieldtype">
 <a id="a497347812f9dc15cb6c7dde45a6b3748"></a>bool</td>
 <td class="fieldname">
@@ -271,7 +274,7 @@ Variable denoting the types of swap operation that are pending. </td></tr>
 <td class="fieldname">
 actv_swap_type</td>
 <td class="fielddoc">
-Denotes the active Swap operation. </td></tr>
+Denotes the active swap operation. </td></tr>
 <tr><td class="fieldtype">
 <a id="a93c44f949da72b65c4e3be719bedcb56"></a>uint16_t</td>
 <td class="fieldname">

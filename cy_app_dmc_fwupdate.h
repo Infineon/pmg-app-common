@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_dmc_fwupdate.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * DMC firmware update module
@@ -346,14 +346,6 @@ bool Cy_App_Dmc_SignedFwUpdateSupported(void);
  * @return True when version check is enabled; otherwise false.
  */
 bool Cy_App_Dmc_VersionCheckEnabled(void);
-
-/** @cond DOXYGEN_HIDE */
-/**
- * @brief Returns the current key ID in use
- * @return Returns the current key ID in use
- */
-uint8_t Cy_App_Dmc_GetKeyId(void);
-/** @endcond */
 
 /**
  * @brief This function returns pointer to the structure holding function pointers of various device modules

@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_fault_handlers.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the application level fault handlers
@@ -152,6 +152,10 @@ void Cy_App_Fault_ConfigureForDetach(cy_stc_pdstack_context_t * context)
     {
         /* Set flag to trigger port disable sequence */
         glAppPdStatus[port].faultStatus |= CY_APP_PORT_SINK_FAULT_ACTIVE;
+
+#if CY_APP_RTOS_ENABLED
+        Cy_App_SendRtosEvent(context);
+#endif /* CY_APP_RTOS_ENABLED*/
     }
 
     /* Stop PE */
@@ -279,6 +283,10 @@ static void app_port_disable_cb(cy_stc_pdstack_context_t * context, cy_en_pdstac
     {
         /* VBus has not been removed. Start a task which waits for VBus removal. */
         glAppPdStatus[port].faultStatus |= CY_APP_PORT_VBUS_DROP_WAIT_ACTIVE;
+
+#if CY_APP_RTOS_ENABLED
+        Cy_App_SendRtosEvent(context);
+#endif /* CY_APP_RTOS_ENABLED */
     }
 
     /* Provide a delay to allow VBus turn ON by port partner and then enable the port. */

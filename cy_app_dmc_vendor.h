@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_dmc_vendor.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the DMC USB vendor interfaces

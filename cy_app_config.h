@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_config.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines the pmg-app-common configurations
@@ -40,11 +40,6 @@
 /** Power role preference enable. */
 #define CY_APP_POWER_ROLE_PREFERENCE_ENABLE                     (1u)
 #endif /* CY_APP_POWER_ROLE_PREFERENCE_ENABLE */
-
-#ifndef CY_APP_PROG_SOURCE_ENABLE
-/** Programmable source enable */
-#define CY_APP_PROG_SOURCE_ENABLE                               (1u)
-#endif /* CY_APP_PROG_SOURCE_ENABLE */
 
 /** @cond DOXYGEN_HIDE */
 /*******************************************************************************
@@ -86,7 +81,14 @@
 #if defined(CY_DEVICE_CCG3PA)
 #define CY_APP_VBUS_FET_CTRL_0                                  (1u)
 #define CY_APP_VBUS_FET_CTRL_1                                  (0u)
-#define CY_APP_VBUS_FET_CTRL                                    (CY_APP_VBUS_FET_CTRL_0)
+
+#ifndef CY_APP_VBUS_P_FET_CTRL
+#define CY_APP_VBUS_P_FET_CTRL                                  (CY_APP_VBUS_FET_CTRL_0)
+#endif /* CY_APP_VBUS_P_FET_CTRL */
+
+#ifndef CY_APP_VBUS_C_FET_CTRL
+#define CY_APP_VBUS_C_FET_CTRL                                  (CY_APP_VBUS_FET_CTRL_1)
+#endif /* CY_APP_VBUS_C_FET_CTRL */
 #endif /* defined(CY_DEVICE_CCG3PA) */
 /** @endcond */
 
@@ -102,6 +104,11 @@
 /** Enable/disable the USB4 support feature at the application level */
 #define CY_APP_PD_USB4_SUPPORT_ENABLE                           (0u)
 #endif /* CY_APP_PD_USB4_SUPPORT_ENABLE */
+
+#ifndef CY_APP_SINK_FET_CTRL_GPIO_EN
+/** This macro should be set to '1' if consumer path is controlled by GPIO */
+#define CY_APP_SINK_FET_CTRL_GPIO_EN                            (0u)
+#endif /* CY_APP_SINK_FET_CTRL_GPIO_EN */
 
 /*******************************************************************************
  * VBUS monitor configuration
@@ -130,8 +137,13 @@
 
 #ifndef VBUS_SOFT_START_ENABLE
 /** Set to '1' to enable VBUS soft start feature */
-#define VBUS_SOFT_START_ENABLE                                   (0u)
+#define VBUS_SOFT_START_ENABLE                                  (0u)
 #endif /* VBUS_SOFT_START_ENABLE */
+
+/** Enable to set VBUS_MAX_VOLTAGE to 50V for EPR voltages. */
+#ifndef CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE
+#define CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE                      (0u)
+#endif /* CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE */
 
 /*******************************************************************************
  * Firmware feature configuration
@@ -139,17 +151,19 @@
 
 #ifndef CY_APP_WATCHDOG_HARDWARE_RESET_ENABLE
 /** Enable watchdog hardware reset for CPU lock-up recovery */
-#define CY_APP_WATCHDOG_HARDWARE_RESET_ENABLE                   (0u)
+#define CY_APP_WATCHDOG_HARDWARE_RESET_ENABLE                   (1u)
 #endif /* CY_APP_WATCHDOG_HARDWARE_RESET_ENABLE */
 
 #ifndef CY_APP_RESET_ON_ERROR_ENABLE
-/** Disable PMG device reset on error (watchdog expiry or hard fault) */
-#define CY_APP_RESET_ON_ERROR_ENABLE                            (0u)
+/** Enable PMG device reset on error (watchdog expiry or hard fault) */
+#define CY_APP_RESET_ON_ERROR_ENABLE                            (1u)
 #endif /* CY_APP_RESET_ON_ERROR_ENABLE */
 
 #ifndef CY_APP_WATCHDOG_RESET_PERIOD_MS
-/** Watchdog reset period in milliseconds. This should be set to a value
- * greater than 500 ms to avoid significant increase in the power consumption.
+/** Watchdog reset period in milliseconds.
+ * A periodic timer (CY_PDUTILS_WATCHDOG_TIMER) is run using this as a period.
+ * This timer resets the device if the main loop has not been run as expected
+ * for three consecutive times.
  */
 #define CY_APP_WATCHDOG_RESET_PERIOD_MS                         (750u)
 #endif /* CY_APP_WATCHDOG_RESET_PERIOD_MS */
@@ -158,6 +172,53 @@
 /** Enable tracking of maximum stack usage */
 #define CY_APP_STACK_USAGE_CHECK_ENABLE                         (0u)
 #endif /* CY_APP_STACK_USAGE_CHECK_ENABLE */
+
+#ifndef CY_CORROSION_MITIGATION_ENABLE
+/** Set this to 1 to enable corrosion mitigation feature
+ *  By default, SBU lines are used for moisture detection.
+ *  Set CY_APP_MOISTURE_DETECT_USING_DP_DM to 1 use DP/DM instead of
+ *  SBU lines. */
+#define CY_CORROSION_MITIGATION_ENABLE                          (0u)
+#endif /* CY_CORROSION_MITIGATION_ENABLE */
+
+#ifndef CY_APP_MOISTURE_DETECT_IN_ATTACH_ENABLE
+/** Set this to 1 to enable moisture detection in attach wait state. */
+#define CY_APP_MOISTURE_DETECT_IN_ATTACH_ENABLE                 (0u)
+#endif /* CY_APP_MOISTURE_DETECT_IN_ATTACH_ENABLE */
+
+#ifndef CY_APP_MOISTURE_DETECT_USING_DP_DM
+/** Set this to 1 to use DP/DM lines for moisture detection. */
+#define CY_APP_MOISTURE_DETECT_USING_DP_DM                      (0u)
+#endif /* CY_APP_MOISTURE_DETECT_USING_DP_DM */
+
+/*******************************************************************************
+ * Battery Charging configuration
+ ******************************************************************************/
+#if CCG_TYPE_A_PORT_ENABLE
+/** TYPE-A port ID. */
+#define TYPE_A_PORT_ID                                          (1u)
+#endif /* CCG_TYPE_A_PORT_ENABLE */
+#ifndef APPLE_SOURCE_DISABLE
+/** Disable Apple charging as source */
+#define APPLE_SOURCE_DISABLE                                    (1u)
+#endif /* APPLE_SOURCE_DISABLE */
+
+#ifndef APPLE_SINK_DISABLE
+/** Disable Apple charging as sink */
+#define APPLE_SINK_DISABLE                                      (1u)
+#endif /* APPLE_SINK_DISABLE */
+
+#ifndef LEGACY_APPLE_SRC_SLN_TERM_ENABLE
+/** Enable solution terminations for Apple charging */
+#define LEGACY_APPLE_SRC_SLN_TERM_ENABLE                        (0u)
+#endif /* LEGACY_APPLE_SRC_SLN_TERM_ENABLE */
+
+#ifndef APPLE_SRC_EXT_TERM_ENABLE
+/** Enable external terminations through GPIO for Apple charging.
+ *  LEGACY_APPLE_SRC_SLN_TERM_ENABLE should be enabled along with this.
+ */
+#define APPLE_SRC_EXT_TERM_ENABLE                               (0u)
+#endif /* APPLE_SRC_EXT_TERM_ENABLE */
 
 /******************************** other *********************************/
 /** @cond DOXYGEN_HIDE */
@@ -334,6 +395,11 @@
 #endif /* GATKEX_CREEK */
 
 #endif /* CY_APP_DMC_ENABLE */
+
+#ifndef CY_APP_RTOS_ENABLED
+/** Set '1' to enable the RTOS support. */
+#define CY_APP_RTOS_ENABLED                                        (0u)
+#endif /* CY-APP_RTOS_ENABLED */
 
 /** \} group_pmg_app_common_app_features */
 /** \} group_pmg_app_common_app */

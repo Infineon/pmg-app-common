@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_usb.h
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Defines the function prototypes for USB
@@ -268,7 +268,6 @@ cy_en_usb_dev_status_t Cy_App_Usb_ReceiveData(cy_app_usb_ep_index_t ep_index, ui
  * CY_USB_DEV_DRV_HW_ERROR or CY_USB_DEV_TIMEOUT.
  */
 cy_en_usb_dev_status_t Cy_App_Usb_SendStatus(cy_app_usb_ep_index_t ep_index, uint8_t *data, uint8_t size);
-
 #endif /* (CY_APP_USB_ENABLE || DOXYGEN) */
 
 /** \} group_pmg_app_common_usb_functions */

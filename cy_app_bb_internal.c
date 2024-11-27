@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_bb_internal.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements functions for the billboard control interface

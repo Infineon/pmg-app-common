@@ -5,6 +5,15 @@ var searchData=
   ['actv_5fswap_5ftype',['actv_swap_type',['../group__group__pmg__app__common__app__data__structures.html#af3e5a7af88146d3d58986d7cc9c67116',1,'cy_stc_app_status_t']]],
   ['adapterpower',['adapterPower',['../structcy__stc__app__smart__power__context__t.html#a95fed660d43045df49296e2950e46c55',1,'cy_stc_app_smart_power_context_t']]],
   ['adaptervoltage',['adapterVoltage',['../structcy__stc__app__smart__power__context__t.html#ae8182bf65d6eca7d850c89f969e000b9',1,'cy_stc_app_smart_power_context_t']]],
+  ['afc_5fretry_5fcount',['afc_retry_count',['../group__group__pmg__app__common__bch__data__structures.html#a2032cf1bced641d44959f93ae66ab5b6',1,'cy_stc_bc_status_t']]],
+  ['afc_5fsnk_5fcur_5fvi_5fbyte',['afc_snk_cur_vi_byte',['../group__group__pmg__app__common__bch__data__structures.html#a210a7e3bfd7fec1d5e93fb08f008445f',1,'cy_stc_bc_status_t']]],
+  ['afc_5fsrc_5fcur_5fmatch_5fbyte',['afc_src_cur_match_byte',['../group__group__pmg__app__common__bch__data__structures.html#a86295883c6542575cf9e20c2ab12100d',1,'cy_stc_bc_status_t']]],
+  ['afc_5fsrc_5fis_5fmatched',['afc_src_is_matched',['../group__group__pmg__app__common__bch__data__structures.html#a410c54ed521145d3b0ecadec68894082',1,'cy_stc_bc_status_t']]],
+  ['afc_5fsrc_5flast_5fmatch_5fbyte',['afc_src_last_match_byte',['../group__group__pmg__app__common__bch__data__structures.html#a5f47f4cfdbe973fe95867322eaeb35b1',1,'cy_stc_bc_status_t']]],
+  ['afc_5fsrc_5fmatch_5fcount',['afc_src_match_count',['../group__group__pmg__app__common__bch__data__structures.html#a1987412b3998b72faf4701f1105b1db4',1,'cy_stc_bc_status_t']]],
+  ['afc_5fsrc_5fmatched_5fbyte',['afc_src_matched_byte',['../group__group__pmg__app__common__bch__data__structures.html#abf4a90c84f5c1a13b57a16f880ed896f',1,'cy_stc_bc_status_t']]],
+  ['afc_5fsrc_5fmsg_5fcount',['afc_src_msg_count',['../group__group__pmg__app__common__bch__data__structures.html#a58ad0bb8378b8a675d6deb021c546ca2',1,'cy_stc_bc_status_t']]],
+  ['afc_5ftx_5factive',['afc_tx_active',['../group__group__pmg__app__common__bch__data__structures.html#a9759a09abb38fe846d20d1fe4a098a80',1,'cy_stc_bc_status_t']]],
   ['app_5fevent_5fhandler',['app_event_handler',['../structcy__stc__dmc__app__cbk__t.html#a280113b838d48a05c68aa28bcff2bbfa',1,'cy_stc_dmc_app_cbk_t']]],
   ['app_5ffw_5fupdate_5fcomplete_5fhandler',['app_fw_update_complete_handler',['../structcy__stc__dmc__app__cbk__t.html#a22d9b7725c5112733a3f49ac5bb25747',1,'cy_stc_dmc_app_cbk_t']]],
   ['app_5fpending_5fswaps',['app_pending_swaps',['../group__group__pmg__app__common__app__data__structures.html#a09698f7073d8e5eadaaedf3be4bdd83b',1,'cy_stc_app_status_t']]],
@@ -13,5 +22,6 @@ var searchData=
   ['appvbuspolladcid',['appVbusPollAdcId',['../group__group__pmg__app__common__app__data__structures.html#a1836206b0d19eca6d264e48a358fb610',1,'cy_stc_app_params_t']]],
   ['appvbuspolladcinput',['appVbusPollAdcInput',['../group__group__pmg__app__common__app__data__structures.html#a19532076c20f4488e382d3d10822dcf2',1,'cy_stc_app_params_t']]],
   ['apu_5freset_5fpending',['apu_reset_pending',['../group__group__pmg__app__common__app__data__structures.html#a6b3ae08fc08882e89bccf5b39a8726a0',1,'cy_stc_app_status_t']]],
+  ['attach',['attach',['../group__group__pmg__app__common__bch__data__structures.html#ad871e2e0e2c31367e56a07b9aa4a246e',1,'cy_stc_bc_status_t']]],
   ['attr_5funion',['attr_union',['../structdmc__handle__t.html#a242ad8d2c84a4b99da0cd5af4dd14089',1,'dmc_handle_t']]]
 ];

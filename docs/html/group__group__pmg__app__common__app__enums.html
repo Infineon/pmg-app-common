@@ -83,7 +83,7 @@ $(document).ready(function(){initNavTree('group__group__pmg__app__common__app__e
   <div class="summary">
 <a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
-<div class="title">Enumerated Types<div class="ingroups"><a class="el" href="group__group__pmg__app__common__app.html">Common</a></div></div>  </div>
+<div class="title">Enumerated types<div class="ingroups"><a class="el" href="group__group__pmg__app__common__app.html">Common</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -253,6 +253,8 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a609e4bbff1f64dcd2e72a1f7ea1d7937">CY_APP_VCONN_TURN_ON_DELAY_TIMER</a>, 
 <br />
+&#160;&#160;<a class="el" href="group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a7a36576f2b600571e503c92702649308">CY_APP_MOISTURE_DETECT_TIMER_ID</a>, 
+<br />
 &#160;&#160;<a class="el" href="group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a21f7c6d7ed62a69752e3bc693a715c0e">CY_APP_PD_GET_REVISION_COMMAND_RETRY_TIMER</a>, 
 <br />
 &#160;&#160;<a class="el" href="group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62af67d9d20ddd906b1b0a3e91c6da9ed45">CY_APP_GOSHEN_AUTH_RESP_WAIT_TIMER</a>, 
@@ -282,15 +284,15 @@ Enumerations</h2></td></tr>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaa745a2e3a5a9f9cea9069d06c949697f2"></a>CY_APP_PORT_FAULT_NONE&#160;</td><td class="fielddoc"><p>System functioning without any fault. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaa2a38ecc5d49d0d9ffce2ba4d06bd44d8"></a>CY_APP_PORT_VCONN_FAULT_ACTIVE&#160;</td><td class="fielddoc"><p>Status bit that indicates VConn fault is active. </p>
+<tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaa2a38ecc5d49d0d9ffce2ba4d06bd44d8"></a>CY_APP_PORT_VCONN_FAULT_ACTIVE&#160;</td><td class="fielddoc"><p>Status bit that indicates VCONN fault is active. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaaabf63ee58756423e59bdf0361112bcff"></a>CY_APP_PORT_SINK_FAULT_ACTIVE&#160;</td><td class="fielddoc"><p>Status bit that indicates sink fault handling is pending. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaac0a91b6edce54c96a393ce5894e47a04"></a>CY_APP_PORT_SRC_FAULT_ACTIVE&#160;</td><td class="fielddoc"><p>Status bit that indicates source fault handling is pending. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaacbb2475448ccc471467fc6d64ba75315"></a>CY_APP_PORT_VBUS_DROP_WAIT_ACTIVE&#160;</td><td class="fielddoc"><p>Status bit that indicates wait for VBus drop is pending. </p>
+<tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaacbb2475448ccc471467fc6d64ba75315"></a>CY_APP_PORT_VBUS_DROP_WAIT_ACTIVE&#160;</td><td class="fielddoc"><p>Status bit that indicates wait for VBUS drop is pending. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaa3befe7d4c490e8653baabe290f05993a"></a>CY_APP_PORT_V5V_SUPPLY_LOST&#160;</td><td class="fielddoc"><p>Status bit that indicates that V5V supply (for VConn) has been lost. </p>
+<tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaa3befe7d4c490e8653baabe290f05993a"></a>CY_APP_PORT_V5V_SUPPLY_LOST&#160;</td><td class="fielddoc"><p>Status bit that indicates that V5V supply (for VCONN) has been lost. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="gga726b73ad3fef7a5eeb820bb4735416aaaf30995db607df6d400180bae3e8847e9"></a>CY_APP_PORT_DISABLE_IN_PROGRESS&#160;</td><td class="fielddoc"><p>Port disable operation is in progress. </p>
 </td></tr>
@@ -470,6 +472,8 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="ggac12adba12168afca062900541d49fd62a9a190b2459e3405555653e08fdd8c14d"></a>CY_APP_VBUS_FET_OFF_TIMER&#160;</td><td class="fielddoc"><p>Timer is used for providing delay for VBUS FET off. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggac12adba12168afca062900541d49fd62a609e4bbff1f64dcd2e72a1f7ea1d7937"></a>CY_APP_VCONN_TURN_ON_DELAY_TIMER&#160;</td><td class="fielddoc"><p>Timer is used for providing delay for VConn gate pull up enable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ggac12adba12168afca062900541d49fd62a7a36576f2b600571e503c92702649308"></a>CY_APP_MOISTURE_DETECT_TIMER_ID&#160;</td><td class="fielddoc"><p>Timer used to start moisture detection after typec attach wait. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ggac12adba12168afca062900541d49fd62a21f7c6d7ed62a69752e3bc693a715c0e"></a>CY_APP_PD_GET_REVISION_COMMAND_RETRY_TIMER&#160;</td><td class="fielddoc"><p>Timer is used to retry get revision command. </p>
 </td></tr>

@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_swap.c
-* \version 1.0
+* \version 2.0
 *
 * \brief
 * Implements the functions for handling of USB Power Delivery 
@@ -225,6 +225,11 @@ void Cy_App_Swap_EvalVconnSwap (cy_stc_pdstack_context_t * context, cy_pdstack_a
 #endif /* VCONN_OCP_ENABLE */
         }
     }
+#else
+    if (context->dpmConfig.specRevSopLive >= CY_PD_REV3)
+    {
+        result = CY_PDSTACK_REQ_NOT_SUPPORTED;
+    }
 #endif /* !CY_PD_VCONN_DISABLE */
 
     Cy_App_GetRespBuffer(context->port)->reqStatus = result;
@@ -232,7 +237,7 @@ void Cy_App_Swap_EvalVconnSwap (cy_stc_pdstack_context_t * context, cy_pdstack_a
 }
 
 #if ((!CY_PD_SOURCE_ONLY) && (!CY_PD_SINK_ONLY))
-#if CY_PD_REV3_ENABLE
+#if (CY_PD_REV3_ENABLE && CY_PD_FRS_TX_ENABLE)
 void Cy_App_Swap_EvalFrSwap (cy_stc_pdstack_context_t* context, cy_pdstack_app_resp_cbk_t app_resp_handler)
 {
     /* Accept FRS support is enabled/disabled by separate bit in configuration table.  */
@@ -241,7 +246,7 @@ void Cy_App_Swap_EvalFrSwap (cy_stc_pdstack_context_t* context, cy_pdstack_app_r
     Cy_App_GetRespBuffer(context->port)->reqStatus = result;
     app_resp_handler(context, Cy_App_GetRespBuffer(context->port));
 }
-#endif /* CY_PD_REV3_ENABLE */
+#endif /* (CY_PD_REV3_ENABLE && CY_PD_FRS_TX_ENABLE) */
 #endif /* ((!CY_PD_SOURCE_ONLY) && (!CY_PD_SINK_ONLY)) */
 
 /* [] END OF FILE */

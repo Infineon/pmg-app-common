@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_moisture_detect.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines data structures and function prototypes associated with
@@ -8,15 +8,36 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_MOISTURE_DETECT_H_
-#define _CY_APP_MOISTURE_DETECT_H_
+#ifndef CY_APP_MOISTURE_DETECT_H
+#define CY_APP_MOISTURE_DETECT_H
 
 #include "cy_pdstack_common.h"
 #include "cy_usbpd_common.h"
@@ -49,7 +70,6 @@
  * @brief This function initializes variables for moisture detection.
  *
  * @param context PDStack context.
- * @return None.
  */
 void Cy_App_MoistureDetect_Init(cy_stc_pdstack_context_t *context);
 
@@ -65,9 +85,8 @@ bool Cy_App_MoistureDetect_IsMoisturePresent(cy_stc_usbpd_context_t *context);
  * @brief This function calls functions to start moisture detection.
  *
  * @param context PDStack context.
- * @return None.
  */
 void Cy_App_MoistureDetect_Run(cy_stc_pdstack_context_t *context);
 
 #endif /* CY_CORROSION_MITIGATION_ENABLE */
-#endif /* _CY_APP_MOISTURE_DETECT_H_ */
+#endif /* CY_APP_MOISTURE_DETECT_H */

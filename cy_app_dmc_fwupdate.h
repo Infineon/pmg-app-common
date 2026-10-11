@@ -1,21 +1,42 @@
 /***************************************************************************//**
 * \file cy_app_dmc_fwupdate.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * DMC firmware update module
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_DMC_FW_UPDATE_H_
-#define _CY_APP_DMC_FW_UPDATE_H_
+#ifndef CY_APP_DMC_FW_UPDATE_H
+#define CY_APP_DMC_FW_UPDATE_H
 
 #if (CY_APP_DMC_ENABLE || DOXYGEN)
 /*******************************************************************************
@@ -26,6 +47,7 @@
 #include "cy_usb_dev.h"
 #include "cy_app_dmc_common.h"
 #include "cy_app_status.h"
+#include "cy_app_system.h"
 
 /**
 * \addtogroup group_pmg_app_common_dmc
@@ -44,51 +66,47 @@
 /** Component ID of DMC. DMC should always be the first component.
  * @warning This value should not be changed
  */
-#define CY_APP_DMC_COMPONENT_ID                        (0)
+#define CY_APP_DMC_COMPONENT_ID                        (0u)
 
 /** Image 1 value is available in the lower nibble. To get image 1 status,
  *  mask with this value.
  * @warning Do not edit this value
  */
-#define CY_APP_DMC_IMG1_STATUS_MASK                        (0x0F)
+#define CY_APP_DMC_IMG1_STATUS_MASK                        (0x0Fu)
 
 /** Image 2 value is available in the higher nibble. To get image 2 status,
  *  mask with this value.
  * @warning Do not edit this value
  */
-#define CY_APP_DMC_IMG2_STATUS_MASK                        (0xF0)
+#define CY_APP_DMC_IMG2_STATUS_MASK                        (0xF0u)
 
 /** USB vendor BULK OUT endpoint */
-#define CY_APP_DMC_USB_VENDOR_OUT_EP_INDEX                 (1)
+#define CY_APP_DMC_USB_VENDOR_OUT_EP_INDEX                 (1u)
 
 /** USB vendor interrupt IN endpoint. */
-#define CY_APP_DMC_USB_VENDOR_INT_EP_INDEX                 (2)
+#define CY_APP_DMC_USB_VENDOR_INT_EP_INDEX                 (2u)
 
 /**
  * @brief Largest packet size supported by the device. This is defined by
  * the firmware and should not be modified.
  */
-#define CY_APP_DMC_USB_EP_MAX_PKT_SIZE                     (64)
+#define CY_APP_DMC_USB_EP_MAX_PKT_SIZE                     (64u)
 
 /** Length of data transferred over INT EP */
-#define CY_APP_DMC_INT_EP_STATUS_LEN                       (3)
+#define CY_APP_DMC_INT_EP_STATUS_LEN                       (3u)
 
 /** @cond DOXYGEN_HIDE */
 #if (CY_APP_USR_DEFINED_SN_SUPPORT)
 
 /* DMC serial number (SN) bit mask in device_specific parameter */
-#define CY_APP_DMC_METADATA_SN_BIT_MASK                (0x0E)
-#define CY_APP_DMC_METADATA_SN_BIT_POS                 (0x1u)
-
-/* Serial number configuration in DMC flash */
-#define CY_APP_DMC_DMC_SERIAL_NUMBER_ROW_ID                (0x3F4)
+#define CY_APP_DMC_METADATA_SN_BIT_MASK                    (0x0Eu)
+#define CY_APP_DMC_METADATA_SN_BIT_POS                     (0x1u)
 
 /* SN byte in the device specific parameter */
 #define CY_APP_DMC_DEV_SPECIFIC_BYTE0                      (0x0u)
-#define CY_APP_DMC_HX3_SN_ROW_SHIFT_NUM                    (0x7u)
 
 /*! Maximum length of serial number(in bytes) that can be stored in dock metadata */
-#define CY_APP_DMC_METADATA_SN_MAX_LENGTH              (128)
+#define CY_APP_DMC_METADATA_SN_MAX_LENGTH                  (128u)
 
 #endif /* CY_APP_USR_DEFINED_SN_SUPPORT */
 /** @endcond */
@@ -96,41 +114,12 @@
 /** \} group_pmg_app_common_dmc_macros */
 
 /*****************************************************************************
- ********************************* Data types ********************************
+ **************************** Function prototypes ****************************
  *****************************************************************************/
-
-/**
-* \addtogroup group_pmg_app_common_dmc_enums
-* \{
-*/
-/** @cond DOXYGEN_HIDE */
-
-#if (CY_APP_USR_DEFINED_SN_SUPPORT)
-/**
- * @typedef cy_en_dmc_sn_state_t
- * @brief State of serial number for DMC and HX3
- * @warning Do not edit this enum value
- */
-typedef enum
-{
-    SN_NOT_IMPLEMENTED = 0x00,      /**< 0x00 - SN is not implemented */
-    SN_VALID,                       /**< 0x01 - SN is valid and updated */
-    SN_INVALID,                     /**< 0x02 - SN is invalid, SN update will happen based on this value */
-    SN_HX3_SECONDARY_IMAGE_INVALID, /**< 0x03 - HX3's secondary image is invalid */
-    SN_HX3_CONFIG_CHECK_FAILED,     /**< 0x04 - HX3 configuration check for SN update is failed */
-    SN_HX3_NO_ENOUGH_SPACE          /**< 0x05 - Not enough space in the string descriptor to update SN */
-} cy_en_dmc_sn_state_t;
-#endif /* CY_APP_USR_DEFINED_SN_SUPPORT */
-/** @endcond */
-/** \} group_pmg_app_common_dmc_enums */
-
 /**
 * \addtogroup group_pmg_app_common_dmc_functions
 * \{
 */
-/*****************************************************************************
- **************************** Function prototypes ****************************
- *****************************************************************************/
 /**
  * @brief This function is called before initiating a soft reset to DMC.
  * The reason for reset is updated in dock metadata as soft reset, so that the USB
@@ -138,7 +127,6 @@ typedef enum
  *
  * @param params Pointer to DMC parameters
  *
- * @return None
  */
 void Cy_App_Dmc_PrepareSoftReset(cy_stc_dmc_params_t *params);
 
@@ -171,10 +159,9 @@ bool Cy_App_Dmc_IsFactoryUpdateDone (void);
 
 /**
  * @brief Function to set factory update status
- * @param status New status to be set 
- * @return None 
+ * @param status New status to be set  
  */
-void Cy_App_Dmc_SetFactoryUpdateStatus (uint8_t status);
+void Cy_App_Dmc_SetFactoryUpdateStatus (bool status);
 
 /**
  * @brief Function to read factory update status
@@ -234,7 +221,6 @@ uint16_t Cy_App_Dmc_GetMaximumFwctSize(void);
  *
  * @param params Pointer to the DMC parameters
  *
- * @return None
  */
 void Cy_App_Dmc_Task(cy_stc_dmc_params_t *params);
 
@@ -247,9 +233,9 @@ void Cy_App_Dmc_Task(cy_stc_dmc_params_t *params);
  * @param ptrSecCfg Pointer to security configuration structure
  * @param ptrAppCbk Pointer to application callback
  * @param params Pointer to DMC Parameters
- * @return None
+ * @return cy_en_app_status_t
  */
-cy_en_app_status_t Cy_App_Dmc_PreInit(cy_en_dmc_fw_mode_t device_mode, const cdtt_config_t *ptrCdttCfg, const sec_config_t *ptrSecCfg,
+cy_en_app_status_t Cy_App_Dmc_PreInit(cy_en_sys_fw_mode_t device_mode, const cdtt_config_t *ptrCdttCfg, const sec_config_t *ptrSecCfg,
                   const cy_stc_dmc_app_cbk_t *ptrAppCbk, cy_stc_dmc_params_t *params);
 
 /**
@@ -260,7 +246,6 @@ cy_en_app_status_t Cy_App_Dmc_PreInit(cy_en_dmc_fw_mode_t device_mode, const cdt
  * @param cur_img_type  Firmware image type \ref cy_en_dmc_image_type_t
  * @param img_status    Firmware image status \ref cy_en_dmc_img_status_t
  *
- * @return None
  */
 void Cy_App_Dmc_SetRamImageStatus(uint8_t comp_id, cy_en_dmc_image_type_t cur_img_type, cy_en_dmc_img_status_t img_status);
 
@@ -272,7 +257,6 @@ void Cy_App_Dmc_SetRamImageStatus(uint8_t comp_id, cy_en_dmc_image_type_t cur_im
  * @param img_type      Firmware image type \ref cy_en_dmc_image_type_t
  * @param img_status    Firmware image status \ref cy_en_dmc_img_status_t
  *
- * @return None.
  */
 void Cy_App_Dmc_UpdateRamImageStatus (uint8_t comp_id, cy_en_dmc_image_type_t img_type, cy_en_dmc_img_status_t img_status);
 
@@ -287,7 +271,6 @@ void Cy_App_Dmc_UpdateRamImageStatus (uint8_t comp_id, cy_en_dmc_image_type_t im
  * @param fw1_version   Firmware 1 version for the dock device
  * @param fw2_version   Firmware 2 version for the dock device
  *
- * @return None.
  */
 void Cy_App_Dmc_UpdateRamVersions(uint8_t comp_id, uint8_t *bl_version, uint8_t *fw1_version, uint8_t *fw2_version);
 
@@ -296,7 +279,6 @@ void Cy_App_Dmc_UpdateRamVersions(uint8_t comp_id, uint8_t *bl_version, uint8_t 
  *
  * @param params Pointer to DMC Parameters
  *
- * @return None
  */
 void Cy_App_Dmc_ResetState (cy_stc_dmc_params_t *params);
 
@@ -304,7 +286,6 @@ void Cy_App_Dmc_ResetState (cy_stc_dmc_params_t *params);
 /**
  * @brief Initiates soft reset to the DMC device
  *
- * @return None
  */
 void Cy_App_Dmc_SoftReset(void);
 
@@ -324,14 +305,13 @@ const dev_topology_t *Cy_App_Dmc_GetDeviceTopology(uint8_t comp_id);
  * @brief Fetches the current DMC state
  * @return Current DMC state
  */
-uint8_t Cy_App_Dmc_GetCurState (void);
+cy_en_dmc_state_t Cy_App_Dmc_GetCurState (void);
 
 /**
  * @brief Changes the state of the DMC to the given state
  * @param state New DMC state
- * @return None
  */
-void Cy_App_Dmc_SetCurState (uint8_t state);
+void Cy_App_Dmc_SetCurState (cy_en_dmc_state_t state);
 
 /** @cond DOXYGEN_HIDE */
 /**
@@ -360,10 +340,34 @@ const cy_stc_app_dmc_update_opern_t** Cy_App_Dmc_GetDevUpdateOpern(void);
  */
 uint16_t Cy_App_Dmc_GetAltImgMdRowNum(void);
 
+#if CY_APP_USR_DEFINED_SN_SUPPORT
+/**
+ * @brief This function returns pointer to the DMC parameters
+ * @return Pointer to the DMC parameters
+ */
+cy_stc_dmc_params_t* Cy_App_Dmc_GetDmcParamPtr(void);
+#endif /* CY_APP_USR_DEFINED_SN_SUPPORT */
+
+/**
+ * @brief This function used to set the port enabled status in DMC parameters
+ * @param val port enabled status value to be updated
+ */
+void Cy_App_Dmc_SetPortEnabledStatus(uint8_t val);
+
+/**
+ * @brief This function used to set SPI flash metadata erase flag.
+ */
+void Cy_App_Dmc_SetSpiMdEraseFlag(void);
+
+/**
+ * @brief This function used to check whether FW update is in progress.
+ * @return bool FW update progress status.
+ */
+bool Cy_App_Dmc_IsFwuInprogress(void);
 /** \} group_pmg_app_common_dmc_functions */
 /** \} group_pmg_app_common_dmc */
 
 #endif /* (CY_APP_DMC_ENABLE || DOXYGEN) */
-#endif /* _CY_APP_DMC_FW_UPDATE_H_ */
+#endif /* CY_APP_DMC_FW_UPDATE_H */
 
 /* [] END OF FILE */

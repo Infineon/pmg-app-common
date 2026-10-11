@@ -1,7 +1,6 @@
 var group__group__pmg__app__common__system__boot__macros =
 [
     [ "CY_APP_SYS_IMG1_FW_STATUS_BIT_MASK", "group__group__pmg__app__common__system__boot__macros.html#ga9fdb591792f9109126a96b3658d6d5ea", null ],
-    [ "CY_APP_SYS_BOOT_MODE_RQT_SIG", "group__group__pmg__app__common__system__boot__macros.html#ga8468fbf15e4fd40b1662fd826e7f6f15", null ],
     [ "CY_APP_SYS_FW1_BOOT_RQT_SIG", "group__group__pmg__app__common__system__boot__macros.html#gabdb4fca7acbb176fae770d4a8ee78469", null ],
     [ "CY_APP_SYS_FW2_BOOT_RQT_SIG", "group__group__pmg__app__common__system__boot__macros.html#ga8154b721e19e7fc8676eb4612808afbe", null ],
     [ "CY_APP_SYS_FW_METADATA_BOOTSEQ_OFFSET", "group__group__pmg__app__common__system__boot__macros.html#gac1d77f3c84e34e47259e1ba8b6ba782e", null ],

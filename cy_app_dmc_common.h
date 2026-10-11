@@ -1,21 +1,42 @@
- /***************************************************************************//**
+/***************************************************************************//**
 * \file cy_app_dmc_common.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements the common definitions and structures used in DMC
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_DMC_COMMON_H_
-#define _CY_APP_DMC_COMMON_H_
+#ifndef CY_APP_DMC_COMMON_H
+#define CY_APP_DMC_COMMON_H
 
 #if (CY_APP_DMC_ENABLE || DOXYGEN)
 /*******************************************************************************
@@ -98,25 +119,25 @@
 /** Maximum device components in the dock supported by DMC
  *  @warning Do not edit this value
  */
-#define CY_APP_DMC_MAX_DEV_COUNT                   (8)
+#define CY_APP_DMC_MAX_DEV_COUNT                   (CY_MAX_DEV_COUNT_CDTT)
 
 /** Multiplier for row size
  *  @warning Do not edit this value
  */
-#define CY_APP_DMC_ROW_SIZE_MULT                   (64)
+#define CY_APP_DMC_ROW_SIZE_MULT                   (64u)
 
 /** Image digest length (SHA-256 digest length)
  *  @warning Do not edit this value
  */
-#define CY_APP_DMC_IMAGE_DIGEST_LEN                (32)
+#define CY_APP_DMC_IMAGE_DIGEST_LEN                (32u)
 
 /** Size of the version information
  *  @warning Do not edit this value
  */
-#define CY_APP_DMC_FW_VERSION_SIZE                 (8)
+#define CY_APP_DMC_FW_VERSION_SIZE                 (8u)
 
 /** Complete size of all the version information  */
-#define CY_APP_DMC_ALL_FW_VERSION_SIZE             (CY_APP_DMC_FW_VERSION_SIZE * 3)
+#define CY_APP_DMC_ALL_FW_VERSION_SIZE             (CY_APP_DMC_FW_VERSION_SIZE * 3u)
 
 /** Type of trigger - Existing trigger */
 #define CY_APP_DMC_EXISTING_TRIGGER                (2u)
@@ -128,10 +149,10 @@
 #define CY_APP_DMC_NO_TRIGGER                      (0u)
 
 /** Signature used to indicate valid CDTT */
-#define CY_APP_DMC_CDTT_VALID_SIG                  (0x43)
+#define CY_APP_DMC_CDTT_VALID_SIG                  (0x43u)
 
 /** Signature used to indicate DMC to enumerate USB */
-#define CY_APP_DMC_USB_ENUM_RQT_SIG                (0x01)
+#define CY_APP_DMC_USB_ENUM_RQT_SIG                (0x01u)
 
 /*
  * Digital signature algorithm specific macros
@@ -158,7 +179,7 @@
 /** Specifies the signature length for the digital signature (in bytes)
  *  algorithm supported by the firmware
  */
-#define CY_APP_DMC_DIG_SIG_ALGO_LEN                          (256)
+#define CY_APP_DMC_DIG_SIG_ALGO_LEN                          (256u)
 
 /** Total number of signatures  */
 #define CY_APP_DMC_NUM_OF_SIG_INSTANCE                       (2u)
@@ -189,39 +210,40 @@
  * @brief Internal DMC state enumeration.
  */
 typedef enum {
-    CY_APP_DMC_STATE_WAIT_FOR_START = 0x00,          /**< 0 - Idle state. Waits for the VDR_RQT_UPGRADE_START from host. */
+    CY_APP_DMC_STATE_WAIT_FOR_START = 0x00u,         /**< 0 - Idle state. Waits for the VDR_RQT_UPGRADE_START from host */
     CY_APP_DMC_STATE_POWER_ON,                       /**< 1 - Default state at which DMC comes up after power on */
-    CY_APP_DMC_STATE_PHASE2_FACTORY_BACKUP,          /**< 2 - Checks the validity of the images and initiate factory backup */
-    CY_APP_DMC_STATE_PHASE2_FACTORY_BACKUP_COPY,     /**< 3 - Copy image from primary to factory area */
-    CY_APP_DMC_STATE_PHASE2_CHECKS,                  /**< 4 - Checks whether Phase 2 update is needed or not */
-    CY_APP_DMC_STATE_PHASE2_READ_FWCT,               /**< 5 - Reads the FWCT from SPI flash in Phase 2 */
-    CY_APP_DMC_STATE_PHASE2_READ_SIGNATURE,          /**< 6 - Reads the signature from the SPI flash in Phase 2 */
-    CY_APP_DMC_STATE_WAIT_FOR_FWCT,                  /**< 7 - Waits for FWCT table from the host - Phase 1 only */
-    CY_APP_DMC_STATE_PHASE1_CHECKS,                  /**< 8 - Phase 1 update related checks */
-    CY_APP_DMC_STATE_AUTHENTICATING,                 /**< 9 - Supported only for signed FW update - Phase 1 & Phase 2  */
-    CY_APP_DMC_STATE_FWCT_ANALYSIS,                  /**< 10 - Compares FWCT in RAM (received from host) against info in dock metadata - Phase 1 & Phase 2 */
-    CY_APP_DMC_STATE_VALIDATION_STATUS_UPDATE,       /**< 11 - For sending status due to FWCT analysis failure/Authentication failure - Phase 1 & Phase 2*/
-    CY_APP_DMC_STATE_FW_UPDATE_ANALYSIS,             /**< 12 - Compares parsed FWCT in RAM if any pending update and initiate UPDATE_RQT - Phase 1 & Phase 2 */
-    CY_APP_DMC_STATE_PREPARE_UPDATE,                 /**< 13 - Prepare the FW update to the particular device - Phase 1 & Phase 2 */
-    CY_APP_DMC_STATE_INITIATE_FW_UPGRADE_RQT,        /**< 14 - DMC state to send FW_UPGRADE_RQT data over INT EP - Phase 1 only */
-    CY_APP_DMC_STATE_WAIT_FOR_IMG_WRITE,             /**< 15 - Waits for IMG_WRITE vendor command from host - Phase 1 & Phase 2 */
-    CY_APP_DMC_STATE_PHASE2_READ_IMG_SEG_INFO,       /**< 16 - Reads image related information like segment size, segment start address from SPI flash for the image - Phase 2 Only */
-    CY_APP_DMC_STATE_WAIT_FOR_USB_DATA,              /**< 17 - Waits for one row worth data from the host over USB - Phase 1 only */
-    CY_APP_DMC_STATE_PHASE2_READ_IMG_DATA,           /**< 18 - Reads one row of data from SPI flash for the particular image. Phase 2 only */
-    CY_APP_DMC_STATE_IMG_WRITE_IN_PROGRESS,          /**< 19 - Image write in progress - Initiates flash write/I2C write as is appropriate - Phase 1 & Phase 2 */
-    CY_APP_DMC_STATE_IMG_WRITE_STATUS,               /**< 20 - Sends previous (i.e. most recent) row write status over INT IN EP - Phase 1 & Phase 2 */
-    CY_APP_DMC_STATE_WAIT_HPI_STATUS_OR_IDLE,        /**< 21 - Wait for HPI interrupt from CCGx device following the CCGx flash write over HPI, Or IDLE state (temporary waiting state) - Phase 1 only */
-    CY_APP_DMC_STATE_PARTIAL_UPDATE_COMPLETE,        /**< 22 - FW update partially completed (all alternate images of all devices updated) - can be successful or failure - Phase 2 only */
-    CY_APP_DMC_STATE_SEND_RENUM_NOTIFICATION,        /**< 23 - DMC state to send re-enumeration notification over INT EP - Not used for 2-phase update */
-    CY_APP_DMC_STATE_JUMP_TO_ALTERNATE,              /**< 24 - DMC state to initiate jump to alternate image for the particular device - Phase 2 only */
-    CY_APP_DMC_STATE_PRE_UPDATE_COMPLETE,            /**< 25 - DMC state to check if any other updates are pending other than DMC updates - Phase 2 only */
-    CY_APP_DMC_STATE_FW_UPDATE_COMPLETE,             /**< 26 - FW update completed - can be successful or failure - Phase 1 & Phase 2 */
-    CY_APP_DMC_STATE_ERROR_RECOVERY,                 /**< 27 - FW update failed for a particular image/device - Phase 1 & Phase 2 */
-    CY_APP_DMC_STATE_FW_UPDATE_FAILED,               /**< 28 - Unexpected FW update failure. Control should not go to this state under normal scenarios - Phase 1 & Phase 2.  */
-    CY_APP_DMC_STATE_WAIT_HPI_STATUS_OR_IDLE_2,      /**< 29 - Extra IDLE state to distinguish it from CY_APP_DMC_STATE_WAIT_HPI_STATUS_OR_IDLE - Phase 2 only */
-    CY_APP_DMC_STATE_PHASE2_ERROR,                   /**< 30 - Error occurred during Phase 2 update - Phase 2 only */
-    CY_APP_DMC_STATE_PHASE1_WAIT_FOR_TRIGGER,        /**< 31 - Wait for trigger vendor command. Phase 1 only. */
-    CY_APP_DMC_STATE_WAIT_FOR_SPI_FLASH_OPR_COMPLETE /**< 32 - Wait for SPI flash operation to complete. */
+    CY_APP_DMC_STATE_WAIT_FOR_SPI_FLASH_MD_ERASE,    /**< 2 - Waits for SPI flash metadata erase completion */
+    CY_APP_DMC_STATE_PHASE2_FACTORY_BACKUP,          /**< 3 - Checks the validity of the images and initiate factory backup */
+    CY_APP_DMC_STATE_PHASE2_FACTORY_BACKUP_COPY,     /**< 4 - Copy image from primary to factory area */
+    CY_APP_DMC_STATE_PHASE2_CHECKS,                  /**< 5 - Checks whether Phase 2 update is needed or not */
+    CY_APP_DMC_STATE_PHASE2_READ_FWCT,               /**< 6 - Reads the FWCT from SPI flash in Phase 2 */
+    CY_APP_DMC_STATE_PHASE2_READ_SIGNATURE,          /**< 7 - Reads the signature from the SPI flash in Phase 2 */
+    CY_APP_DMC_STATE_WAIT_FOR_FWCT,                  /**< 8 - Waits for FWCT table from the host - Phase 1 only */
+    CY_APP_DMC_STATE_PHASE1_CHECKS,                  /**< 9 - Phase 1 update related checks */
+    CY_APP_DMC_STATE_AUTHENTICATING,                 /**< 10 - Supported only for signed FW update - Phase 1 & Phase 2  */
+    CY_APP_DMC_STATE_FWCT_ANALYSIS,                  /**< 11 - Compares FWCT in RAM (received from host) against info in dock metadata - Phase 1 & Phase 2 */
+    CY_APP_DMC_STATE_VALIDATION_STATUS_UPDATE,       /**< 12 - For sending status due to FWCT analysis failure/Authentication failure - Phase 1 & Phase 2*/
+    CY_APP_DMC_STATE_FW_UPDATE_ANALYSIS,             /**< 13 - Compares parsed FWCT in RAM if any pending update and initiate UPDATE_RQT - Phase 1 & Phase 2 */
+    CY_APP_DMC_STATE_PREPARE_UPDATE,                 /**< 14 - Prepare the FW update to the particular device - Phase 1 & Phase 2 */
+    CY_APP_DMC_STATE_INITIATE_FW_UPGRADE_RQT,        /**< 15 - DMC state to send FW_UPGRADE_RQT data over INT EP - Phase 1 only */
+    CY_APP_DMC_STATE_WAIT_FOR_IMG_WRITE,             /**< 16 - Waits for IMG_WRITE vendor command from host - Phase 1 & Phase 2 */
+    CY_APP_DMC_STATE_PHASE2_READ_IMG_SEG_INFO,       /**< 17 - Reads image related information like segment size, segment start address from SPI flash for the image - Phase 2 Only */
+    CY_APP_DMC_STATE_WAIT_FOR_USB_DATA,              /**< 18 - Waits for one row worth data from the host over USB - Phase 1 only */
+    CY_APP_DMC_STATE_PHASE2_READ_IMG_DATA,           /**< 19 - Reads one row of data from SPI flash for the particular image. Phase 2 only */
+    CY_APP_DMC_STATE_IMG_WRITE_IN_PROGRESS,          /**< 20 - Image write in progress - Initiates flash write/I2C write as is appropriate - Phase 1 & Phase 2 */
+    CY_APP_DMC_STATE_IMG_WRITE_STATUS,               /**< 21 - Sends previous (i.e. most recent) row write status over INT IN EP - Phase 1 & Phase 2 */
+    CY_APP_DMC_STATE_WAIT_HPI_STATUS_OR_IDLE,        /**< 22 - Wait for HPI interrupt from CCGx device following the CCGx flash write over HPI, Or IDLE state (temporary waiting state) - Phase 1 only */
+    CY_APP_DMC_STATE_PARTIAL_UPDATE_COMPLETE,        /**< 23 - FW update partially completed (all alternate images of all devices updated) - can be successful or failure - Phase 2 only */
+    CY_APP_DMC_STATE_SEND_RENUM_NOTIFICATION,        /**< 24 - DMC state to send re-enumeration notification over INT EP - Not used for 2-phase update */
+    CY_APP_DMC_STATE_JUMP_TO_ALTERNATE,              /**< 25 - DMC state to initiate jump to alternate image for the particular device - Phase 2 only */
+    CY_APP_DMC_STATE_PRE_UPDATE_COMPLETE,            /**< 26 - DMC state to check if any other updates are pending other than DMC updates - Phase 2 only */
+    CY_APP_DMC_STATE_FW_UPDATE_COMPLETE,             /**< 27 - FW update completed - can be successful or failure - Phase 1 & Phase 2 */
+    CY_APP_DMC_STATE_ERROR_RECOVERY,                 /**< 28 - FW update failed for a particular image/device - Phase 1 & Phase 2 */
+    CY_APP_DMC_STATE_FW_UPDATE_FAILED,               /**< 29 - Unexpected FW update failure. Control should not go to this state under normal scenarios - Phase 1 & Phase 2.  */
+    CY_APP_DMC_STATE_WAIT_HPI_STATUS_OR_IDLE_2,      /**< 30 - Extra IDLE state to distinguish it from CY_APP_DMC_STATE_WAIT_HPI_STATUS_OR_IDLE - Phase 2 only */
+    CY_APP_DMC_STATE_PHASE2_ERROR,                   /**< 31 - Error occurred during Phase 2 update - Phase 2 only */
+    CY_APP_DMC_STATE_PHASE1_WAIT_FOR_TRIGGER,        /**< 32 - Wait for trigger vendor command. Phase 1 only. */
+    CY_APP_DMC_STATE_WAIT_FOR_SPI_FLASH_OPR_COMPLETE /**< 33 - Wait for SPI flash operation to complete. */
 }cy_en_dmc_state_t;
 
 /**
@@ -231,14 +253,14 @@ typedef enum {
  */
 typedef enum
 {
-    CY_APP_DMC_IDLE = 0,                                      /**< 0x00: Dock in idle state: "Idle". State after SWD programming. */
+    CY_APP_DMC_IDLE = 0u,                                     /**< 0x00: Dock in idle state: "Idle". State after SWD programming. */
     CY_APP_DMC_PHASE1_UPDATE_IN_PROGRESS,                     /**< 0x01: Dock Phase 1 FW update in progress: "Update In progress" */
     CY_APP_DMC_PHASE1_UPDATE_PARTIAL,                         /**< 0x02: Dock Phase 1 FW update partially completed - in the middle of update cycle: "Update Partial" */
     CY_APP_DMC_RESERVED,                                      /**< 0x03: Reserved */
     CY_APP_DMC_PHASE1_UPDATE_COMPLETE_PARTIAL,                /**< 0x04: Dock Phase 1 FW update process completed, but not all images of all devices are valid. */
-    CY_APP_DMC_PHASE1_UPDATE_COMPLETE_FULL_PHASE2_NOT_DONE = 5, /**< 0x05: Dock Phase 1 FW update process completed */
+    CY_APP_DMC_PHASE1_UPDATE_COMPLETE_FULL_PHASE2_NOT_DONE = 5u, /**< 0x05: Dock Phase 1 FW update process completed */
 
-    CY_APP_DMC_PHASE2_UPDATE_IN_PROGRESS = 0x81,              /**< 0x81: Dock Phase 2 FW update in progress: "Update In progress" */
+    CY_APP_DMC_PHASE2_UPDATE_IN_PROGRESS = 0x81u,             /**< 0x81: Dock Phase 2 FW update in progress: "Update In progress" */
     CY_APP_DMC_PHASE2_UPDATE_PARTIAL,                         /**< 0x82: Dock Phase 2 FW update partially completed - in the middle of update cycle: "Update Partial" */
     CY_APP_DMC_PHASE2_UPDATE_FACTORY_BACKUP,                  /**< 0x83: Dock Phase 2 FW update factory backup started */
     CY_APP_DMC_PHASE2_UPDATE_COMPLETE_PARTIAL,                /**< 0x84: Dock Phase 2 FW update process completed, but not all images of all devices are valid" */
@@ -254,23 +276,14 @@ typedef enum
     CY_APP_DMC_PHASE2_UPDATE_FAIL_RAM_INIT_FAILED,            /**< 0x8E: Dock Phase 2 FW update failed due to ram buffer initialization failure */
     CY_APP_DMC_PHASE2_UPDATE_FAIL_FACTORY_BACKUP_FAILED,      /**< 0x8F: Dock Phase 2 FW update failed due to factory backup failure */
     CY_APP_DMC_PHASE2_UPDATE_FAIL_NO_VALID_FACTORY_PACKAGE,   /**< 0x90: Dock Phase 2 FW update failed due to no valid factory package */
-    CY_APP_DMC_PHASE1_UPDATE_FAIL = 0xFF                      /**< Dock Phase 1 FW update failed */
+
+    CY_APP_DMC_PHASE1_UPDATE_FAIL_INVALID_FWCT = 0xF0u,       /**< 0xF0: Invalid FWCT */
+    CY_APP_DMC_PHASE1_UPDATE_FAIL_INVALID_DOCK_IDENTITY,      /**< 0xF1: Invalid dock identity */
+    CY_APP_DMC_PHASE1_UPDATE_FAIL_INVALID_COMPOSITE_VER,      /**< 0xF2: Invalid composite version */
+    CY_APP_DMC_PHASE1_UPDATE_FAIL_AUTHENTICATION_FAILED,      /**< 0xF3: Authentication failure */
+    CY_APP_DMC_PHASE1_UPDATE_FAIL_INVALID_ALGORITHM,          /**< 0xF4: Invalid authentication algorithm */
+    CY_APP_DMC_PHASE1_UPDATE_FAIL = 0xFFu                     /**< Dock Phase 1 FW update failed */
 }cy_en_dmc_fw_update_status_t;
-
-/**
- * @typedef cy_en_dmc_fwct_status_t
- * @brief FWCT analysis status enumeration
- * @warning Do not edit this enum value
- */
-typedef enum
-{
-    CY_APP_DMC_FWCT_INVALID_FWCT = 0,        /**< Invalid FWCT */
-    CY_APP_DMC_FWCT_INVALID_DOCK_IDENTITY,   /**< Invalid dock identity */ 
-    CY_APP_DMC_FWCT_INVALID_COMPOSITE_VER,   /**< Invalid composite version */
-    CY_APP_DMC_AUTHENTICATION_FAILED,        /**< Authentication failure */
-    CY_APP_DMC_INVALID_ALGORITHM             /**< Invalid authentication algorithm */
-
-}cy_en_dmc_fwct_status_t;
 
 /**
  * @typedef cy_en_dmc_img_status_t
@@ -280,12 +293,12 @@ typedef enum
  */
 typedef enum
 {
-    CY_APP_DMC_IMG_STATUS_UNKNOWN = 0,     /**< Dock device image status is not known */
+    CY_APP_DMC_IMG_STATUS_UNKNOWN = 0u,    /**< Dock device image status is not known */
     CY_APP_DMC_IMG_STATUS_VALID,           /**< Dock device image status is valid */
     CY_APP_DMC_IMG_STATUS_INVALID,         /**< Dock device image status is Invalid */
     CY_APP_DMC_IMG_STATUS_RECOVERY,        /**< Dock device image is recovered */
     CY_APP_DMC_IMG_STATUS_RECOVERED_FROM_SECONDARY, /**< Dock device primary image status when it is recovered from secondary image. */
-    CY_APP_DMC_IMG_STATUS_NOT_SUPPORTED = 0xF /**< Dock device image status is not supported. */
+    CY_APP_DMC_IMG_STATUS_NOT_SUPPORTED = 0x0Fu /**< Dock device image status is not supported. */
 }cy_en_dmc_img_status_t;
 
 /**
@@ -295,7 +308,7 @@ typedef enum
  */
 typedef enum
 {
-    CY_APP_DMC_DEV_TYPE_INVALID = 0,       /**< 0x00: Dock controller can't recognize the device */
+    CY_APP_DMC_DEV_TYPE_INVALID = 0u,      /**< 0x00: Dock controller can't recognize the device */
     CY_APP_DMC_DEV_TYPE_CCG3,              /**< 0x01: Dock device type is CCG3 */
     CY_APP_DMC_DEV_TYPE_DMC_CY7C65219,     /**< 0x02: Dock device type is CY7C65219 */
     CY_APP_DMC_DEV_TYPE_CCG4,              /**< 0x03: Dock device type is CCG4 */
@@ -313,7 +326,7 @@ typedef enum
     CY_APP_DMC_DEV_TYPE_RESERVED_0F,       /**< 0x0F: Dock device type is reserved for future use */
     CY_APP_DMC_DEV_TYPE_RESERVED_10,       /**< 0x10: Dock device type is reserved for future use */
     CY_APP_DMC_DEV_TYPE_RESERVED_11,       /**< 0x11: Dock device type is reserved for future use */
-    CY_APP_DMC_DEV_TYPE_CCG5C = 0x12,      /**< 0x12: Dock device type is CCG5C */
+    CY_APP_DMC_DEV_TYPE_CCG5C = 0x12u,     /**< 0x12: Dock device type is CCG5C */
     CY_APP_DMC_DEV_TYPE_CCG6,              /**< 0x13: Dock device type is CCG6 */
     CY_APP_DMC_DEV_TYPE_RESERVED_14,       /**< Dock device type is reserved for future use */
     CY_APP_DMC_DEV_TYPE_RESERVED_15,       /**< Dock device type is reserved for future use */
@@ -359,9 +372,13 @@ typedef enum
     CY_APP_DMC_DEV_TYPE_RESERVED_3D,       /**< Dock device type is reserved for future use */
     CY_APP_DMC_DEV_TYPE_RESERVED_3E,       /**< Dock device type is reserved for future use */
     CY_APP_DMC_DEV_TYPE_RESERVED_3F,       /**< Dock device type is reserved for future use */
-    CY_APP_DMC_DEV_TYPE_DMC_PMG1S3 = 0xF0, /**< Dock device type is PMG1S3 */
+    CY_APP_DMC_DEV_TYPE_BARLOW_RIDGE = 0x80u, /**< Dock device type is Barlow Ridge */
+    CY_APP_DMC_DEV_TYPE_DMC_PMG1S3 = 0xF0u, /**< Dock device type is PMG1S3 */
     CY_APP_DMC_DEV_TYPE_CCG7SC,            /**< Dock device type is CCG7SC */
-    CY_APP_DMC_DEV_TYPE_SPI_COMPONENT = 0xFF,       /**< 0xFF: Dock device type is SPI component */
+    CY_APP_DMC_DEV_TYPE_CCG8D = 0xF3u,     /**< Dock device type is CCG8D */
+    CY_APP_DMC_DEV_TYPE_CCG6CFP = 0xF4u,   /**< Dock device type is CCG6CFP */
+    CY_APP_DMC_DEV_TYPE_HX2G3 = 0xF5u,     /**< Dock device type is Hx2G3 */
+    CY_APP_DMC_DEV_TYPE_SPI_COMPONENT = 0xFFu, /**< 0xFF: Dock device type is SPI component */
 }cy_en_dmc_dev_type_t;
 
 /**
@@ -370,7 +387,7 @@ typedef enum
  */
 typedef enum
 {
-    CY_APP_DMC_IMG_MODE_SINGLE_IMG = 0,    /**< Indicates that the device has a single
+    CY_APP_DMC_IMG_MODE_SINGLE_IMG = 0u,   /**< Indicates that the device has a single
                                      *   image
                                      */
     CY_APP_DMC_IMG_MODE_DUAL_IMG_SYM,      /**< The device supports symmetric boot.
@@ -395,7 +412,7 @@ typedef enum
  */
 typedef enum
 {
-    CY_APP_DMC_ACCESS_TYPE_SELF = 0,          /**< The device connected to DMC does not have any control interface */
+    CY_APP_DMC_ACCESS_TYPE_SELF = 0u,         /**< The device connected to DMC does not have any control interface */
     CY_APP_DMC_ACCESS_TYPE_HPI_I2C,           /**< The device connected to DMC is accessed using HPI I2C */
     CY_APP_DMC_ACCESS_TYPE_HUB_I2C,           /**< The device connected to DMC is accessed using HUB I2C */
     CY_APP_DMC_ACCESS_TYPE_SPI,               /**< The device connected to DMC is accessed using SPI */
@@ -409,7 +426,7 @@ typedef enum
  */
 typedef enum
 {
-    CY_APP_DMC_IMAGE_TYPE_BOOTLOADER = 0,     /**< Bootloader mode */
+    CY_APP_DMC_IMAGE_TYPE_BOOTLOADER = 0u,    /**< Bootloader mode */
     CY_APP_DMC_IMAGE_TYPE_FWIMAGE_1,          /**< Firmware image 1 */
     CY_APP_DMC_IMAGE_TYPE_FWIMAGE_2,          /**< Firmware image 2 */
     CY_APP_DMC_IMAGE_TYPE_INVALID             /**< Invalid value */
@@ -426,24 +443,12 @@ typedef enum
  */
 typedef enum
 {
-    CY_APP_DMC_STATUS_SUCCESS = 0,         /**< Status code indicating SUCCESS: no malfunctioning/no outstanding request or event */
+    CY_APP_DMC_STATUS_SUCCESS = 0u,        /**< Status code indicating SUCCESS: no malfunctioning/no outstanding request or event */
     CY_APP_DMC_STATUS_IN_PROGRESS,         /**< Status code indicating operation in progress */
     CY_APP_DMC_STATUS_IDLE,                /**< Status code indicating DMC in IDLE state. No operation in progress.  */
-    CY_APP_DMC_STATUS_FAIL = 0xFF,         /**< Status code indicating failure of the operation */
+    CY_APP_DMC_STATUS_FAIL = 0xFFu,        /**< Status code indicating failure of the operation */
 
 }cy_en_dmc_status_t;
-
-/**
- * @typedef cy_en_dmc_fw_mode_t
- * @brief List of DMC firmware modes
- */
-typedef enum
-{
-    CY_APP_DMC_FW_MODE_BOOTLOADER = 0,     /**< Bootloader mode */
-    CY_APP_DMC_FW_MODE_FWIMAGE_1,          /**< Firmware image 1 */
-    CY_APP_DMC_FW_MODE_FWIMAGE_2,          /**< Firmware image 2 */
-    CY_APP_DMC_FW_MODE_INVALID             /**< Invalid value */
-} cy_en_dmc_fw_mode_t;
 
 /**
  * @typedef cy_en_dmc_led_mode_t
@@ -475,7 +480,7 @@ typedef enum
  */
 typedef enum
 {
-    CY_APP_DMC_EVT_FW_UPDATE_FAIL = 0x00,          /**< Firmware update fail event */
+    CY_APP_DMC_EVT_FW_UPDATE_FAIL = 0x00u,         /**< Firmware update fail event */
     CY_APP_DMC_EVT_PHASE2_UPDATE_STARTS,           /**< Firmware update start event */
     CY_APP_DMC_EVT_PHASE2_AUTHENTICATION_SUCCESS,  /**< Firmware update authentication success event */
     CY_APP_DMC_EVT_PHASE2_IMAGE_WRITE_SUCCESS,     /**< Firmware update image write success event */
@@ -513,8 +518,8 @@ typedef struct
 {
     uint8_t             dev_type;              /**< Device type of the device */
     uint8_t             comp_id;               /**< Component ID of the device */
-    uint8_t             image_mode;            /**< Image mode of the device - single image/dual symmetric/dual asymmetric image */
-    cy_en_dmc_image_type_t        cur_img;               /**< Current running image */
+    cy_en_dmc_img_mode_t image_mode;           /**< Image mode of the device - single image/dual symmetric/dual asymmetric image */
+    cy_en_dmc_image_type_t cur_img;            /**< Current running image */
     uint8_t             img_status;            /**< Image status
                                                     * B7:B4 => Image 2 status
                                                     * B3:B0 => Image 1 status
@@ -549,7 +554,7 @@ typedef struct
  */
 typedef struct
 {
-    cy_en_dmc_fw_update_status_t       dock_status;                /**< Overall status of dock */
+    cy_en_dmc_fw_update_status_t dock_status;       /**< Overall status of dock */
     uint8_t             dev_count;                  /**< Device count */
     uint16_t            status_length;              /**< Length of status bytes including dock_status,
                                                           devx_status for each device. */
@@ -588,13 +593,13 @@ typedef struct
     uint32_t            checksum;                   /**< Dock metadata checksum */
     bool                secured_only;               /**< Indicates DMC firmware supports only signed update */
     uint8_t             update_counter;             /**< Dock metadata update counter. Reset to 0 on power up */
-    cy_stc_app_dmc_cust_info_t         app_status;                 /**< Application specific status info to be stored in the flash */
+    cy_stc_app_dmc_cust_info_t         app_status;  /**< Application specific status info to be stored in the flash */
     uint8_t             phase2_update_counter;      /**< Phase 2 update counter. Reset to 0 when Phase 2 update when Phase 2 update completes. */
     uint8_t             reserved_0[6];              /**< Padding */
     uint8_t             soft_reset_enum;            /**< Flag to set soft reset */
     uint32_t            cdtt_checksum;              /**< Checksum for CDTT data (config space information) */
-    cy_stc_app_dmc_dock_status_t   status;                     /**< Dock status */
-    uint8_t             reserved_1[96];             /**< Reserved */
+    cy_stc_app_dmc_dock_status_t   status;          /**< Dock status */
+    uint8_t             reserved_1[224];            /**< Reserved */
 }cy_stc_app_dmc_dock_metadata_t;
 
 /**
@@ -627,7 +632,11 @@ typedef union
                                         *   for receiving HPI interrupts from type-C
                                         *   device
                                         */
-        uint8_t reserved[6];            /**< Reserved for future usage */
+        uint8_t debug_log_row_md_lsb;   /**< LSB of CCGx Debug logs row ID
+                                        */
+        uint8_t debug_log_row_md_msb;   /**< MSB of CCGx Debug logs row ID
+                                        */
+        uint8_t reserved[4];            /**< Reserved for future usage */
     } hpi_i2c_param;                    /**< Access param interpreted as HPI */
 
     /** HUB I2C Specific parameters */
@@ -636,8 +645,8 @@ typedef union
         uint8_t slave_addr;             /**< HX3 HUB slave address for I2C communication */
         uint8_t reset_gpio;             /**< GPIO being used in DMC to reset HX3 Hub */
         uint8_t wp_gpio;                /**< GPIO being used in DMC for write protecting I2C EEPROM */
-        uint8_t reserved[5];           /**< Reserved for future usage */
-    } hub_i2c_param;                   /**< Access param interpreted as Hub EEPROM I2C access */
+        uint8_t reserved[5];            /**< Reserved for future usage */
+    } hub_i2c_param;                    /**< Access param interpreted as Hub EEPROM I2C access */
 
     /** HX3PD HUB SPI Specific parameters */
     struct cy_stc_app_hx3pd_hub_spi_param
@@ -653,7 +662,6 @@ struct cy_stc_dmc_params;
 
 /** @brief Function pointer for usb setup callback
  * @param transfer Pointer to the USB transfer structure
- * @return None
  */
 typedef cy_en_usb_dev_status_t (*cy_app_usb_setup_cbk_t) (cy_stc_usb_dev_control_transfer_t *transfer);
 
@@ -716,7 +724,7 @@ typedef struct
     uint8_t* (*usb_get_ep0_buffer) (void);
 
     /** Firmware update complete handler */
-    void (*app_fw_update_complete_handler) (void);
+    void (*app_fw_update_complete_handler) (uint8_t portEnabledStatus);
 
     /** Set led mode */
     void (*led_set_mode) (cy_en_dmc_led_mode_t mode);
@@ -726,7 +734,6 @@ typedef struct
     
     /** Get public key Id. */
     uint8_t (*get_public_key_id)(void);
-
 } cy_stc_dmc_app_cbk_t;
 
 /**
@@ -773,8 +780,7 @@ typedef struct cy_stc_dmc_params
 }cy_stc_dmc_params_t;
 
 /** @brief Function pointer for handling DMC Completion callback
- * @param status Status of completion
- * @return None 
+ * @param status Status of completion 
  * */
 typedef void (*cy_stc_app_dmc_completion_cbk_t)(cy_en_app_status_t status);
 
@@ -804,7 +810,7 @@ typedef struct
     /** FW update process finish handler */
     cy_en_app_status_t (*finish_update)(cy_en_dmc_image_type_t img_type, bool flashing_status, bool *deferred, cy_stc_app_dmc_completion_cbk_t cb, cy_stc_dmc_params_t *params);
     /** Mandatory FW version check function */
-    bool (*check_fw_version)(uint8_t *img_version, cy_en_dmc_image_type_t img_type, uint8_t comp_id, bool check_last_valid);
+    bool (*check_fw_version)(uint8_t *img_version, cy_en_dmc_image_type_t img_type, uint8_t comp_id, bool check_last_valid, cy_stc_dmc_params_t *params);
     /** Jump to alternate image handler */
     void (*jump_to_alternate)(const dev_topology_t *topology, cy_stc_app_dmc_completion_cbk_t cb, cy_stc_dmc_params_t *params);
     /** API to defer device status query during initialization sequence */
@@ -818,11 +824,14 @@ typedef struct
      *  module (like the SCB and GPIOs needed for the device firmware update)
      */
     void (*dev_config_hw_interface)(const dev_topology_t *topology, cy_stc_dmc_params_t *params);
+
+    /** API to determine power on request specific for device module based on the image mode of the device and current running image */
+    bool (*power_on_update_needed)(cy_en_dmc_image_type_t img_type, uint8_t comp_id, cy_stc_dmc_params_t *params);
 }cy_stc_app_dmc_update_opern_t;
 /** \} group_pmg_app_common_dmc_data_structures */
 
 /** \} group_pmg_app_common_dmc */
 #endif /* (CY_APP_DMC_ENABLE || DOXYGEN) */
-#endif /* _CY_APP_DMC_COMMON_H_ */
+#endif /* CY_APP_DMC_COMMON_H */
 
 /* [] END OF FILE */

@@ -1,25 +1,49 @@
 /***************************************************************************//**
 * \file cy_app_usb.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines the function prototypes for USB
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_USB_H_
-#define _CY_APP_USB_H_
+#ifndef CY_APP_USB_H
+#define CY_APP_USB_H
+
+#include "cy_app_config.h"
 
 #if (CY_APP_USB_ENABLE || DOXYGEN)
 #include "cy_usb_dev.h"
 #include "cy_usb_dev_hid.h"
+
 
 /**
 * \addtogroup group_pmg_app_common_usb
@@ -62,7 +86,7 @@
  */
 typedef enum
 {
-    CY_APP_USB_EP0_STATE_DISABLED = 0, /**< EP0 is disabled. */
+    CY_APP_USB_EP0_STATE_DISABLED = 0u, /**< EP0 is disabled. */
     CY_APP_USB_EP0_STATE_SETUP,        /**< EP0 in setup phase. */
     CY_APP_USB_EP0_STATE_DATA_IN,      /**< EP0 in data IN phase. */
     CY_APP_USB_EP0_STATE_DATA_OUT,     /**< EP0 in data OUT phase. */
@@ -86,6 +110,8 @@ typedef cy_en_usb_dev_status_t (*cy_app_usb_setup_cbk_t) (cy_stc_usb_dev_control
 /** USB vendor request handler Callback */
 typedef cy_en_usb_dev_status_t (*cy_app_vendor_req_hdlr_cbk_t) (cy_stc_usb_dev_control_transfer_t *transfer);
 
+/** Update descriptors handler callback to enable/disable billboard interface. */
+typedef void (*cy_usb_desc_update_cbk_t) (bool bbEnable);
 
 /** USB Handle. */
 typedef struct
@@ -102,18 +128,19 @@ typedef struct
 typedef struct
 {
     USBFS_Type *base;   /**< Pointer to USBFS base */
-    struct cy_stc_usbfs_dev_drv_config const *drvConfig; /**< Pointer to USBFS device driver configuration structure */
-    cy_stc_usb_dev_config_t  const *usbDevConfig; /**< Pointer to USB device configuration structure */
-    cy_stc_usb_dev_device_t  const *usbDevice; /**< Pointer to USB device structure */
-    cy_stc_usb_dev_hid_config_t  const *hidConfig; /**< Pointer to HID configuration structure */
-    cy_cb_usbfs_dev_hid_get_report_t getReportCallback; /**< HID report callback */
-    cy_cb_usbfs_dev_hid_set_report_t setReportCallback; /**< HID set report callback */
-    cy_app_vendor_req_hdlr_cbk_t vendor_req_handler; /**< Vendor request handler */
-    cy_stc_usbfs_dev_drv_context_t  *usb_drvContext; /**< USBFS device context structure */
-    cy_stc_usb_dev_context_t        *usb_devContext; /**< USB device context structure */
+    struct cy_stc_usbfs_dev_drv_config const    *drvConfig;         /**< Pointer to USBFS device driver configuration structure */
+    cy_stc_usb_dev_config_t const               *usbDevConfig;      /**< Pointer to USB device configuration structure */
+    cy_stc_usb_dev_device_t const               *usbDevice;         /**< Pointer to USB device structure */
+    cy_stc_usb_dev_hid_config_t const           *hidConfig;         /**< Pointer to HID configuration structure */
+    cy_cb_usbfs_dev_hid_get_report_t            getReportCallback;  /**< HID report callback */
+    cy_cb_usbfs_dev_hid_set_report_t            setReportCallback;  /**< HID set report callback */
+    cy_app_vendor_req_hdlr_cbk_t                vendor_req_handler; /**< Vendor request handler */
+    cy_stc_usbfs_dev_drv_context_t              *usb_drvContext;    /**< USBFS device context structure */
+    cy_stc_usb_dev_context_t                    *usb_devContext;    /**< USB device context structure */
 #if (CY_APP_USB_HID_INTF_ENABLE || DOXYGEN)
-    cy_stc_usb_dev_hid_context_t    *usb_hidContext; /**< HID class context structure */
+    cy_stc_usb_dev_hid_context_t                *usb_hidContext;    /**< HID class context structure */
 #endif /* (CY_APP_USB_HID_INTF_ENABLE || DOXYGEN) */
+    cy_usb_desc_update_cbk_t                    update_usb_descriptors;  /**< USB descriptors update handler */
 } cy_stc_usb_init_ctxt_t;
 
 /** \} group_pmg_app_common_usb_data_structures */
@@ -126,20 +153,17 @@ typedef struct
 /**
  * @brief Initializes the USB application layer
  * @param usbInitCtx Pointer to the USB initialization context
- * @return None
  * */
 void Cy_App_Usb_Init (cy_stc_usb_init_ctxt_t *usbInitCtx);
 
 
 /**
  * @brief Enables the USB device
- * @return None
  * */
 void Cy_App_Usb_Enable (void);
 
 /**
  * @brief Disables the USB device
- * @return None
  * */
 void Cy_App_Usb_Disable (void);
 
@@ -151,25 +175,22 @@ bool Cy_App_Usb_IsIdle (void);
 
 /**
  * @brief Prepares the USB module for Deep Sleep
- * @return None
  * */
 void Cy_App_Usb_Sleep (void);
 
 /**
  * @brief Resumes the USB module from Deep Sleep
- * @return None
  * */
 void Cy_App_Usb_Resume (void);
 
 /**
  * @brief Reads the control endpoint status from the driver and stores the state in the application context.
- * @return None
  * */
 void Cy_App_Usb_GetEp0State(void);
 
 /**
  * @brief Retrieves the pointer to the control endpoint buffer
- * @return None
+ * @return Returns uint8_t pointer to the EP buffer
  * */
 uint8_t *Cy_App_Usb_GetEp0Buffer(void);
 
@@ -243,14 +264,6 @@ cy_en_usb_dev_status_t Cy_App_Usb_VendorReqReceived (cy_stc_usb_dev_control_tran
 cy_en_usb_dev_status_t Cy_App_Usb_VendorReqCompleted (cy_stc_usb_dev_control_transfer_t *transfer, void *classContext, struct cy_stc_usb_dev_context *devContext);
 
 /**
- * @brief Processing the vendor request
- * @param transfer Pointer to the USB transfer structure
- * @return Returns CY_USB_DEV_SUCCESS if successful otherwise,
- * CY_USB_DEV_REQUEST_NOT_HANDLED.
- * */
-cy_en_usb_dev_status_t Cy_App_Usb_VendorReqHandler (cy_stc_usb_dev_control_transfer_t *transfer);
-
-/**
  * @brief Read the received USB data into a buffer
  * @param ep_index Endpoint number
  * @param buffer_p Pointer to the buffer into which received data is read
@@ -273,6 +286,6 @@ cy_en_usb_dev_status_t Cy_App_Usb_SendStatus(cy_app_usb_ep_index_t ep_index, uin
 /** \} group_pmg_app_common_usb_functions */
 /** \} group_pmg_app_common_usb */
 
-#endif /* _CY_APP_USB_H_ */
+#endif /* CY_APP_USB_H */
 
 /* [] End of file */

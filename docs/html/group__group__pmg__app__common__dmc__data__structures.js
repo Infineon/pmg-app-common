@@ -8,7 +8,7 @@ var group__group__pmg__app__common__dmc__data__structures =
     [ "cy_stc_app_dmc_devx_status_t", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__devx__status__t", [
       [ "dev_type", "group__group__pmg__app__common__dmc__data__structures.html#ad8b237f16e203bb362609d0fa4b8abd9", null ],
       [ "comp_id", "group__group__pmg__app__common__dmc__data__structures.html#a9a9f523f2adb5a0af83a605fa1ccdd65", null ],
-      [ "image_mode", "group__group__pmg__app__common__dmc__data__structures.html#abea860140d52fc5bce9bd899be079cab", null ],
+      [ "image_mode", "group__group__pmg__app__common__dmc__data__structures.html#a987982d97fefd020ec8c2a9eecf4983f", null ],
       [ "cur_img", "group__group__pmg__app__common__dmc__data__structures.html#a89150f043da9a75ff1a74e6e12e44606", null ],
       [ "img_status", "group__group__pmg__app__common__dmc__data__structures.html#aff37db8b93e284e82af99e73ae0422c5", null ],
       [ "update_attempt_count", "group__group__pmg__app__common__dmc__data__structures.html#a7058245998e358b55908512a16456eeb", null ],
@@ -23,17 +23,8 @@ var group__group__pmg__app__common__dmc__data__structures =
       [ "devx_status", "group__group__pmg__app__common__dmc__data__structures.html#a44dcb9338ccb448aedf1f249235dc1fb", null ]
     ] ],
     [ "cy_stc_app_dmc_cust_info_t", "group__group__pmg__app__common__dmc__data__structures.html#unioncy__stc__app__dmc__cust__info__t", [
-      [ "misc_status", "group__group__pmg__app__common__dmc__data__structures.html#abe04c0a21a49296da57a73a7f4773779", null ],
+      [ "misc_status", "group__group__pmg__app__common__dmc__data__structures.html#a111196eaf0d37aff4a1cec347a24fe9d", null ],
       [ "data", "group__group__pmg__app__common__dmc__data__structures.html#afbfba8997ad4ccb98ec8e52010352430", null ]
-    ] ],
-    [ "cy_stc_app_dmc_cust_info_t.misc_status", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__cust__info__t_8misc__status", [
-      [ "trigger_phase2", "group__group__pmg__app__common__dmc__data__structures.html#aad5522e2979976192f38e034aa00d8ce", null ],
-      [ "consider_critical_update", "group__group__pmg__app__common__dmc__data__structures.html#a9fe85c9ff3227a52fa1556a04d61762b", null ],
-      [ "candidate_package", "group__group__pmg__app__common__dmc__data__structures.html#a13ed2225a142296557879a19d5b7a34b", null ],
-      [ "force_update_flag", "group__group__pmg__app__common__dmc__data__structures.html#a5c578e7c33668c98bb4c38edffff50ca", null ],
-      [ "read_dock_id", "group__group__pmg__app__common__dmc__data__structures.html#aa36ffbde24e0d83baed08aaa226c8c0c", null ],
-      [ "reserved", "group__group__pmg__app__common__dmc__data__structures.html#a7f005c3fa691e77c52d3297cc2699072", null ],
-      [ "reserved_byte", "group__group__pmg__app__common__dmc__data__structures.html#a952e5af4d6d5a479bdd408a4c0ffefc1", null ]
     ] ],
     [ "cy_stc_app_dmc_dock_metadata_t", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__dock__metadata__t", [
       [ "signature", "group__group__pmg__app__common__dmc__data__structures.html#a5ad7426e058640437ab9184b069a27c6", null ],
@@ -47,7 +38,7 @@ var group__group__pmg__app__common__dmc__data__structures =
       [ "soft_reset_enum", "group__group__pmg__app__common__dmc__data__structures.html#ac70115632a4bc092cf2c69a7bc4229ea", null ],
       [ "cdtt_checksum", "group__group__pmg__app__common__dmc__data__structures.html#a198be0f8a728757a574a312c7d23a6d5", null ],
       [ "status", "group__group__pmg__app__common__dmc__data__structures.html#a4ac21a5c0e238812ca5471e706bcdf18", null ],
-      [ "reserved_1", "group__group__pmg__app__common__dmc__data__structures.html#a2ef7d7ef30d309bc16b192d9c1676f8e", null ]
+      [ "reserved_1", "group__group__pmg__app__common__dmc__data__structures.html#a842cd32b23f0fbf67d84a5d82cca7af2", null ]
     ] ],
     [ "cy_stc_app_dmc_dev_hw_cfg_t", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__dev__hw__cfg__t", [
       [ "base", "group__group__pmg__app__common__dmc__data__structures.html#ab47ce5283ff69f62d88b0ab788cf4efc", null ],
@@ -58,25 +49,27 @@ var group__group__pmg__app__common__dmc__data__structures =
     ] ],
     [ "cy_stc_app_dmc_dev_access_param_t", "group__group__pmg__app__common__dmc__data__structures.html#unioncy__stc__app__dmc__dev__access__param__t", [
       [ "val", "group__group__pmg__app__common__dmc__data__structures.html#a25d1c6a409da759fb96b06bc652f2b10", null ],
-      [ "hpi_i2c_param", "group__group__pmg__app__common__dmc__data__structures.html#ab257936803183f86b9140db0383a6f03", null ],
-      [ "hub_i2c_param", "group__group__pmg__app__common__dmc__data__structures.html#a81096e0f2178aeb52d420207e0ba93ab", null ],
-      [ "hx3pd_hub_spi_param", "group__group__pmg__app__common__dmc__data__structures.html#aca98b325f14374000b54713080c81018", null ]
+      [ "hpi_i2c_param", "group__group__pmg__app__common__dmc__data__structures.html#a4ce7d00321429dc826dbd719d804da7c", null ],
+      [ "hub_i2c_param", "group__group__pmg__app__common__dmc__data__structures.html#a3030f4b2dd3af548d869a4202f0cd628", null ],
+      [ "hx3pd_hub_spi_param", "group__group__pmg__app__common__dmc__data__structures.html#a99cc53b86b0f903ad372ae65f7873322", null ]
     ] ],
-    [ "cy_stc_app_hx3pd_hub_spi_param", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__dev__access__param__t_1_1cy__stc__app__hx3pd__hub__spi__param", [
-      [ "reset_gpio", "group__group__pmg__app__common__dmc__data__structures.html#aee37dbf58e03823730935aae71141178", null ],
-      [ "wp_gpio", "group__group__pmg__app__common__dmc__data__structures.html#a19cfa2d8beda09445f9d9c4978d43dd2", null ],
-      [ "reserved", "group__group__pmg__app__common__dmc__data__structures.html#abf59614dd8af132756900b38c663a0b5", null ]
+    [ "cy_stc_app_dmc_dev_access_param_t::cy_stc_app_hpi_i2c_param", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__dev__access__param__t_1_1cy__stc__app__hpi__i2c__param", [
+      [ "slave_addr", "group__group__pmg__app__common__dmc__data__structures.html#a4344fc163c0f067575303ac62ee1ca17", null ],
+      [ "hpi_intr_gpio", "group__group__pmg__app__common__dmc__data__structures.html#a3a61af21e34cfee0631368768ed513e6", null ],
+      [ "debug_log_row_md_lsb", "group__group__pmg__app__common__dmc__data__structures.html#ac7a7a266db45a689bac45c77a85c0d10", null ],
+      [ "debug_log_row_md_msb", "group__group__pmg__app__common__dmc__data__structures.html#aa760b8877c973414bb6c0ec4af5f9665", null ],
+      [ "reserved", "group__group__pmg__app__common__dmc__data__structures.html#a31b88e381195a3a38316f3d8be2fece8", null ]
     ] ],
-    [ "cy_stc_app_hub_i2c_param", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__dev__access__param__t_1_1cy__stc__app__hub__i2c__param", [
+    [ "cy_stc_app_dmc_dev_access_param_t::cy_stc_app_hub_i2c_param", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__dev__access__param__t_1_1cy__stc__app__hub__i2c__param", [
       [ "slave_addr", "group__group__pmg__app__common__dmc__data__structures.html#adfa74f7093c501845ce60ec1648235bf", null ],
       [ "reset_gpio", "group__group__pmg__app__common__dmc__data__structures.html#a718647c6c9241287f6706ea8e2fd1519", null ],
       [ "wp_gpio", "group__group__pmg__app__common__dmc__data__structures.html#a2557502d7654ecde43511b6473c36b7c", null ],
       [ "reserved", "group__group__pmg__app__common__dmc__data__structures.html#a3709c30dc69fdccd2663913e96a2c3c4", null ]
     ] ],
-    [ "cy_stc_app_hpi_i2c_param", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__dev__access__param__t_1_1cy__stc__app__hpi__i2c__param", [
-      [ "slave_addr", "group__group__pmg__app__common__dmc__data__structures.html#a4344fc163c0f067575303ac62ee1ca17", null ],
-      [ "hpi_intr_gpio", "group__group__pmg__app__common__dmc__data__structures.html#a3a61af21e34cfee0631368768ed513e6", null ],
-      [ "reserved", "group__group__pmg__app__common__dmc__data__structures.html#a0b4a0423c47e7c39bae83d715a8543da", null ]
+    [ "cy_stc_app_dmc_dev_access_param_t::cy_stc_app_hx3pd_hub_spi_param", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__dev__access__param__t_1_1cy__stc__app__hx3pd__hub__spi__param", [
+      [ "reset_gpio", "group__group__pmg__app__common__dmc__data__structures.html#aee37dbf58e03823730935aae71141178", null ],
+      [ "wp_gpio", "group__group__pmg__app__common__dmc__data__structures.html#a19cfa2d8beda09445f9d9c4978d43dd2", null ],
+      [ "reserved", "group__group__pmg__app__common__dmc__data__structures.html#abf59614dd8af132756900b38c663a0b5", null ]
     ] ],
     [ "cy_stc_dmc_app_cbk_t", "structcy__stc__dmc__app__cbk__t.html", [
       [ "init_dock_reset", "structcy__stc__dmc__app__cbk__t.html#a31cce731a1550dcb563fdc33e1e217f1", null ],
@@ -94,8 +87,8 @@ var group__group__pmg__app__common__dmc__data__structures =
       [ "usb_receive_data", "structcy__stc__dmc__app__cbk__t.html#a8974ca2a95e8bc6fec7ad44c3b371daa", null ],
       [ "usb_ep0_setup_read", "structcy__stc__dmc__app__cbk__t.html#ab6711457165aea25e7cd1e8f04424ae6", null ],
       [ "usb_ep0_setup_write", "structcy__stc__dmc__app__cbk__t.html#ac50ed0236d453cf8fd0df6d2e6df28f3", null ],
-      [ "usb_get_ep0_buffer", "structcy__stc__dmc__app__cbk__t.html#ac3ec0e14601269798e007cad85da9c21", null ],
-      [ "app_fw_update_complete_handler", "structcy__stc__dmc__app__cbk__t.html#a22d9b7725c5112733a3f49ac5bb25747", null ],
+      [ "usb_get_ep0_buffer", "structcy__stc__dmc__app__cbk__t.html#af8ebf9d3124dcf290b5eb7f2f184e83a", null ],
+      [ "app_fw_update_complete_handler", "structcy__stc__dmc__app__cbk__t.html#a3bbe80740050749ca7ba0fea902701b7", null ],
       [ "led_set_mode", "structcy__stc__dmc__app__cbk__t.html#a07e8e0936f0b7716983a1bfaf84da3b7", null ],
       [ "app_event_handler", "structcy__stc__dmc__app__cbk__t.html#a280113b838d48a05c68aa28bcff2bbfa", null ],
       [ "get_public_key_id", "structcy__stc__dmc__app__cbk__t.html#aa28e17e5b0bb68ac363940ac54dd13df", null ]
@@ -121,17 +114,27 @@ var group__group__pmg__app__common__dmc__data__structures =
       [ "prepare_update", "structcy__stc__app__dmc__update__opern__t.html#aeb3efe4f3e04369f371984572d1209d7", null ],
       [ "flash_row", "structcy__stc__app__dmc__update__opern__t.html#ab4fb133c70fb172e19b373d8a178e6d6", null ],
       [ "finish_update", "structcy__stc__app__dmc__update__opern__t.html#a80030147193af5795168050d973cfc28", null ],
-      [ "check_fw_version", "structcy__stc__app__dmc__update__opern__t.html#a9867723962c44325ab0e3efac7cf7017", null ],
+      [ "check_fw_version", "structcy__stc__app__dmc__update__opern__t.html#ab2178d6a647c87d01010f2865e632627", null ],
       [ "jump_to_alternate", "structcy__stc__app__dmc__update__opern__t.html#a8e6acd851abb8d4c388aeff8b0d2df5e", null ],
       [ "is_dev_query_deferred", "structcy__stc__app__dmc__update__opern__t.html#a59d2295604000ccfbf12064ddfc6bfc8", null ],
       [ "dev_update_logic", "structcy__stc__app__dmc__update__opern__t.html#af5e4675912d122ac3bd542da1cf8b066", null ],
       [ "skip_jump_to_alt_request", "structcy__stc__app__dmc__update__opern__t.html#a699b3deb0f84a8b301d14bb2961f2240", null ],
-      [ "dev_config_hw_interface", "structcy__stc__app__dmc__update__opern__t.html#ab8c4831d7c84ed2fcaf032c01e242dba", null ]
+      [ "dev_config_hw_interface", "structcy__stc__app__dmc__update__opern__t.html#ab8c4831d7c84ed2fcaf032c01e242dba", null ],
+      [ "power_on_update_needed", "structcy__stc__app__dmc__update__opern__t.html#a786c8591d5ce4f0d4f272dcb69a32dc8", null ]
     ] ],
     [ "cy_stc_app_dmc_int_ep_status_t", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__int__ep__status__t", [
       [ "opcode", "group__group__pmg__app__common__dmc__data__structures.html#af8989f8fd240773d105fd70a08c753ed", null ],
       [ "length", "group__group__pmg__app__common__dmc__data__structures.html#ae85b0c48ad82af0e9d0013e16953bcc6", null ],
       [ "data", "group__group__pmg__app__common__dmc__data__structures.html#a72734cbc16611fa87c9f212b6e37f557", null ]
+    ] ],
+    [ "cy_stc_app_dmc_cust_info_t.misc_status", "group__group__pmg__app__common__dmc__data__structures.html#structcy__stc__app__dmc__cust__info__t_8misc__status", [
+      [ "trigger_phase2", "group__group__pmg__app__common__dmc__data__structures.html#aad5522e2979976192f38e034aa00d8ce", null ],
+      [ "consider_critical_update", "group__group__pmg__app__common__dmc__data__structures.html#a9fe85c9ff3227a52fa1556a04d61762b", null ],
+      [ "candidate_package", "group__group__pmg__app__common__dmc__data__structures.html#a13ed2225a142296557879a19d5b7a34b", null ],
+      [ "force_update_flag", "group__group__pmg__app__common__dmc__data__structures.html#a5c578e7c33668c98bb4c38edffff50ca", null ],
+      [ "read_dock_id", "group__group__pmg__app__common__dmc__data__structures.html#aa36ffbde24e0d83baed08aaa226c8c0c", null ],
+      [ "reserved", "group__group__pmg__app__common__dmc__data__structures.html#a7f005c3fa691e77c52d3297cc2699072", null ],
+      [ "reserved_byte", "group__group__pmg__app__common__dmc__data__structures.html#a952e5af4d6d5a479bdd408a4c0ffefc1", null ]
     ] ],
     [ "cy_app_usb_setup_cbk_t", "group__group__pmg__app__common__dmc__data__structures.html#ga07ecf230df9b5904414eb21b4cfb0581", null ],
     [ "cy_stc_app_dmc_completion_cbk_t", "group__group__pmg__app__common__dmc__data__structures.html#ga49e469810d6a54a04ced1ae1e60d5097", null ]

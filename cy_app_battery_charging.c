@@ -1,21 +1,41 @@
 /***************************************************************************//**
 * \file cy_app_battery_charging.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements the battery charging functions.
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
 
-#include "cybsp.h"
 #include "cy_app_battery_charging.h"
 #include "cy_pdstack_common.h"
 #include "cy_pdstack_dpm.h"
@@ -26,6 +46,7 @@
 #include "cy_pdutils_sw_timer.h"
 #include "cy_app_timer_id.h"
 #include "cy_app.h"
+#include "cy_app_internal.h"
 
 #if CY_HPI_ENABLED
 #include "cy_hpi.h"
@@ -43,8 +64,6 @@ const uint16_t gl_apple_id_to_cur_map [] = {
     APPLE_AMP_3A
 };
 #endif /* (!APPLE_SOURCE_DISABLE) */
-
-extern cy_app_sln_cbk_t *glPtrSlnCbk;
 
 /* Callbacks from BC PHY. */
 static void bc_phy_cbk_handler(void *context, uint32_t event);
@@ -140,13 +159,13 @@ void (*const bc_fsm_table[BC_FSM_MAX_STATES]) (cy_stc_usbpd_context_t *context, 
 #if CY_HPI_ENABLED
 static const uint8_t gl_bc_hpi_map[BC_CHARGE_CDP+1] =
 {
-    0x00,   /* BC_CHARGE_NONE. */
-    0x04,    /* BC_CHARGE_DCP. */
-    0x05,    /* BC_CHARGE_QC2. */
-    0x06,   /* BC_CHARGE_QC3. */
-    0x07,   /* BC_CHARGE_AFC. */
-    0x08,   /* BC_CHARGE_APPLE. */
-    0x03    /* BC_CHARGE_CDP. */
+    0x00u,   /* BC_CHARGE_NONE. */
+    0x04u,    /* BC_CHARGE_DCP. */
+    0x05u,    /* BC_CHARGE_QC2. */
+    0x06u,   /* BC_CHARGE_QC3. */
+    0x07u,   /* BC_CHARGE_AFC. */
+    0x08u,   /* BC_CHARGE_APPLE. */
+    0x03u    /* BC_CHARGE_CDP. */
 };
 #endif /* CY_HPI_ENABLED */
 
@@ -203,7 +222,7 @@ bool bc_psnk_enable(cy_stc_usbpd_context_t * context)
     }
     else
     {
-        Cy_App_Bc_Stop(context);
+        (void)Cy_App_Bc_Stop(context);
         return false;
     }
 }
@@ -289,7 +308,7 @@ static void bc_psrc_enable(cy_stc_usbpd_context_t *context, uint16_t volt_mV)
 #endif /* CCG_TYPE_A_PORT_ENABLE */
     {
         Cy_App_Source_SetVoltage(pdstack_ctx, volt_mV);
-        Cy_App_Source_Enable(pdstack_ctx, bc_pwr_ready_cbk);
+        Cy_App_Source_Enable(pdstack_ctx, &bc_pwr_ready_cbk);
     }
 }
 #endif /* (!CY_PD_SINK_ONLY) */
@@ -353,7 +372,7 @@ static void bc_fsm_src_look_for_connect(cy_stc_usbpd_context_t *context, cy_en_b
 
 #if  (ENABLE_APPLE_BC12_SUPPORT || (!APPLE_SOURCE_DISABLE))
     uint8_t chgb_dm_comp_ref = (uint8_t)CHGB_VREF_2_2V;
-    (void)chgb_dm_comp_ref;
+    CY_UNUSED_PARAMETER(chgb_dm_comp_ref);
 #if  (ENABLE_APPLE_BC12_SUPPORT)
     bool comp0_flag, comp1_flag;
 #endif /* (ENABLE_APPLE_BC12_SUPPORT) */
@@ -513,7 +532,9 @@ static void bc_fsm_src_look_for_connect(cy_stc_usbpd_context_t *context, cy_en_b
             {
                 if(pdstack_ctx->dpmStat.pdDisabled != false)
                 {
+#if (!PMG1B1_BI_DIRECTION)
                     if(Cy_App_GetStatus(context->port)->is_vbus_on != true)
+#endif
                     {
                         bc_psrc_enable(context, CY_PD_VSAFE_5V);
                     }
@@ -793,8 +814,8 @@ static void bc_fsm_src_initial_connect(cy_stc_usbpd_context_t *context, cy_en_bc
 
 static void bc_fsm_src_apple_connected(cy_stc_usbpd_context_t *context, cy_en_bc_fsm_evt_t evt)
 {
-    (void)context;
-    (void)evt;
+    CY_UNUSED_PARAMETER(context);
+    CY_UNUSED_PARAMETER(evt);
 }
 
 #if (!(QC_SRC_AFC_CHARGING_DISABLED || QC_AFC_CHARGING_DISABLED))
@@ -869,8 +890,8 @@ static void bc_fsm_src_qc_or_afc(cy_stc_usbpd_context_t *context, cy_en_bc_fsm_e
         case BC_FSM_EVT_ENTRY:
             if((chg_config->srcSel & BC_SRC_AFC_MODE_ENABLE_MASK) != 0u)
             {
-                bc_stat->afc_src_msg_count = 0;
-                bc_stat->afc_src_match_count = 0;
+                bc_stat->afc_src_msg_count = 0u;
+                bc_stat->afc_src_match_count = 0u;
                 bc_stat->afc_src_is_matched = false;
                 (void)Cy_USBPD_Bch_AfcSrcInit(context);
                 (void)Cy_USBPD_Bch_AfcSrcStart(context);
@@ -911,8 +932,8 @@ static void bc_fsm_src_qc_or_afc(cy_stc_usbpd_context_t *context, cy_en_bc_fsm_e
 
         case BC_FSM_EVT_AFC_RESET_RCVD:
             (void)Cy_USBPD_Bch_AfcSrcStop(context);
-            bc_stat->afc_src_msg_count = 0;
-            bc_stat->afc_src_match_count = 0;
+            bc_stat->afc_src_msg_count = 0u;
+            bc_stat->afc_src_match_count = 0u;
             bc_stat->afc_src_is_matched = false;
             bc_stat->afc_tx_active = (uint8_t)false;
             (void)Cy_USBPD_Bch_AfcSrcStart(context);
@@ -1018,7 +1039,7 @@ static void bc_fsm_src_qc_connected(cy_stc_usbpd_context_t *context, cy_en_bc_fs
 
         case BC_FSM_EVT_QC_CONT:
             pulse_count = Cy_USBPD_Bch_Get_QcPulseCount(context);
-            if(pulse_count > 0)
+            if(pulse_count > 0u)
             {
                 /* Voltage change in mV units. Each pulse cause 200 mV change. */
                 new_volt = (uint32_t)pulse_count * QC_CONT_VOLT_CHANGE_PER_PULSE;
@@ -1080,8 +1101,8 @@ static void bc_afc_src_evaluate_match(cy_stc_usbpd_context_t *context)
     {
         if(bc_stat->afc_src_match_count >= 2u)
         {
-            bc_stat->afc_src_msg_count = 0;
-            bc_stat->afc_src_match_count = 0;
+            bc_stat->afc_src_msg_count = 0u;
+            bc_stat->afc_src_match_count = 0u;
             bc_stat->cur_amp = ((uint16_t)AFC_BASE_AMP + (CY_PDUTILS_BYTE_GET_LOWER_NIBBLE((uint16_t)bc_stat->afc_src_matched_byte) * (uint16_t)AFC_AMP_STEP));
             bc_psrc_enable(context, (AFC_BASE_VOLT + (CY_PDUTILS_BYTE_GET_UPPER_NIBBLE(bc_stat->afc_src_matched_byte) * AFC_VOLT_STEP)));
             (void)Cy_USBPD_Bch_AfcSrcStart(context);
@@ -1089,8 +1110,8 @@ static void bc_afc_src_evaluate_match(cy_stc_usbpd_context_t *context)
         else
         {
             /* Enters default operation and clears AFC counters if three attempts fail.  */
-            bc_stat->afc_src_msg_count = 0;
-            bc_stat->afc_src_match_count = 0;
+            bc_stat->afc_src_msg_count = 0u;
+            bc_stat->afc_src_match_count = 0u;
             bc_stat->cur_volt = CY_PD_VSAFE_5V;
             bc_stat->cur_amp = BC_AMP_LIMIT;
             bc_psrc_enable(context, CY_PD_VSAFE_5V);
@@ -1122,7 +1143,7 @@ static void bc_afc_src_handle_rcvd_msg(cy_stc_usbpd_context_t *context)
     uint8_t src_count = bc_afc_src_get_vi_count(context);
     /* Sets Tx active flag. */
     bc_stat->afc_tx_active = (uint8_t)true;
-    for(i = 0; i < src_count; i++)
+    for(i = 0u; i < src_count; i++)
     {
         if(((rcvd_vi[0] & 0xF0u) == (src_vi[i] & 0xF0u) ) &&
            ((rcvd_vi[0] & 0xFu) <= (src_vi[i] & 0xFu)))
@@ -1135,8 +1156,8 @@ static void bc_afc_src_handle_rcvd_msg(cy_stc_usbpd_context_t *context)
     }
     bc_stat->afc_src_is_matched = false;
     /* If there is no match, clears both the AFC counters. */
-    bc_stat->afc_src_msg_count = 0;
-    bc_stat->afc_src_match_count = 0;
+    bc_stat->afc_src_msg_count = 0u;
+    bc_stat->afc_src_match_count = 0u;
     Cy_USBPD_Bch_Afc_Set_Tx_Data(context, src_vi, src_count);
 }
 
@@ -1166,8 +1187,8 @@ static void bc_fsm_src_afc_connected(cy_stc_usbpd_context_t *context, cy_en_bc_f
             (void)Cy_USBPD_Bch_AfcSrcStop(context);
             bc_stat->cur_volt = CY_PD_VSAFE_5V;
             bc_psrc_enable(context, CY_PD_VSAFE_5V);
-            bc_stat->afc_src_msg_count = 0;
-            bc_stat->afc_src_match_count = 0;
+            bc_stat->afc_src_msg_count = 0u;
+            bc_stat->afc_src_match_count = 0u;
             bc_stat->afc_src_is_matched = false;
             bc_stat->afc_tx_active = (uint8_t)false;
             (void)Cy_USBPD_Bch_AfcSrcStart(context);
@@ -1292,7 +1313,7 @@ void bc_snk_try_next_protocol(cy_stc_usbpd_context_t * context)
                 (bc_stat->max_amp > CY_PD_I_1P5A)
            )
         {
-            Cy_App_Bc_Stop(context);
+            (void)Cy_App_Bc_Stop(context);
         }
         else
         {
@@ -1300,7 +1321,7 @@ void bc_snk_try_next_protocol(cy_stc_usbpd_context_t * context)
             /* DCP is connected. */
             bc_set_current_mode(context, BC_CHARGE_DCP);
             bc_psnk_enable(context);
-            Cy_USBPD_Bch_Phy_Dis(context);
+            (void)Cy_USBPD_Bch_Phy_Dis(context);
         }
     }
 }
@@ -1314,14 +1335,14 @@ static void bc_fsm_sink_start(cy_stc_usbpd_context_t *context, cy_en_bc_fsm_evt_
     if (evt == BC_FSM_EVT_ENTRY)
     {
 #if QC_AFC_SNK_EN
-        Cy_USBPD_Bch_Phy_DisableComp(context, BC_CMP_0_IDX);
+        (void)Cy_USBPD_Bch_Phy_DisableComp(context, BC_CMP_0_IDX);
         Cy_PdUtils_SwTimer_StopRange(bc_stat->ptr_timer_ctx, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
                 CY_APP_GET_TIMER_ID(context, CY_APP_BC_DP_DM_DEBOUNCE_TIMER));
         Cy_App_Bc_FsmClearEvt(context, BC_EVT_ALL_MASK);
 #endif /* QC_AFC_SNK_EN */
         /* Resets the charger detect hardware block by disabling and enabling it. */
-        Cy_USBPD_Bch_Phy_Dis(context);
-        Cy_USBPD_Bch_Phy_En(context);
+        (void)Cy_USBPD_Bch_Phy_Dis(context);
+        (void)Cy_USBPD_Bch_Phy_En(context);
 
 #if QC_AFC_SNK_EN
         Cy_App_Bc_FsmSetEvt(context,BC_CHARGE_NONE);
@@ -1341,7 +1362,7 @@ static void bc_fsm_sink_start(cy_stc_usbpd_context_t *context, cy_en_bc_fsm_evt_
         /* No legacy charging mode is enabled. Assume Type-C only source. Stop BC FSM. */
         else
         {
-            Cy_App_Bc_Stop(context);
+            (void)Cy_App_Bc_Stop(context);
         }
 #else
         bc_set_current_mode(context, BC_CHARGE_NONE);
@@ -1423,7 +1444,7 @@ static void bc_fsm_sink_apple_charger_detect(cy_stc_usbpd_context_t * context, c
         /* No legacy charging mode is enabled. Assume Type-C only source. */
         else
         {
-            Cy_App_Bc_Stop(context);
+            (void)Cy_App_Bc_Stop(context);
         }
 #else
         else
@@ -1444,8 +1465,8 @@ static void bc_fsm_sink_apple_charger_detect(cy_stc_usbpd_context_t * context, c
 #endif /* QC_AFC_SNK_EN */
     }
 #else
-    (void)evt;
-    (void)context;
+    CY_UNUSED_PARAMETER(evt);
+    CY_UNUSED_PARAMETER(context);
 #endif /* (!APPLE_SINK_DISABLE) */
 }
 
@@ -1505,12 +1526,12 @@ static void bc_fsm_sink_apple_brick_id_detect(cy_stc_usbpd_context_t * context, 
         Cy_USBPD_Bch_Disable_AppleDet(context);
 
         /* Evaluates Apple termination detected. */
-        bc_eval_apple_brick_id (context, (cy_en_bc_apple_brick_id_t)((uint8_t)dp_term | ((uint8_t)dm_term << 0x04)));
+        bc_eval_apple_brick_id (context, (cy_en_bc_apple_brick_id_t)((uint8_t)dp_term | ((uint8_t)dm_term << 0x04u)));
 
     }
 #else
-    (void)context;
-    (void)evt;
+    CY_UNUSED_PARAMETER(context);
+    CY_UNUSED_PARAMETER(evt);
 #endif /* (!APPLE_SINK_DISABLE) */
 }
 
@@ -1526,15 +1547,15 @@ static void bc_fsm_sink_primary_charger_detect(cy_stc_usbpd_context_t *context, 
     {
         case BC_FSM_EVT_ENTRY:
             /* Apply terminations on D+/- and start VDP_DM_SRC_ON timer to schedule the next step. */
-            Cy_USBPD_Bch_Phy_ConfigSnkTerm (context, CHGB_SINK_TERM_PCD);
-            Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, (void *)context,
+            (void)Cy_USBPD_Bch_Phy_ConfigSnkTerm (context, CHGB_SINK_TERM_PCD);
+            (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, (void *)context,
                     CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
                     CY_APP_BC_VDP_DM_SRC_ON_PERIOD, bc_timer_cb);
             break;
 
         case BC_FSM_EVT_TIMEOUT1:
             /* Now measure D- and see if D- is pulled up to VDP_SRC. */
-            if (Cy_USBPD_Bch_Phy_Config_Comp (context, 0, CHGB_COMP_P_DM, CHGB_COMP_N_VREF,
+            if (Cy_USBPD_Bch_Phy_Config_Comp (context, 0u, CHGB_COMP_P_DM, CHGB_COMP_N_VREF,
                         CHGB_VREF_0_325V, CHGB_COMP_NO_INTR) == true)
             {
 #if QC_AFC_SNK_EN
@@ -1555,7 +1576,7 @@ static void bc_fsm_sink_primary_charger_detect(cy_stc_usbpd_context_t *context, 
                         else
                         {
                             /* Type-C only source connected. */
-                            Cy_App_Bc_Stop(context);
+                            (void)Cy_App_Bc_Stop(context);
                         }
                     }
                 }
@@ -1563,7 +1584,7 @@ static void bc_fsm_sink_primary_charger_detect(cy_stc_usbpd_context_t *context, 
 #endif /* QC_AFC_SNK_EN */
                 {
                     /* Starts timer for source to differentiate between primary and secondary detection. */
-                    Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER2), CY_APP_BC_VDMSRC_EN_DIS_PERIOD, bc_timer_cb);
+                    (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER2), CY_APP_BC_VDMSRC_EN_DIS_PERIOD, bc_timer_cb);
                 }
             }
 #if QC_AFC_SNK_EN
@@ -1578,7 +1599,7 @@ static void bc_fsm_sink_primary_charger_detect(cy_stc_usbpd_context_t *context, 
             {
                 /* Type-C only source connected. */
 #if QC_AFC_SNK_EN
-                Cy_App_Bc_Stop(context);
+                (void)Cy_App_Bc_Stop(context);
 #else           
                 bc_stat->bc_fsm_state = BC_FSM_SINK_TYPE_C_ONLY_SOURCE_CONNECTED;
                 Cy_App_Bc_FsmSetEvt(context, BC_EVT_ENTRY);
@@ -1586,7 +1607,7 @@ static void bc_fsm_sink_primary_charger_detect(cy_stc_usbpd_context_t *context, 
             }
 
             /* Removes applied terminations */
-            Cy_USBPD_Bch_Phy_RemoveTerm(context);
+            (void)Cy_USBPD_Bch_Phy_RemoveTerm(context);
             break;
 
         case BC_FSM_EVT_TIMEOUT2:
@@ -1596,6 +1617,7 @@ static void bc_fsm_sink_primary_charger_detect(cy_stc_usbpd_context_t *context, 
             break;
 
         default:
+            /* No handling needed in other cases */
             break;
     }
 }
@@ -1605,7 +1627,7 @@ static void bc_fsm_sink_type_c_only_source_connected(cy_stc_usbpd_context_t *con
     if (evt == BC_FSM_EVT_ENTRY)
     {
         /* Disables charger detect block operation. */
-        Cy_USBPD_Bch_Phy_Dis(context);
+        (void)Cy_USBPD_Bch_Phy_Dis(context);
 
 #if defined(CY_DEVICE_CCG6)
         /* TBD: Enable DP/DM Mux. */
@@ -1622,10 +1644,10 @@ static void bc_fsm_sink_secondary_charger_detect(cy_stc_usbpd_context_t *context
     {
         case BC_FSM_EVT_ENTRY:
             /* Applies terminations on D+/-. */
-            Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_SCD);
+            (void)Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_SCD);
 
             /* Starts timer to apply VDM_SRC for TVDM_SRC_ON. */
-            Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, (void *)context,
+            (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, (void *)context,
                     CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
                     CY_APP_BC_VDP_DM_SRC_ON_PERIOD, bc_timer_cb);
             break;
@@ -1649,10 +1671,11 @@ static void bc_fsm_sink_secondary_charger_detect(cy_stc_usbpd_context_t *context
             Cy_App_Bc_FsmSetEvt(context, BC_EVT_ENTRY);
 
             /* Removes applied terminations. */
-            Cy_USBPD_Bch_Phy_RemoveTerm(context);
+            (void)Cy_USBPD_Bch_Phy_RemoveTerm(context);
             break;
 
         default:
+            /* No handling needed in other cases */
             break;
     }
 }
@@ -1672,7 +1695,7 @@ static void bc_fsm_sink_dcp_connected(cy_stc_usbpd_context_t * context, cy_en_bc
              */
 
             /* Puts back VDP_SRC and IDM_SINK to measure D-. */
-            Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_PCD);
+            (void)Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_PCD);
             /* Sets up the comparator to monitor D- and see if it is pulled down. */
             Cy_USBPD_Bch_Phy_Config_Comp(context, BC_CMP_0_IDX, CHGB_COMP_P_DM, CHGB_COMP_N_VREF,
                     CHGB_VREF_0_325V, CHGB_COMP_EDGE_FALLING);
@@ -1680,7 +1703,7 @@ static void bc_fsm_sink_dcp_connected(cy_stc_usbpd_context_t * context, cy_en_bc
              * Starts TGLITCH_BC_DONE (1.5 s). If D- is pulled low within this time,
              * then charger is QC/AFC. Otherwise it is DCP.
              */
-            Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
+            (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
                 CY_APP_BC_GLITCH_BC_DONE_TIMER_PERIOD, bc_timer_cb);
             bc_stat->cur_timer = BC_SINK_TIMER_BC_DONE;
 
@@ -1706,7 +1729,7 @@ static void bc_fsm_sink_dcp_connected(cy_stc_usbpd_context_t * context, cy_en_bc
                  */
                 bc_snk_try_next_protocol(context);
             }
-            Cy_USBPD_Bch_Phy_DisableComp(context, BC_CMP_0_IDX);
+            (void)Cy_USBPD_Bch_Phy_DisableComp(context, BC_CMP_0_IDX);
             break;
 
         case BC_FSM_EVT_CMP1_FIRE:
@@ -1720,7 +1743,7 @@ static void bc_fsm_sink_dcp_connected(cy_stc_usbpd_context_t * context, cy_en_bc
                 Cy_PdUtils_SwTimer_Stop(bc_stat->ptr_timer_ctx, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1));
                 Cy_USBPD_Bch_Phy_Config_Comp(context, BC_CMP_0_IDX, CHGB_COMP_P_DM, CHGB_COMP_N_VREF,
                     CHGB_VREF_0_325V, CHGB_COMP_EDGE_RISING);
-                Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
+                (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
                     CY_APP_BC_GLITCH_DM_HIGH_TIMER_PERIOD, bc_timer_cb);
                 bc_stat->cur_timer = BC_SINK_TIMER_DM_HIGH;
             }
@@ -1732,6 +1755,7 @@ static void bc_fsm_sink_dcp_connected(cy_stc_usbpd_context_t * context, cy_en_bc
             break;
 
         default:
+            /* No handling needed in other cases */
             break;
     }
 }
@@ -1743,7 +1767,7 @@ static void bc_fsm_sink_dcp_connected(cy_stc_usbpd_context_t *context, cy_en_bc_
 
     if (evt == BC_FSM_EVT_ENTRY)
     {
-        Cy_USBPD_Bch_Phy_Dis(context);
+        (void)Cy_USBPD_Bch_Phy_Dis(context);
 
 #if defined(CY_DEVICE_CCG6)
         /* TBD: Enable DP/DM Mux if not done so far. */
@@ -1773,14 +1797,14 @@ static void bc_fsm_sink_sdp_connected(cy_stc_usbpd_context_t *context, cy_en_bc_
         Cy_App_Sink_Enable(pdstack_ctx);
 #else
         /* In case of BCR2, use higher Type-C current limit. */
-        Cy_App_Bc_Stop(context);
-        (void)pdstack_ctx;
+        (void)Cy_App_Bc_Stop(context);
+        CY_UNUSED_PARAMETER(pdstack_ctx);
 #endif /* !CY_PD_SINK_ONLY  */
 #else
         Cy_App_Sink_SetCurrent(pdstack_ctx, CY_PD_ISAFE_DEF);
         Cy_App_Sink_Enable(pdstack_ctx);
 #endif /* QC_AFC_SNK_EN */
-        Cy_USBPD_Bch_Phy_Dis(context);
+        (void)Cy_USBPD_Bch_Phy_Dis(context);
 
 #if defined(CY_DEVICE_CCG6)
         /* TBD: Enable DP/DM Mux if not done so far. */
@@ -1795,7 +1819,7 @@ static void bc_fsm_sink_cdp_connected(cy_stc_usbpd_context_t *context, cy_en_bc_
 
     if (evt == BC_FSM_EVT_ENTRY)
     {
-        Cy_USBPD_Bch_Phy_Dis(context);
+        (void)Cy_USBPD_Bch_Phy_Dis(context);
 
 #if defined(CY_DEVICE_CCG6)
         /* TBD: Enable DP/DM Mux if not done so far. */
@@ -1810,7 +1834,7 @@ static void bc_fsm_sink_cdp_connected(cy_stc_usbpd_context_t *context, cy_en_bc_
 #if QC_AFC_SNK_EN
 static uint8_t bc_sink_calculate_required_current(cy_stc_usbpd_context_t* context, uint16_t cur10mA)
 {
-    (void)context;
+    CY_UNUSED_PARAMETER(context);
     uint32_t new_current;
     /* Converts current to 10 mA units. */
     new_current = cur10mA;
@@ -1821,14 +1845,14 @@ static uint8_t bc_sink_calculate_required_current(cy_stc_usbpd_context_t* contex
         new_current = AFC_BASE_AMP;
     }
     /* AFC protocol defines max. charging current 3 A. */
-    return ((CY_PDUTILS_GET_MIN(((new_current - AFC_BASE_AMP)/AFC_AMP_STEP), AFC_MAX_AMP))  & 0x0F);
+    return ((CY_PDUTILS_GET_MIN(((new_current - AFC_BASE_AMP)/AFC_AMP_STEP), AFC_MAX_AMP))  & 0x0Fu);
 }
 
 static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_en_bc_fsm_evt_t evt)
 {
     cy_stc_bc_status_t* bc_stat = &gl_bc_status[context->port];
     cy_stc_pdstack_context_t *pdstack_ctx = Cy_PdStack_Dpm_GetContext(context->port);
-    uint16_t vbus = 0;
+    uint16_t vbus = 0u;
     uint8_t i;
     uint8_t rcvd_vi;
     bool new_VI_BYTE_flag = false;
@@ -1837,12 +1861,12 @@ static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_e
     {
         case BC_FSM_EVT_ENTRY:
             /* Sets AFC sink termination. */
-            Cy_USBPD_Bch_Phy_ConfigSnkTerm(context,CHGB_SINK_TERM_AFC);
+            (void)Cy_USBPD_Bch_Phy_ConfigSnkTerm(context,CHGB_SINK_TERM_AFC);
 
             Cy_USBPD_Bch_AfcSinkInit(context);
             /* Forms initial request. */
             /* Sets Vmax from rotary switch at firs.t */
-            bc_stat->afc_snk_cur_vi_byte = (((((bc_stat->max_volt - AFC_BASE_VOLT)/AFC_VOLT_STEP) << 4 ) & 0xF0) |
+            bc_stat->afc_snk_cur_vi_byte = (((((bc_stat->max_volt - AFC_BASE_VOLT)/AFC_VOLT_STEP) << 4u ) & 0xF0u) |
                                     bc_sink_calculate_required_current(context, bc_stat->max_amp));
 
             Cy_App_Sink_SetVoltage(pdstack_ctx, bc_stat->max_volt);
@@ -1853,22 +1877,22 @@ static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_e
             /* Enables AFC interrupt, init Rx buffer, and start transaction. */
             Cy_USBPD_Bch_AfcSinkStart(context);
 
-            bc_stat->afc_retry_count = 0;
-            Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER2), CY_APP_BC_AFC_SNK_VI_BYTE_PERIOD, bc_timer_cb);
+            bc_stat->afc_retry_count = 0u;
+            (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER2), CY_APP_BC_AFC_SNK_VI_BYTE_PERIOD, bc_timer_cb);
             break;
 
         case BC_FSM_EVT_TIMEOUT2:
             /* Checks received data in buffer. */
-            if(Cy_USBPD_Bch_AfcGetRxDataCount(context) > 0)
+            if(Cy_USBPD_Bch_AfcGetRxDataCount(context) > 0u)
             {
                 /* Checks if sent and received VI_BYTE are equal. */
                 rcvd_vi = *Cy_USBPD_Bch_AfcGetRxDataPtr(context);
                 if(rcvd_vi == bc_stat->afc_snk_cur_vi_byte)
                 {
                     vbus = Cy_App_VbusGetValue(pdstack_ctx);
-                    uint16_t vbus_vi = ((rcvd_vi >> 4) * AFC_VOLT_STEP) + AFC_BASE_VOLT;
+                    uint16_t vbus_vi = ((rcvd_vi >> 4u * AFC_VOLT_STEP) + AFC_BASE_VOLT;
                     /* Checks if required VBUS voltage is set with +/- 5% tolerance. */
-                    if((vbus > (vbus_vi - CY_PDUTILS_DIV_ROUND_UP(vbus_vi, 20))) && (vbus < (vbus_vi + CY_PDUTILS_DIV_ROUND_UP(vbus_vi, 20))))
+                    if((vbus > (vbus_vi - CY_PDUTILS_DIV_ROUND_UP(vbus_vi, 20u))) && (vbus < (vbus_vi + CY_PDUTILS_DIV_ROUND_UP(vbus_vi, 20u))))
                     {
                         /* VBUS is set as required, send ping with the same VI_BYTE. */
 
@@ -1908,7 +1932,7 @@ static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_e
                             /* If voltages are equal, check if provided current is suitable. */
                             if(bc_sink_calculate_required_current(context, bc_stat->min_amp) <= (*(Cy_USBPD_Bch_AfcGetRxDataPtr(context) + (i-1)) & 0x0F))
                             {
-                                uint16_t vbus_vi = ((*(Cy_USBPD_Bch_AfcGetRxDataPtr(context) + (i-1)) >> 4) * AFC_VOLT_STEP) + AFC_BASE_VOLT;
+                                uint16_t vbus_vi = ((*(Cy_USBPD_Bch_AfcGetRxDataPtr(context) + (i-1u)) >> 4u) * AFC_VOLT_STEP) + AFC_BASE_VOLT;
 
                                 /* Gets the next AFC SRC capability byte if provided voltage is less than minimally required. */
                                 if(vbus_vi < bc_stat->min_volt)
@@ -1917,7 +1941,7 @@ static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_e
                                 }
 
                                 Cy_App_Sink_SetVoltage(pdstack_ctx, vbus_vi);
-                                bc_stat->afc_snk_cur_vi_byte = *(Cy_USBPD_Bch_AfcGetRxDataPtr(context) + (i-1));
+                                bc_stat->afc_snk_cur_vi_byte = *(Cy_USBPD_Bch_AfcGetRxDataPtr(context) + (i-1u));
                                 new_VI_BYTE_flag = true;
                                 break;
                             }
@@ -1941,7 +1965,7 @@ static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_e
                 /* Sends old or BYTE_VI. */
                 Cy_USBPD_Bch_Afc_Set_Tx_Data(context, &bc_stat->afc_snk_cur_vi_byte, 1);
                 Cy_USBPD_Bch_AfcSinkStart(context);
-                Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context,
+                (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context,
                            CY_APP_GET_TIMER_ID(context,CY_USBPD_APP_BC_GENERIC_TIMER2), CY_APP_BC_AFC_SNK_VI_BYTE_PERIOD, bc_timer_cb);
             }
             else
@@ -1952,7 +1976,7 @@ static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_e
                 {
                     Cy_USBPD_Bch_Afc_Set_Tx_Data(context, &bc_stat->afc_snk_cur_vi_byte, 1);
                     Cy_USBPD_Bch_AfcSinkStart(context);
-                    Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER2), CY_APP_BC_AFC_SNK_VI_BYTE_PERIOD, bc_timer_cb);
+                    (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER2), CY_APP_BC_AFC_SNK_VI_BYTE_PERIOD, bc_timer_cb);
                 }
                 else
                 {
@@ -1975,7 +1999,7 @@ static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_e
         case BC_FSM_EVT_DISCONNECT:
             /* Detached. */
             Cy_USBPD_Bch_AfcSinkStop(context);
-            Cy_App_Bc_Stop(context);
+            (void)Cy_App_Bc_Stop(context);
 
             break;
 
@@ -1991,6 +2015,7 @@ static void bc_fsm_sink_afc_charger_detect(cy_stc_usbpd_context_t* context, cy_e
             break;
 
         default:
+            /* No handling needed in other cases */
             break;
 
     }
@@ -2001,16 +2026,16 @@ static void bc_apply_sink_term(cy_stc_usbpd_context_t * context, uint16_t voltag
     switch (voltage)
     {
         case CY_PD_VSAFE_9V:
-            Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_QC_9V);
+            (void)Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_QC_9V);
             break;
         case CY_PD_VSAFE_12V:
-            Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_QC_12V);
+            (void)Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_QC_12V);
             break;
         case CY_PD_VSAFE_20V:
-            Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_QC_20V);
+            (void)Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_QC_20V);
             break;
         default:
-            Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_QC_5V);
+            (void)Cy_USBPD_Bch_Phy_ConfigSnkTerm(context, CHGB_SINK_TERM_QC_5V);
             break;
     }
 }
@@ -2019,7 +2044,7 @@ static void bc_fsm_sink_qc_charger_detected(cy_stc_usbpd_context_t * context, cy
 {
     cy_stc_bc_status_t* bc_stat = &gl_bc_status[context->port];
     cy_stc_pdstack_context_t *pdstack_ctx = Cy_PdStack_Dpm_GetContext(context->port);
-    uint16_t vbus = 0;
+    uint16_t vbus = 0u;
 
     switch (evt)
     {
@@ -2047,7 +2072,7 @@ static void bc_fsm_sink_qc_charger_detected(cy_stc_usbpd_context_t * context, cy
             bc_apply_sink_term(context, bc_stat->requested_qc_volt);
             Cy_App_Sink_SetVoltage(pdstack_ctx, bc_stat->requested_qc_volt);
             /* Wait for T_V_NEW_REQUEST and then check the new voltage. */
-            Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
+            (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
                 CY_APP_BC_V_NEW_REQUEST_TIMER_PERIOD, bc_timer_cb);
             break;
 
@@ -2059,8 +2084,8 @@ static void bc_fsm_sink_qc_charger_detected(cy_stc_usbpd_context_t * context, cy
             vbus = Cy_App_VbusGetValue(pdstack_ctx);
 
             /* Checks if required VBUS voltage is set with +/- 5% tolerance. */
-            if((vbus > (bc_stat->requested_qc_volt - CY_PDUTILS_DIV_ROUND_UP(bc_stat->requested_qc_volt, 20))) &&
-                vbus < (bc_stat->requested_qc_volt + CY_PDUTILS_DIV_ROUND_UP(bc_stat->requested_qc_volt, 20)))
+            if((vbus > (bc_stat->requested_qc_volt - CY_PDUTILS_DIV_ROUND_UP(bc_stat->requested_qc_volt, 20u))) &&
+                vbus < (bc_stat->requested_qc_volt + CY_PDUTILS_DIV_ROUND_UP(bc_stat->requested_qc_volt, 20u)))
             {
                 /* VBUS is present. Enable PSink. */
                 Cy_App_Sink_SetCurrent (pdstack_ctx, CY_PDUTILS_GET_MIN(bc_stat->max_amp, CY_PD_I_1P5A));
@@ -2112,11 +2137,12 @@ static void bc_fsm_sink_qc_charger_detected(cy_stc_usbpd_context_t * context, cy
                 bc_apply_sink_term(context, bc_stat->requested_qc_volt);
                 /* Starts timer again. */
                 /* Wait for T_V_NEW_REQUEST and then check the new voltage. */
-                Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
+                (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, context, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
                     CY_APP_BC_V_NEW_REQUEST_TIMER_PERIOD, bc_timer_cb);
             }
             break;
         default:
+            /* No handling needed in other cases */
             break;
     }
 }
@@ -2144,7 +2170,7 @@ static void bc_debounce(cy_stc_usbpd_context_t *context)
     new_state.state = (uint16_t)QC_MODE_RSVD;
 
     /* Gets current status. */
-    for(i = 0 ; i < 2u ; i++)
+    for(i = 0u ; i < 2u ; i++)
     {
         if(i == 1u)
         {
@@ -2188,7 +2214,7 @@ static void bc_debounce(cy_stc_usbpd_context_t *context)
         if ((bc_stat->dp_dm_status.state != QC_MODE_CONT) || (new_state.state == QC_MODE_5V) || /* PRQA S 2996 */
             (new_state.state == 0u)) /* PRQA S 2996 */
         {
-            Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, (void *)context,
+            (void)Cy_PdUtils_SwTimer_Start(bc_stat->ptr_timer_ctx, (void *)context,
                                 CY_APP_GET_TIMER_ID(context, CY_APP_BC_DP_DM_DEBOUNCE_TIMER),
                                 CY_APP_BC_DP_DM_DEBOUNCE_TIMER_PERIOD, NULL);
             bc_stat->old_dp_dm_status.state = new_state.state;
@@ -2238,7 +2264,7 @@ cy_en_usbpd_status_t Cy_App_Bc_Init(cy_stc_usbpd_context_t *context, cy_stc_pdut
     bc_stat->ptr_timer_ctx = timerCtx;
 
 #if (defined(CY_IP_MXUSBPD) || defined(CY_IP_M0S8USBPD))
-    if ((context != NULL) && (context->port < NO_OF_BC_PORTS))
+    if (context->port < NO_OF_BC_PORTS)
     {
         if (Cy_USBPD_Bch_Phy_Init (context, bc_phy_cbk_handler) == CY_USBPD_STAT_SUCCESS)
         {
@@ -2326,11 +2352,11 @@ cy_en_usbpd_status_t Cy_App_Bc_Stop(cy_stc_usbpd_context_t *context)
     sln_remove_apple_src_term(context);
 #endif /* (LEGACY_APPLE_SRC_SLN_TERM_ENABLE) */
 
-    Cy_USBPD_Bch_Phy_DisableComp(context, 0u);
+    (void)Cy_USBPD_Bch_Phy_DisableComp(context, 0u);
     Cy_PdUtils_SwTimer_StopRange(bc_stat->ptr_timer_ctx,
             CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1),
             CY_APP_GET_TIMER_ID(context, CY_APP_CDP_DP_DM_POLL_TIMER));
-    Cy_USBPD_Bch_Phy_Dis(context);
+    (void)Cy_USBPD_Bch_Phy_Dis(context);
 
     bc_stat->bc_fsm_state = BC_FSM_OFF;
     bc_stat->bc_evt       = 0u;
@@ -2397,7 +2423,7 @@ cy_en_usbpd_status_t Cy_App_Bc_Task(cy_stc_usbpd_context_t *context)
     {
         if (context->dpmGetConfig()->connect == 0u)
         {
-            Cy_App_Bc_Stop(context);
+            (void)Cy_App_Bc_Stop(context);
             return CY_USBPD_STAT_SUCCESS;
         }
     }
@@ -2453,7 +2479,7 @@ bool Cy_App_Bc_PrepareDeepSleep(cy_stc_usbpd_context_t *context)
                     CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1), CY_APP_GET_TIMER_ID(context, CY_APP_BC_DP_DM_DEBOUNCE_TIMER)))
        )
 #else
-    if ((bc_stat->bc_evt != 0) ||
+    if ((bc_stat->bc_evt != 0u) ||
         (Cy_PdUtils_SwTimer_IsRunning(bc_stat->ptr_timer_ctx, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER1)) == true) ||
         (Cy_PdUtils_SwTimer_IsRunning(bc_stat->ptr_timer_ctx, CY_APP_GET_TIMER_ID(context, CY_APP_BC_GENERIC_TIMER2)) == true) ||
         (Cy_PdUtils_SwTimer_IsRunning(bc_stat->ptr_timer_ctx, CY_APP_GET_TIMER_ID(context, CY_APP_BC_DP_DM_DEBOUNCE_TIMER)) == true))
@@ -2576,9 +2602,9 @@ void Cy_App_Bc_Resume(cy_stc_usbpd_context_t *context)
     if ((bc_stat->bc_fsm_state == BC_FSM_SRC_QC_OR_AFC) ||
         (bc_stat->bc_fsm_state == BC_FSM_SRC_QC_CONNECTED))
     {
-        Cy_USBPD_Bch_Phy_DisableComp(context, BC_CMP_0_IDX);
+        (void)Cy_USBPD_Bch_Phy_DisableComp(context, BC_CMP_0_IDX);
         Cy_App_Bc_FsmClearEvt(context, BC_EVT_CMP1_FIRE);
-        Cy_USBPD_Bch_Phy_DisableComp(context, BC_CMP_1_IDX);
+        (void)Cy_USBPD_Bch_Phy_DisableComp(context, BC_CMP_1_IDX);
         Cy_App_Bc_FsmClearEvt(context, BC_EVT_CMP2_FIRE);
     }
 #endif /* (!(QC_SRC_AFC_CHARGING_DISABLED || QC_AFC_CHARGING_DISABLED)) */
@@ -2606,7 +2632,7 @@ void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app
         case APP_EVT_DISCONNECT:
         case APP_EVT_VBUS_PORT_DISABLE:
         case APP_EVT_TYPE_C_ERROR_RECOVERY:
-            Cy_App_Bc_Stop(context);
+            (void)Cy_App_Bc_Stop(context);
             break;
 
         case APP_EVT_PE_DISABLED:
@@ -2617,7 +2643,7 @@ void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app
                 /* Already started in case of parallel legacy and PD source operation. */
                 if ((chg_cfg->srcSel & BATT_CHARGING_SRC_MASK) != 0u)
                 {
-                    Cy_App_Bc_Start(context);
+                    (void)Cy_App_Bc_Start(context);
                 }
             }
 
@@ -2626,7 +2652,7 @@ void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app
             {
                 if ((chg_cfg->snkSel & BATT_CHARGING_SINK_MASK) != 0u)
                 {
-                    Cy_App_Bc_Start(context);
+                    (void)Cy_App_Bc_Start(context);
                 }
             }
 #endif /* ((!CY_PD_SOURCE_ONLY) && (!BC_SOURCE_ONLY)) */
@@ -2643,21 +2669,21 @@ void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app
 #if ((!CY_PD_SOURCE_ONLY) && (!BC_SOURCE_ONLY))
             if (pdstack_ctx->dpmConfig.curPortRole == CY_PD_PRT_ROLE_SINK)
             {
-                if ((chg_cfg->snkSel & BATT_CHARGING_SINK_MASK) != 0)
+                if ((chg_cfg->snkSel & BATT_CHARGING_SINK_MASK) != 0u)
                 {
                     /* Starts battery charging state machine once in the connected state if Rp detected is default Rp. */
                     if (pdstack_ctx->dpmConfig.snkCurLevel == CY_PD_RD_USB)
                     {
-                        Cy_App_Bc_Start(context);
+                        (void)Cy_App_Bc_Start(context);
                     }
                 }
             }
             else
 #endif /* ((!CY_PD_SOURCE_ONLY) && (!BC_SOURCE_ONLY)) */
             {
-                if ((chg_cfg->srcSel & BATT_CHARGING_SRC_MASK) != 0)
+                if ((chg_cfg->srcSel & BATT_CHARGING_SRC_MASK) != 0u)
                 {
-                    Cy_App_Bc_Start(context);
+                    (void)Cy_App_Bc_Start(context);
                 }
             }
             break;
@@ -2672,7 +2698,7 @@ void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app
               )
             {
                 /* Stops battery charging state machine once PD contract has been established. */
-                Cy_App_Bc_Stop(context);
+                (void)Cy_App_Bc_Stop(context);
             }
             break;
 #else
@@ -2686,7 +2712,7 @@ void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app
                  * Stops BC state machine if not in QC/AFC mode. */
                 if(bc_is_qc_afc_charging_active(context)== false)
                 {
-                    Cy_App_Bc_Stop(context);
+                    (void)Cy_App_Bc_Stop(context);
                 }
             }
             break;
@@ -2694,6 +2720,7 @@ void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app
 #endif /* (!BC_SOURCE_ONLY) */
 
         default:
+            /* No handling needed in other cases */
             break;
     }
 #else

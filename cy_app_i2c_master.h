@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_i2c_master.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines data structures and function prototypes
@@ -8,15 +8,36 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_I2C_MASTER_H_
-#define _CY_APP_I2C_MASTER_H_
+#ifndef CY_APP_I2C_MASTER_H
+#define CY_APP_I2C_MASTER_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -205,8 +226,46 @@ bool Cy_App_I2CMaster_RegWrite(CySCB_Type *base,
                                uint32_t count, 
                                cy_stc_scb_i2c_context_t *context);
 
+/**
+ * @brief reads data from the given register of the slave using repeated start
+ */
+/*******************************************************************************
+* Function name: Cy_App_I2CMaster_RegReStartRead
+****************************************************************************//**
+*
+* This function reads data from the given register of the slave using repeated
+* start, after sending register address
+*
+* \param base
+* SCB block base address
+*
+* \param addr
+* Slave device I2C address (7-bit)
+*
+* \param reg_addr
+* Pointer to the register address buffer
+*
+* \param reg_size
+* Length of the register in bytes
+*
+* \param buffer
+* Pointer to the read data buffer
+*
+* \param count
+* Read data length in bytes
+*
+* \param context
+* Pointer to the I2C SCB context structure
+*
+* \return
+* True on success; false otherwise.
+*
+*******************************************************************************/ 
+bool Cy_App_I2CMaster_RegReStartRead(CySCB_Type *base, uint8_t addr, uint8_t *reg_addr, uint8_t reg_size,
+                              uint8_t *buffer, uint32_t count, cy_stc_scb_i2c_context_t *context);
+
 /** \} group_pmg_app_common_i2cm_functions */
 
-#endif /* _CY_APP_I2C_MASTER_H_ */
+#endif /* CY_APP_I2C_MASTER_H */
 
 /* [] END OF FILE */

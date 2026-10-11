@@ -1,17 +1,38 @@
 /***************************************************************************//**
 * \file cy_app_boot.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Bootloader support functions
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
 #include <stdint.h>
@@ -25,7 +46,7 @@
 #include "cy_pdutils.h"
 #include "cy_app_flash_config.h"
 #include "cy_app_config.h"
-
+#include "cy_app_internal.h"
 
 #define Bootloader_1_MD_BTLDB_ACTIVE_0         0U
 #define Bootloader_1_MD_BTLDB_ACTIVE_1         1U
@@ -36,13 +57,11 @@ CY_SECTION(".bss.cy_boot_img_status") __USED
 #else
 CY_SECTION(".cy_boot_img_status") __USED
 #endif /* defined(__ARMCC_VERSION) */
-volatile cy_stc_fw_img_status_t gl_img_status;
+static volatile cy_stc_fw_img_status_t gl_img_status;
 
 #if (CY_APP_BOOT_ENABLE != 0)
-extern uint32_t cyBtldrRunType;
-
 /* If dual-app bootloading is disabled, provide stub variable to keep the compiler happy. */
-volatile uint8_t Bootloader_1_activeApp = 0;
+static volatile uint8_t Bootloader_1_activeApp = 0u;
 #endif /* (CY_APP_BOOT_ENABLE != 0) */
 
 #if (CY_APP_BOOT_WAIT_WINDOW_DISABLE == 0)
@@ -71,7 +90,7 @@ cy_stc_fw_img_status_t Cy_App_Boot_GetBootModeReason(void)
 #define NIBBLE_POS                          (4U)
 #define NIBBLE_MSK                          (0xFU)
 
-uint32_t calculate_crc32(const uint8_t *address, uint32_t length)
+static uint32_t calculate_crc32(const uint8_t *address, uint32_t length)
 {
     /* Contains generated values to calculate CRC-32C by 4 bits per iteration */
     static const uint32_t crcTable[CRC_TABLE_SIZE] =
@@ -100,7 +119,7 @@ uint32_t calculate_crc32(const uint8_t *address, uint32_t length)
 /* Check whether configuration table checksum is good */
 cy_en_app_status_t Cy_App_Boot_ValidateCfgtable(uint8_t *table_p)
 {
-    uint16_t size = CY_PDUTILS_MAKE_WORD (table_p[CY_APP_SYS_CONFIG_TABLE_SIZE_OFFSET + 1], table_p[CY_APP_SYS_CONFIG_TABLE_SIZE_OFFSET]);
+    uint16_t size = CY_PDUTILS_MAKE_WORD (table_p[CY_APP_SYS_CONFIG_TABLE_SIZE_OFFSET + 1u], table_p[CY_APP_SYS_CONFIG_TABLE_SIZE_OFFSET]);
 
     if (((uint32_t)table_p >= CY_FLASH_SIZE) ||
             (CY_PDUTILS_MAKE_WORD (table_p[1], table_p[0]) != CY_APP_SYS_CONFIG_TABLE_SIGNATURE))
@@ -108,7 +127,7 @@ cy_en_app_status_t Cy_App_Boot_ValidateCfgtable(uint8_t *table_p)
         return CY_APP_STAT_INVALID_FW;
     }
 
-    uint32_t table_crc = CY_PDUTILS_MAKE_DWORD(table_p[CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET+3],table_p[CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET+2],table_p[CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET+1],table_p[CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET]);
+    uint32_t table_crc = CY_PDUTILS_MAKE_DWORD(table_p[CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET+3u],table_p[CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET+2u],table_p[CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET+1u],table_p[CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET]);
 
     if (table_crc != calculate_crc32 (
             table_p + CY_APP_SYS_CONFIG_TABLE_CHECKSUM_START, (uint32_t)size - CY_APP_SYS_CONFIG_TABLE_CHECKSUM_START))
@@ -149,7 +168,7 @@ cy_en_app_status_t Cy_App_Boot_ValidateFw(cy_stc_sys_fw_metadata_t *fw_metadata)
     {
         /* In an application architecture where the configuration table is not available,
          * the fw_start and config_fw_start addresses will be the same. In this case the 
-	 * configuration table validation is not required.
+         * configuration table validation is not required.
          */
         if(fw_metadata->fw_start != fw_metadata->config_fw_start)
         {
@@ -220,12 +239,16 @@ cy_en_app_status_t Cy_App_Boot_HandleValidateFwCmd(cy_en_sys_fw_mode_t fw_mode)
             code = CY_APP_STAT_SUCCESS;
             if(fw_mode == CY_APP_SYS_FW_MODE_FWIMAGE_1)
             {
-                gl_img_status.status.fw1_invalid = 0;
+                gl_img_status.status.fw1_invalid = 0u;
             }
 #if (!CY_APP_DUALAPP_DISABLE)
             else if(fw_mode == CY_APP_SYS_FW_MODE_FWIMAGE_2)
             {
-                gl_img_status.status.fw2_invalid = 0;
+                gl_img_status.status.fw2_invalid = 0u;
+            }
+            else 
+            {
+                /* No action needed */
             }
 #endif /* !CY_APP_DUALAPP_DISABLE */
         }
@@ -234,12 +257,16 @@ cy_en_app_status_t Cy_App_Boot_HandleValidateFwCmd(cy_en_sys_fw_mode_t fw_mode)
             code = CY_APP_STAT_INVALID_FW;
             if(fw_mode == CY_APP_SYS_FW_MODE_FWIMAGE_1)
             {
-                gl_img_status.status.fw1_invalid = 1;
+                gl_img_status.status.fw1_invalid = 1u;
             }
 #if (!CY_APP_DUALAPP_DISABLE)
             else if(fw_mode == CY_APP_SYS_FW_MODE_FWIMAGE_2)
             {
-                gl_img_status.status.fw2_invalid = 1;
+                gl_img_status.status.fw2_invalid = 1u;
+            }
+            else
+            {
+                /* No action needed */
             }
 #endif /* !CY_APP_DUALAPP_DISABLE */
         }
@@ -260,7 +287,7 @@ static void boot_set_wait_timeout(cy_stc_sys_fw_metadata_t *md_p)
     /* Check for boot-wait option */
     if (md_p->boot_app_id == CY_APP_SYS_FWMETA_APPID_WAIT_0)
     {
-        gl_boot_wait_delay = 0;
+        gl_boot_wait_delay = 0u;
     }
     else
     {
@@ -284,24 +311,24 @@ bool Cy_App_Boot_Start(void)
     bool boot_fw2 = false;
 
 #if (CY_APP_DUALAPP_DISABLE)
-    (void)boot_fw1;
-    (void)boot_fw2;
+    CY_UNUSED_PARAMETER(boot_fw1);
+    CY_UNUSED_PARAMETER(boot_fw2);
 #endif /* CY_APP_DUALAPP_DISABLE */
 
     md_p = NULL;
-    gl_img_status.val = 0;
+    gl_img_status.val = 0u;
    
     /* Check the two firmware binaries for validity */
     if (Cy_App_Boot_ValidateFw ((cy_stc_sys_fw_metadata_t *)CY_APP_SYS_IMG1_FW_METADATA_ADDR) != CY_APP_STAT_SUCCESS)
     {
-        gl_img_status.status.fw1_invalid  = 1;
+        gl_img_status.status.fw1_invalid  = 1u;
     }
 
 #if (!CY_APP_DUALAPP_DISABLE)
     if (Cy_App_Boot_ValidateFw ((cy_stc_sys_fw_metadata_t *)CY_APP_SYS_IMG2_FW_METADATA_ADDR) != CY_APP_STAT_SUCCESS)
 #endif /* CY_APP_DUALAPP_DISABLE */
     {
-        gl_img_status.status.fw2_invalid = 1;
+        gl_img_status.status.fw2_invalid = 1u;
     }
     
     /* Check for the boot mode request */
@@ -310,25 +337,29 @@ bool Cy_App_Boot_Start(void)
      * It is used to store the jump signature. Check the lower two bytes
      * for signature.
      */
-    if ((cyBtldrRunType & 0xFFFF) == CY_APP_SYS_BOOT_MODE_RQT_SIG)
+    if ((cyBtldrRunType & 0xFFFFu) == CY_APP_SYS_BOOT_MODE_RQT_SIG)
     {
         /*
          * FW has made a request to stay in the boot mode. Return
          * from here after clearing the variable.
          */
-        cyBtldrRunType = 0;
+        cyBtldrRunType = 0u;
         /* Set the reason for boot mode. */
-        gl_img_status.status.boot_mode_request = true;
+        gl_img_status.status.boot_mode_request = 1u;
         return false;
     }
     
     /* Check if we have been asked to boot FW1 or FW2 specifically. */
-    if ((cyBtldrRunType & 0xFFFF) == CY_APP_SYS_FW1_BOOT_RQT_SIG)
+    if ((cyBtldrRunType & 0xFFFFu) == CY_APP_SYS_FW1_BOOT_RQT_SIG)
+    { 
         boot_fw1 = true;
+    }    
 
 #if (!CY_APP_DUALAPP_DISABLE)
-    if ((cyBtldrRunType & 0xFFFF) == CY_APP_SYS_FW2_BOOT_RQT_SIG)
+    if ((cyBtldrRunType & 0xFFFFu) == CY_APP_SYS_FW2_BOOT_RQT_SIG)
+    {
         boot_fw2 = true;
+    }        
 #endif /* CY_APP_DUALAPP_DISABLE */
 
 #if (!CY_APP_DUALAPP_DISABLE)
@@ -336,7 +367,7 @@ bool Cy_App_Boot_Start(void)
      * If we have been specifically asked to boot FW2, do that;
      * otherwise, choose the binary with greater sequence number.
      */
-    if (!gl_img_status.status.fw2_invalid)
+    if (gl_img_status.status.fw2_invalid == 0u)
     {
         /* 
          * FW2 is valid
@@ -345,7 +376,7 @@ bool Cy_App_Boot_Start(void)
          * 2. FW1 is not valid
          * 3. FW2 is newer than FW1, and we have not been asked to boot FW1.
          */
-        if ((boot_fw2) || (gl_img_status.status.fw1_invalid) ||
+        if ((gl_img_status.status.fw1_invalid != 0u) || (boot_fw2) ||
                 ((!boot_fw1) && (CALL_IN_FUNCTION(Cy_App_Sys_GetRecentFwImage)() == CY_APP_SYS_FW_MODE_FWIMAGE_2)))
         {
             md_p = GET_IN_VARIABLE(gl_img2_fw_metadata);
@@ -362,7 +393,7 @@ bool Cy_App_Boot_Start(void)
     {
         /* FW2 is invalid */
         /* Load FW1 if it is valid */
-        if (!gl_img_status.status.fw1_invalid)
+        if (gl_img_status.status.fw1_invalid == 0u)
         {
             md_p = GET_IN_VARIABLE(gl_img1_fw_metadata);
             img  = Bootloader_1_MD_BTLDB_ACTIVE_0;
@@ -377,9 +408,13 @@ bool Cy_App_Boot_Start(void)
          * the boot wait window.
          */
         if ((boot_fw1) || (boot_fw2))
-            gl_boot_wait_delay = 0;
+        {
+            gl_boot_wait_delay = 0u;
+        }
         else
+        {
             boot_set_wait_timeout (md_p);
+        }
 #endif /* CY_APP_BOOT_WAIT_WINDOW_DISABLE */
 
         Bootloader_1_activeApp = img;
@@ -391,38 +426,37 @@ bool Cy_App_Boot_Start(void)
     return false;
 }
 
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 17.11', 1,'This function will not return');
 void Cy_App_Boot_JumpToFw(void)
 {
     /* Schedule the FW and undergo a reset */
-    cyBtldrRunType = 0x80;
+    cyBtldrRunType = 0x80u;
     CySoftwareReset ();
 }
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 17.11');
 #else /* !CY_APP_BOOT_ENABLE */
 
 void Cy_App_Boot_UpdateFwStatus(void)
 {
-#if (!CY_APP_BOOT_ENABLE)
-    gl_img_status.val = 0;
+    gl_img_status.val = 0u;
 
     /* Check the two firmware binaries for validity */
     if (Cy_App_Boot_HandleValidateFwCmd (CY_APP_SYS_FW_MODE_FWIMAGE_1) != CY_APP_STAT_SUCCESS)
     {
-        gl_img_status.status.fw1_invalid = 1;
+        gl_img_status.status.fw1_invalid = 1u;
     }
 
 #if (!CY_APP_DUALAPP_DISABLE)
     if (Cy_App_Boot_HandleValidateFwCmd (CY_APP_SYS_FW_MODE_FWIMAGE_2) != CY_APP_STAT_SUCCESS)
 #endif /* !CY_APP_DUALAPP_DISABLE */
     {
-        gl_img_status.status.fw2_invalid = 1;
+        gl_img_status.status.fw2_invalid = 1u;
     }
 
 #if CY_APP_PRIORITY_FEATURE_ENABLE
     /* Update the app-priority field if the feature is enabled */
-    gl_img_status.status.reserved1 = ((*(uint8_t *)(CY_APP_SYS_APP_PRIORITY_ROW_NUM << CY_APP_SYS_FLASH_ROW_SHIFT_NUM)) << 4);
+    gl_img_status.status.reserved1 = ((*(uint8_t *)(CY_APP_SYS_APP_PRIORITY_ROW_NUM << CY_APP_SYS_FLASH_ROW_SHIFT_NUM)) << 4u);
 #endif /* CY_APP_PRIORITY_FEATURE_ENABLE */
-
-#endif /* CY_APP_BOOT_ENABLE */
 }
 #endif /* CY_APP_BOOT_ENABLE */
 
@@ -430,11 +464,15 @@ uint32_t Cy_App_Boot_GetBootSeq(uint8_t fwid)
 {
     cy_stc_sys_fw_metadata_t *md_p;
 
-    if (fwid == CY_APP_SYS_FW_MODE_FWIMAGE_1)
+    if (fwid == (uint8_t)CY_APP_SYS_FW_MODE_FWIMAGE_1)
+    {
         md_p = (cy_stc_sys_fw_metadata_t *)CY_APP_SYS_IMG1_FW_METADATA_ADDR;
+    }    
 #if (!CY_APP_DUALAPP_DISABLE)
     else
+    {
         md_p = (cy_stc_sys_fw_metadata_t *)CY_APP_SYS_IMG2_FW_METADATA_ADDR;
+    }
 #endif /* (!CY_APP_DUALAPP_DISABLE) */
 
 #if (CY_APP_BOOT_ENABLE != 0)
@@ -450,7 +488,7 @@ uint32_t Cy_App_Boot_GetBootSeq(uint8_t fwid)
     }
 #endif /* (CY_APP_BOOT_ENABLE != 0) */
 
-    return 0;
+    return 0u;
 }
 
 #if (defined (CY_IP_M0S8CRYPTOLITE))
@@ -464,9 +502,11 @@ cy_en_app_status_t Cy_App_Boot_CalculateFwImageHash(cy_stc_sys_fw_metadata_t *fw
      */
 
     /* Pointer to FW image start address */
-    uint32_t fw_start, fw_end = 0;
+    uint32_t fw_start = 0u;
+    /* Pointer to FW image end address */
+    uint32_t fw_end = 0u;
     /* Size of FW image */
-    uint32_t fw_size_bytes;
+    uint32_t fw_size_bytes = 0u;
 
     /* Init SHA-2 */
     if((Cy_Cryptolite_Sha_Init(CRYPTOLITE, sha_ctx) == CY_CRYPTOLITE_SUCCESS) &&

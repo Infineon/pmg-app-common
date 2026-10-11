@@ -38,7 +38,8 @@ var group__group__pmg__app__common__app__data__structures =
       [ "user_custom_pid", "group__group__pmg__app__common__app__data__structures.html#addbb9113034c94bde0d95cf40f7f26a9", null ],
       [ "user_custom_pid_valid", "group__group__pmg__app__common__app__data__structures.html#aac4b0c736267cce62bd5d6edf25e0e1c", null ],
       [ "source_info", "group__group__pmg__app__common__app__data__structures.html#ac91b3deb1a9bf9fa14cf8f831f4aa762", null ],
-      [ "spec_revision", "group__group__pmg__app__common__app__data__structures.html#a6509e55abdda3334209c68c131ab3d13", null ]
+      [ "spec_revision", "group__group__pmg__app__common__app__data__structures.html#a6509e55abdda3334209c68c131ab3d13", null ],
+      [ "alt_modes_dis_state", "group__group__pmg__app__common__app__data__structures.html#af36e7577ff97be5cc8f22d5ae4285f65", null ]
     ] ],
     [ "cy_app_sln_cbk_t", "structcy__app__sln__cbk__t.html", [
       [ "type_a_is_idle", "structcy__app__sln__cbk__t.html#aac087f7de1c81ed53dd9582459c3d5b0", null ],

@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_fault_handlers.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines data structures and function prototypes associated with
@@ -8,15 +8,36 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury..
 *******************************************************************************/
 
-#ifndef _CY_APP_FAULT_HANDLERS_H_
-#define _CY_APP_FAULT_HANDLERS_H_
+#ifndef CY_APP_FAULT_HANDLERS_H
+#define CY_APP_FAULT_HANDLERS_H
 
 /*******************************************************************************
  * Header files including
@@ -111,7 +132,6 @@
  * @param pfet Whether PFET is used for the power supply control
  * @param ovp_cb Callback function to be triggered when there is an OV event
  *
- * @return None
  */
 void Cy_App_Fault_OvpEnable(cy_stc_pdstack_context_t *context, uint16_t volt_mV,
                             bool pfet, cy_cb_vbus_fault_t ovp_cb);
@@ -122,7 +142,6 @@ void Cy_App_Fault_OvpEnable(cy_stc_pdstack_context_t *context, uint16_t volt_mV,
  * @param context Pointer to the PDStack context
  * @param pfet Whether PFET is used for the power supply control
  *
- * @return None
  */
 void Cy_App_Fault_OvpDisable(cy_stc_pdstack_context_t *context, bool pfet);
 
@@ -134,7 +153,6 @@ void Cy_App_Fault_OvpDisable(cy_stc_pdstack_context_t *context, bool pfet);
  * @param pfet Whether PFET is used for the power supply control
  * @param uvp_cb Callback function to be triggered when there is an UV event
  *
- * @return None
  */
 void Cy_App_Fault_UvpEnable(cy_stc_pdstack_context_t *context, uint16_t volt_mV,
                             bool pfet, cy_cb_vbus_fault_t uvp_cb);
@@ -145,7 +163,6 @@ void Cy_App_Fault_UvpEnable(cy_stc_pdstack_context_t *context, uint16_t volt_mV,
  * @param context Pointer to the PDStack context
  * @param pfet Whether PFET is used for the power supply control.
  *
- * @return None
  */
 void Cy_App_Fault_UvpDisable(cy_stc_pdstack_context_t *context, bool pfet);
 
@@ -156,7 +173,6 @@ void Cy_App_Fault_UvpDisable(cy_stc_pdstack_context_t *context, bool pfet);
  * @param volt_mV Expected VBus voltage
  * @param rcp_cb Callback function to be triggered when there is an RCP event
  *
- * @return None
  */
 void Cy_App_Fault_RcpEnable(cy_stc_pdstack_context_t *context, uint16_t volt_mV,
                             cy_cb_vbus_fault_t rcp_cb);
@@ -166,9 +182,25 @@ void Cy_App_Fault_RcpEnable(cy_stc_pdstack_context_t *context, uint16_t volt_mV,
  *
  * @param context Pointer to the PDStack context 
  *
- * @return None
  */
 void Cy_App_Fault_RcpDisable(cy_stc_pdstack_context_t * context);
+
+/**
+ * @brief Enable and configure the Buck-boost Vout reverse-current protection circuitry
+ *
+ * @param context Pointer to the PDStack context
+ * @param rcp_cb Callback function to be triggered when there is an RCP event
+ *
+ */
+void Cy_App_Fault_Voutbb_RcpEnable(cy_stc_pdstack_context_t *context, cy_cb_vbus_fault_t rcp_cb);
+
+/**
+ * @brief Disable the Buck-boost Vout reverse-current protection circuitry
+ *
+ * @param context Pointer to the PDStack context
+ *
+ */
+void Cy_App_Fault_Voutbb_RcpDisable(cy_stc_pdstack_context_t * context);
 
 /**
  * @brief Enable and configure the VBus overcurrent protection circuitry
@@ -177,7 +209,6 @@ void Cy_App_Fault_RcpDisable(cy_stc_pdstack_context_t * context);
  * @param current Expected VBus current
  * @param ocp_cb Callback function to be triggered when there is an OCP event
  *
- * @return None
  */
 void Cy_App_Fault_OcpEnable(cy_stc_pdstack_context_t *context, uint32_t current,
                             cy_cb_vbus_fault_t ocp_cb);
@@ -188,7 +219,6 @@ void Cy_App_Fault_OcpEnable(cy_stc_pdstack_context_t *context, uint32_t current,
  * @param context Pointer to the PDStack context
  * @param pctrl Whether PFET is used for the power supply control
  *
- * @return None
  */                            
 void Cy_App_Fault_OcpDisable(cy_stc_pdstack_context_t *context, bool pctrl);
 
@@ -199,7 +229,6 @@ void Cy_App_Fault_OcpDisable(cy_stc_pdstack_context_t *context, bool pctrl);
  * @param current Expected VBus current
  * @param scp_cb Callback function to be triggered when there is an SCP event
  *
- * @return None
  */
 void Cy_App_Fault_ScpEnable(cy_stc_pdstack_context_t *context, uint32_t current,
                             cy_cb_vbus_fault_t scp_cb);
@@ -209,7 +238,6 @@ void Cy_App_Fault_ScpEnable(cy_stc_pdstack_context_t *context, uint32_t current,
  *
  * @param context Pointer to the PDStack context
  *
- * @return None
  */                            
 void Cy_App_Fault_ScpDisable(cy_stc_pdstack_context_t * context);
 
@@ -219,7 +247,6 @@ void Cy_App_Fault_ScpDisable(cy_stc_pdstack_context_t * context);
  * @param context Pointer to the PDStack context
  * @param vconn_ocp_cb Callback function to be triggered when there is a VCONN OCP event
  *
- * @return None
  */
 void Cy_App_Fault_Vconn_OcpEnable(cy_stc_pdstack_context_t *context, 
                                   cy_cb_vbus_fault_t vconn_ocp_cb);
@@ -229,7 +256,6 @@ void Cy_App_Fault_Vconn_OcpEnable(cy_stc_pdstack_context_t *context,
  *
  * @param context Pointer to the PDStack context
  *
- * @return None
  */   
 void Cy_App_Fault_Vconn_OcpDisable(cy_stc_pdstack_context_t *context);
 
@@ -237,12 +263,12 @@ void Cy_App_Fault_Vconn_OcpDisable(cy_stc_pdstack_context_t *context);
  * @brief Wrapper function for PD port disable. This function is used to ensure that
  * any application level state associated with a faulty connection are cleared when a PD port is disableD.
  *
- * @param context Pointer to the PDStack context
+ * @param ptrPdStackContext Pointer to the PDStack context
  * @param cbk Callback to be called after operation is complete
  *
  * @return CCG_STAT_SUCCESS on success, appropriate error code otherwise.
  */
-cy_en_pdstack_status_t Cy_App_Fault_DisablePort(cy_stc_pdstack_context_t *context,
+cy_en_pdstack_status_t Cy_App_Fault_DisablePort(cy_stc_pdstack_context_t * ptrPdStackContext,
                                                 cy_pdstack_dpm_typec_cmd_cbk_t cbk);
 
 /**
@@ -259,7 +285,6 @@ bool Cy_App_Fault_InitVars (cy_stc_pdstack_context_t *context);
  *
  * @param port port on which the faults need to be cleared
  *
- * @return None
  */
 void Cy_App_Fault_ClearCounts (uint8_t port);
 
@@ -268,7 +293,6 @@ void Cy_App_Fault_ClearCounts (uint8_t port);
  *
  * @param context Pointer to the PDStack context
  *
- * @return None
  */
 void Cy_App_Fault_Task (cy_stc_pdstack_context_t *context);
 
@@ -289,7 +313,6 @@ bool Cy_App_Fault_EventHandler(cy_stc_pdstack_context_t *context,
  *
  * @param context Pointer to the PDStack context
  *
- * @return None
  */
 void Cy_App_Fault_ConfigureForDetach(cy_stc_pdstack_context_t * context);
 
@@ -299,11 +322,34 @@ void Cy_App_Fault_ConfigureForDetach(cy_stc_pdstack_context_t * context);
  * @param context Pointer to the pdstack context
  *
  * @return true if fault count has exceeded limit; false otherwise.
- */    
+ */
 bool Cy_App_Fault_IsCountExceeded(cy_stc_pdstack_context_t * context);
+
+#if VBUS_OVP_ENABLE
+/**
+ * @brief Disables VBUS OVP for the specified PD port
+ *
+ * @param context Pointer to the pdstack context
+ * @param pfet Flag to indicate if P-FET should be disabled
+ *
+ */
+
+void soln_fault_vbus_ovp_disable(cy_stc_pdstack_context_t * context, bool pfet);
+
+/**
+ * @brief Enables VBUS OVP for the specified PD port with given parameters
+ *
+ * @param context Pointer to the pdstack context
+ * @param volt_mV Voltage threshold in millivolts for OVP detection
+ * @param pfet Flag to indicate if P-FET is used for supply control
+ * @param ovp_cb Callback function to be called when OVP event occurs
+ *
+ */
+void soln_fault_vbus_ovp_enable(cy_stc_pdstack_context_t * context, uint16_t volt_mV, bool pfet, cy_cb_vbus_fault_t ovp_cb);
+#endif /* VBUS_OVP_ENABLE */
 
 /** \} group_pmg_app_common_fault_functions */
 
-#endif /* _CY_APP_FAULT_HANDLERS_H_ */
+#endif /* CY_APP_FAULT_HANDLERS_H */
 
 /* [] END OF FILE */

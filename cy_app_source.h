@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_source.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines function prototypes for power provided
@@ -8,21 +8,41 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_SOURCE_H_
-#define _CY_APP_SOURCE_H_
+#ifndef CY_APP_SOURCE_H
+#define CY_APP_SOURCE_H
 
 /*******************************************************************************
  * Header files including
  ******************************************************************************/
 #include <stdint.h>
-#include "cybsp.h"
 #include "cy_app_sink.h"
 #include "cy_app.h"
 #include "cy_pdutils_sw_timer.h"
@@ -78,7 +98,6 @@
  * @param context Pointer to the PDStack context
  * @param volt_mV Voltage in mV units
  *
- * @return None
  */
 void Cy_App_Source_SetVoltage(cy_stc_pdstack_context_t * context, uint16_t volt_mV);
 
@@ -99,7 +118,6 @@ uint32_t Cy_App_Source_GetVoltage (cy_stc_pdstack_context_t *context);
  *
  * @param context Pointer to the PDStack context
  * @param cur_10mA Current in 10 mA units
- * @return None
  */
 void Cy_App_Source_SetCurrent (cy_stc_pdstack_context_t *context, uint16_t cur_10mA);
 
@@ -112,7 +130,6 @@ void Cy_App_Source_SetCurrent (cy_stc_pdstack_context_t *context, uint16_t cur_1
  *
  * @param context Pointer to the PDStack context
  * @param pwr_ready_handler Application handler callback function
- * @return None
  */
 void Cy_App_Source_Enable (cy_stc_pdstack_context_t * context,
         cy_pdstack_pwr_ready_cbk_t pwr_ready_handler);
@@ -128,13 +145,47 @@ void Cy_App_Source_Enable (cy_stc_pdstack_context_t * context,
  * @param context Pointer to the PDStack context
  * @param pwr_ready_handler Application handler callback function
  *
- * @return None
  */
 void Cy_App_Source_Disable(cy_stc_pdstack_context_t * context, cy_pdstack_pwr_ready_cbk_t pwr_ready_handler);
 
+/**
+ * @brief Turns on Gate Driver of VBUS Provider FET.
+ *
+ * @param context Pointer to the PDStack context
+ */
+void Cy_App_Source_VbusFetOn(cy_stc_pdstack_context_t *context);
 /** \} group_pmg_app_common_psrc_functions */
 
-#endif /* _CY_APP_SOURCE_H_ */
+/* Weak function prototypes */
+#if ((CY_APP_USE_EXTERNAL_CURRENT_MON) && (VBUS_OCP_ENABLE))
+bool soln_set_current (cy_stc_pdstack_context_t * context, uint16_t cur_10mA);
+#endif
+void soln_vbus_fet_on (cy_stc_pdstack_context_t *context);
+void soln_vbus_fet_off (cy_stc_pdstack_context_t *context);
+void soln_src_set_voltage (cy_stc_pdstack_context_t *context);
+bool soln_vbus_div_enabled (void);
+bool soln_buck_boost_vbus_present(cy_stc_pdstack_context_t * context);
+void soln_set_volt_port1 (uint16_t vol_in_mv);
+
+#if PMG1_PD_DUALPORT_ENABLE
+void soln_set_volt_port2 (uint16_t vol_in_mv);
+#endif
+#if CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE
+void soln_vbus_div_control(cy_stc_pdstack_context_t *ctxt, uint32_t enable);
+#endif
+
+#if PMG1B1_BI_DIRECTION
+/**
+ * @brief Enable timer monitoring hysteresis for Buck-Boost output voltage.
+ * That voltage is actual VBUS in PMG1B1 100W bidirection.
+ *
+ * @param context Pointer to the PDStack context
+ * @param period Timer period in milliseconds.
+ */
+void Cy_App_Source_BB_En_Hys (cy_stc_pdstack_context_t *context, uint16_t period);
+#endif /* PMG1B1_BI_DIRECTION */
+
+#endif /* CY_APP_SOURCE_H */
 
 /* [] END OF FILE */
 

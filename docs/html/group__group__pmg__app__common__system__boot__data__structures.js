@@ -2,9 +2,9 @@ var group__group__pmg__app__common__system__boot__data__structures =
 [
     [ "cy_stc_fw_img_status_t", "group__group__pmg__app__common__system__boot__data__structures.html#unioncy__stc__fw__img__status__t", [
       [ "val", "group__group__pmg__app__common__system__boot__data__structures.html#a7294006a8f6f4e472e2cf64452396cf3", null ],
-      [ "status", "group__group__pmg__app__common__system__boot__data__structures.html#a2e5bc522368c2c5fd235b26d5018855e", null ]
+      [ "status", "group__group__pmg__app__common__system__boot__data__structures.html#aafe5273208ee54c2591d8d2a1368728d", null ]
     ] ],
-    [ "cy_stc_fw_mode_reason_t", "group__group__pmg__app__common__system__boot__data__structures.html#structcy__stc__fw__img__status__t_1_1cy__stc__fw__mode__reason__t", [
+    [ "cy_stc_fw_img_status_t::cy_stc_fw_mode_reason_t", "group__group__pmg__app__common__system__boot__data__structures.html#structcy__stc__fw__img__status__t_1_1cy__stc__fw__mode__reason__t", [
       [ "boot_mode_request", "group__group__pmg__app__common__system__boot__data__structures.html#a32e555e2a0a5b99abf1790a860f14940", null ],
       [ "reserved", "group__group__pmg__app__common__system__boot__data__structures.html#a60361c202d147a3408a95428cea3ad25", null ],
       [ "fw1_invalid", "group__group__pmg__app__common__system__boot__data__structures.html#aa4773cf0456cf8eab6ba75c367ba572e", null ],

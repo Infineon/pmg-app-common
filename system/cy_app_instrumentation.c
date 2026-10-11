@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_instrumentation.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements functions to monitor CPU resource (execution time
@@ -8,51 +8,73 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
 #include <stddef.h>
 #include "cy_app_config.h"
 #include "cy_app_instrumentation.h"
 #include "cy_pdl.h"
-#include "cy_pdutils_sw_timer.h"
-#include "cy_pdstack_common.h"
+
 
 /* Run-time stack lower limit defined in linker script */
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.6', 1, 'Stack limit symbol is defined in linker script.');
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.4', 1, 'Stack limit symbol is defined in linker script.');
 #if defined(__ARMCC_VERSION)
     extern unsigned long Image$$ARM_LIB_STACK$$ZI$$Base;
 #elif defined (__ICCARM__)
     #pragma language=extended
     #pragma segment="CSTACK"
 #else
-    extern int __StackLimit;
+    extern uint32_t __StackLimit;
 #endif /* defined(__ARMCC_VERSION) */
 
-cy_app_instrumentation_cb_t gl_instrumentation_cb = NULL;
+static cy_app_instrumentation_cb_t gl_instrumentation_cb = NULL;
 
 #if CY_APP_RESET_ON_ERROR_ENABLE
 
 /* RAM based signature and offset used to check whether reset data is valid */
-#define RESET_DATA_VALID_OFFSET         (0)
-#define RESET_DATA_VALID_SIG            (0xDEADBEEF)
+#define RESET_DATA_VALID_OFFSET         (0u)
+#define RESET_DATA_VALID_SIG            (0xDEADBEEFu)
 
 /* RAM based signature and offset used to check whether watchdog reset has happened */
-#define WATCHDOG_RESET_OFFSET           (1)
-#define WATCHDOG_RESET_SIG              (0xC003300C)
+#define WATCHDOG_RESET_OFFSET           (1u)
+#define WATCHDOG_RESET_SIG              (0xC003300Cu)
 
 /* RAM offset where the watchdog reset count is maintained */
-#define RESET_COUNT_OFFSET              (2)
+#define RESET_COUNT_OFFSET              (2u)
 
 /* RAM based signature and offset used to check whether hard fault has occurred */
-#define HARDFAULT_RESET_OFFSET           (1)
-#define HARDFAULT_RESET_SIG              (0xD003300C)
+#define HARDFAULT_RESET_OFFSET           (1u)
+#define HARDFAULT_RESET_SIG              (0xD003300Cu)
 
 /* Size of the reset tracking data structure in DWORDs */
-#define RESET_DATA_STRUCT_SIZE          (3)
+#define RESET_DATA_STRUCT_SIZE          (3u)
 
 /* Address of the run-time instrumentation data structure */
 #if defined(__ARMCC_VERSION)
@@ -62,32 +84,29 @@ cy_app_instrumentation_cb_t gl_instrumentation_cb = NULL;
     #pragma segment="CSTACK"
     volatile uint32_t *gl_runtime_data_addr = (uint32_t volatile *)__sfb( "CSTACK" );
 #else
-    volatile uint32_t *gl_runtime_data_addr = (uint32_t volatile *)&__StackLimit;
+    volatile uint32_t *gl_runtime_data_addr = &__StackLimit;
 #endif /* defined(__ARMCC_VERSION) */
 
 /* Variable used to identify whether main loop has been run */
-volatile uint32_t gl_main_loop_delay = 0;
-
-/* Margin (in ms) available until watchdog reset */
-volatile uint16_t gl_min_reset_margin = CY_APP_WATCHDOG_RESET_PERIOD_MS;
+static volatile uint32_t gl_main_loop_delay = 0u;
 
 /* Pointer to the Timer context */
 static cy_stc_pdutils_sw_timer_t *glPtrTimerCtx;
 
 /* Timer callback to reset device if main loop has not been run as expected */
-void watchdog_timer_cb (
+static void watchdog_timer_cb (
     cy_timer_id_t id,           /**< Timer ID for which callback is being generated */
     void *callbackContext)       /**< Timer module context */
 {
-    (void)callbackContext;
-    (void)id;
+    CY_UNUSED_PARAMETER(callbackContext);
+    CY_UNUSED_PARAMETER(id);
 
     /*
      * It is possible that this timer is the only reason for the device to wake from sleep.
      * Hence allow three consecutive timer expires before resetting the device.
      */
     gl_main_loop_delay++;
-    if (gl_main_loop_delay >= 3)
+    if (gl_main_loop_delay >= 3u)
     {
         /* Store the reset signature into RAM */
         gl_runtime_data_addr[WATCHDOG_RESET_OFFSET] = WATCHDOG_RESET_SIG;
@@ -95,8 +114,8 @@ void watchdog_timer_cb (
     }
 
     /* Start the timer again */
-    Cy_PdUtils_SwTimer_Start (glPtrTimerCtx, NULL, CY_PDUTILS_WATCHDOG_TIMER,
-            CY_APP_WATCHDOG_RESET_PERIOD_MS, watchdog_timer_cb);
+    (void)Cy_PdUtils_SwTimer_Start (glPtrTimerCtx, NULL, (uint16_t)CY_PDUTILS_WATCHDOG_TIMER,
+            CY_APP_WATCHDOG_RESET_PERIOD_MS, &watchdog_timer_cb);
 }
 
 #endif /* CY_APP_RESET_ON_ERROR_ENABLE */
@@ -110,26 +129,26 @@ void watchdog_timer_cb (
 #define MIN_STACK_USAGE     (256u)
 
 /* Signature used to track stack usage */
-#define STACK_UNUSED_SIG    (0x00555500)
+#define STACK_UNUSED_SIG    (0x00555500u)
 
 /* Address of the bottom location of the run-time stack */
 uint32_t *gStackBottom  = (uint32_t *)CYDEV_SRAM_BASE;
-volatile uint16_t gMinStackMargin   = 0;
+volatile uint16_t gMinStackMargin   = 0u;
 
 #endif /* CY_APP_STACK_USAGE_CHECK_ENABLE */
 
 void Cy_App_Instrumentation_Init(cy_stc_pdutils_sw_timer_t *ptrTimerContext)
 {
-    uint32_t wdr_cnt = 0;
+    uint32_t wdr_cnt = 0u;
 
     /* Added to avoid compiler warning if all features are disabled */
-    (void)wdr_cnt;
+    CY_UNUSED_PARAMETER(wdr_cnt);
 
 #if CY_APP_RESET_ON_ERROR_ENABLE
     /* Store the timer context. */
     glPtrTimerCtx = ptrTimerContext;
 #else
-    (void)ptrTimerContext;
+    CY_UNUSED_PARAMETER(ptrTimerContext);
 #endif /* CY_APP_RESET_ON_ERROR_ENABLE */
 
 #if CY_APP_STACK_USAGE_CHECK_ENABLE
@@ -168,7 +187,7 @@ void Cy_App_Instrumentation_Init(cy_stc_pdutils_sw_timer_t *ptrTimerContext)
         {
             if(gl_instrumentation_cb != NULL)
             {
-                gl_instrumentation_cb(0, CY_APP_INST_EVT_WDT_RESET);
+                gl_instrumentation_cb(0u, CY_APP_INST_EVT_WDT_RESET);
             }
             wdr_cnt++;
         }
@@ -176,7 +195,7 @@ void Cy_App_Instrumentation_Init(cy_stc_pdutils_sw_timer_t *ptrTimerContext)
         {
             if (gl_instrumentation_cb != NULL)
             {
-                gl_instrumentation_cb(0, CY_APP_INST_EVT_HARD_FAULT);
+                gl_instrumentation_cb(0u, CY_APP_INST_EVT_HARD_FAULT);
             }
         }
         else
@@ -188,7 +207,7 @@ void Cy_App_Instrumentation_Init(cy_stc_pdutils_sw_timer_t *ptrTimerContext)
     {
         if (gl_instrumentation_cb != NULL)
         {
-            gl_instrumentation_cb(0, CY_APP_INST_EVT_POWER_CYCLE);
+            gl_instrumentation_cb(0u, CY_APP_INST_EVT_POWER_CYCLE);
         }
     }
 
@@ -197,8 +216,8 @@ void Cy_App_Instrumentation_Init(cy_stc_pdutils_sw_timer_t *ptrTimerContext)
      * Also clear the reset detected signature.
      */
     gl_runtime_data_addr[RESET_DATA_VALID_OFFSET] = RESET_DATA_VALID_SIG;
-    gl_runtime_data_addr[WATCHDOG_RESET_OFFSET]   = 0;
-    gl_runtime_data_addr[HARDFAULT_RESET_OFFSET] = 0;
+    gl_runtime_data_addr[WATCHDOG_RESET_OFFSET]   = 0u;
+    gl_runtime_data_addr[HARDFAULT_RESET_OFFSET] = 0u;
     gl_runtime_data_addr[RESET_COUNT_OFFSET]      = wdr_cnt;
 #endif /* CY_APP_RESET_ON_ERROR_ENABLE */
 }
@@ -207,8 +226,8 @@ void Cy_App_Instrumentation_Start(void)
 {
 #if CY_APP_RESET_ON_ERROR_ENABLE
     /* Start the timer used for watchdog reset */
-    Cy_PdUtils_SwTimer_Start (glPtrTimerCtx, NULL,  CY_PDUTILS_WATCHDOG_TIMER,
-            CY_APP_WATCHDOG_RESET_PERIOD_MS, watchdog_timer_cb);
+    (void)Cy_PdUtils_SwTimer_Start (glPtrTimerCtx, NULL,  (uint16_t)CY_PDUTILS_WATCHDOG_TIMER,
+            CY_APP_WATCHDOG_RESET_PERIOD_MS, &watchdog_timer_cb);
 #endif /* CY_APP_RESET_ON_ERROR_ENABLE */
 
 #if CY_APP_WATCHDOG_HARDWARE_RESET_ENABLE
@@ -232,7 +251,7 @@ void Cy_App_Instrumentation_Task(void)
 
 #if CY_APP_RESET_ON_ERROR_ENABLE
     /* Clear the variable to indicate main loop has been run */
-    gl_main_loop_delay = 0;
+    gl_main_loop_delay = 0u;
 #endif /* CY_APP_RESET_ON_ERROR_ENABLE */
 
 #if CY_APP_STACK_USAGE_CHECK_ENABLE
@@ -249,6 +268,8 @@ void Cy_App_Instrumentation_Task(void)
 #endif /* CY_APP_STACK_USAGE_CHECK_ENABLE */
 }
 
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 17.11', 1, 'This function will not return');
+CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Rule 8.4', 1, 'This is the handler that overrides original weak one');
 void HardFault_Handler(void)
 {
 #if CY_APP_RESET_ON_ERROR_ENABLE
@@ -257,6 +278,8 @@ void HardFault_Handler(void)
     NVIC_SystemReset ();
 #endif /* CY_APP_RESET_ON_ERROR_ENABLE */
 }
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.4');
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 17.11');
 
 void Cy_App_Instrumentation_RegisterCb(cy_app_instrumentation_cb_t cb)
 {
@@ -271,9 +294,12 @@ uint32_t Cy_App_Instrumentation_GetWdtResetCount(void)
 #if CY_APP_RESET_ON_ERROR_ENABLE
     return gl_runtime_data_addr[RESET_COUNT_OFFSET];
 #else
-    return 0;
+    return 0u;
 #endif /* CY_APP_RESET_ON_ERROR_ENABLE */
 
 }
+
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.4');
+CY_MISRA_BLOCK_END('MISRA C-2012 Rule 8.6');
 
 /* [] END OF FILE */

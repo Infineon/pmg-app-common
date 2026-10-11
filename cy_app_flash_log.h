@@ -1,21 +1,42 @@
 /***************************************************************************//**
 * \file cy_app_flash_log.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines APIs and macros for flash logging
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_FLASH_LOG_H_
-#define _CY_APP_FLASH_LOG_H_
+#ifndef CY_APP_FLASH_LOG_H
+#define CY_APP_FLASH_LOG_H
 
 
 #if (CY_APP_FLASH_LOG_ENABLE || DOXYGEN)
@@ -75,7 +96,7 @@
 #define CY_APP_DEBUG_FLASH_LOG_PD_FAULTS_SIZE        (72u)
 
 /** Maximum count of each fault */
-#define CY_APP_DEBUG_FLASH_LOG_MAX_FAULT_COUNT                         ((uint16_t)0xFFFF)
+#define CY_APP_DEBUG_FLASH_LOG_MAX_FAULT_COUNT                         ((uint16_t)0xFFFFu)
 
 /** WDT sequential offset as per the flash log row definition */
 #define CY_APP_DEBUG_FLASH_WDT_RESET_OFFSET                        (CY_APP_DEBUG_FLASH_LOG_COMMON_FAULTS_OFFSET)
@@ -84,88 +105,88 @@
 #define CY_APP_DEBUG_FLASH_HARD_FAULT_OFFSET                        (CY_APP_DEBUG_FLASH_WDT_RESET_OFFSET + sizeof(uint16_t))
 
 /** Power cycle sequential offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_POWER_CYCLE_OFFSET                        (CY_APP_DEBUG_FLASH_HARD_FAULT_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_POWER_CYCLE_OFFSET  (CY_APP_DEBUG_FLASH_HARD_FAULT_OFFSET + sizeof(uint16_t))
 
 /** VDDD BOD sequential offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VDDD_BOD_FAULT_OFFSET                   (CY_APP_DEBUG_FLASH_LOG_POWER_CYCLE_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_VDDD_BOD_FAULT_OFFSET  (CY_APP_DEBUG_FLASH_LOG_POWER_CYCLE_OFFSET + sizeof(uint16_t))
 
 /** FW update failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_FW_UPD_FAIL_OFFSET                      (CY_APP_DEBUG_FLASH_LOG_DMC_FAULTS_OFFSET)
+#define CY_APP_DEBUG_FLASH_LOG_FW_UPD_FAIL_OFFSET  (CY_APP_DEBUG_FLASH_LOG_DMC_FAULTS_OFFSET)
 
 /** FW update P1 authentication failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_FW_UPD_P1_AUTH_FAIL_OFFSET                      (CY_APP_DEBUG_FLASH_LOG_FW_UPD_FAIL_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_FW_UPD_P1_AUTH_FAIL_OFFSET  (CY_APP_DEBUG_FLASH_LOG_FW_UPD_FAIL_OFFSET + sizeof(uint16_t))
 
 /** FW update P2 authentication failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_FW_UPD_P2_AUTH_FAIL_OFFSET                      (CY_APP_DEBUG_FLASH_LOG_FW_UPD_P1_AUTH_FAIL_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_FW_UPD_P2_AUTH_FAIL_OFFSET  (CY_APP_DEBUG_FLASH_LOG_FW_UPD_P1_AUTH_FAIL_OFFSET + sizeof(uint16_t))
 
 /** VBUS OV failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VBUS_OV_OFFSET                               (CY_APP_DEBUG_FLASH_LOG_PD_FAULTS_OFFSET)
+#define CY_APP_DEBUG_FLASH_LOG_VBUS_OV_OFFSET   (CY_APP_DEBUG_FLASH_LOG_PD_FAULTS_OFFSET)
 
 /** VBUS UV failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VBUS_UV_OFFSET                               (CY_APP_DEBUG_FLASH_LOG_VBUS_OV_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_VBUS_UV_OFFSET   (CY_APP_DEBUG_FLASH_LOG_VBUS_OV_OFFSET + sizeof(uint16_t))
 
 /** VBUS SC failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VBUS_SC_OFFSET                               (CY_APP_DEBUG_FLASH_LOG_VBUS_UV_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_VBUS_SC_OFFSET   (CY_APP_DEBUG_FLASH_LOG_VBUS_UV_OFFSET + sizeof(uint16_t))
 
 /** VBUS OC failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VBUS_OC_OFFSET                               (CY_APP_DEBUG_FLASH_LOG_VBUS_SC_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_VBUS_OC_OFFSET   (CY_APP_DEBUG_FLASH_LOG_VBUS_SC_OFFSET + sizeof(uint16_t))
 
 /** VBUS RC failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VBUS_RC_OFFSET                               (CY_APP_DEBUG_FLASH_LOG_VBUS_OC_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_VBUS_RC_OFFSET   (CY_APP_DEBUG_FLASH_LOG_VBUS_OC_OFFSET + sizeof(uint16_t))
 
 /** VCONN OC failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VCONN_OC_OFFSET                               (CY_APP_DEBUG_FLASH_LOG_VBUS_RC_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_VCONN_OC_OFFSET  (CY_APP_DEBUG_FLASH_LOG_VBUS_RC_OFFSET + sizeof(uint16_t))
 
 /** VBUS IN OV failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VBUS_IN_OV_OFFSET                               (CY_APP_DEBUG_FLASH_LOG_VCONN_OC_OFFSET + sizeof(uint16_t))
-
+#define CY_APP_DEBUG_FLASH_LOG_VBUS_IN_OV_OFFSET (CY_APP_DEBUG_FLASH_LOG_VCONN_OC_OFFSET + sizeof(uint16_t))
+ 
 /** VBUS IN UV failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_VBUS_IN_UV_OFFSET                               (CY_APP_DEBUG_FLASH_LOG_VBUS_IN_OV_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_VBUS_IN_UV_OFFSET (CY_APP_DEBUG_FLASH_LOG_VBUS_IN_OV_OFFSET + sizeof(uint16_t))
 
 /** System OT failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_SYSTEM_OT_OFFSET                                 (CY_APP_DEBUG_FLASH_LOG_VBUS_IN_UV_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_SYSTEM_OT_OFFSET (CY_APP_DEBUG_FLASH_LOG_VBUS_IN_UV_OFFSET + sizeof(uint16_t))
 
 /** PD CRC failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_PD_CRC_OFFSET                                 (CY_APP_DEBUG_FLASH_LOG_SYSTEM_OT_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_PD_CRC_OFFSET    (CY_APP_DEBUG_FLASH_LOG_SYSTEM_OT_OFFSET + sizeof(uint16_t))
 
 /** CC OV failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_CC_OV_OFFSET                                 (CY_APP_DEBUG_FLASH_LOG_PD_CRC_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_CC_OV_OFFSET     (CY_APP_DEBUG_FLASH_LOG_PD_CRC_OFFSET + sizeof(uint16_t))
 
 /** CC SC failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_CC_SC_OFFSET                                 (CY_APP_DEBUG_FLASH_LOG_CC_OV_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_CC_SC_OFFSET     (CY_APP_DEBUG_FLASH_LOG_CC_OV_OFFSET + sizeof(uint16_t))
 
 /** SBU OV failure offset as per the flash log row definition */
-#define CY_APP_DEBUG_FLASH_LOG_SBU_OV_OFFSET                                 (CY_APP_DEBUG_FLASH_LOG_CC_SC_OFFSET + sizeof(uint16_t))
+#define CY_APP_DEBUG_FLASH_LOG_SBU_OV_OFFSET    (CY_APP_DEBUG_FLASH_LOG_CC_SC_OFFSET + sizeof(uint16_t))
 
 /** Invalid OFFSET */
-#define CY_APP_DEBUG_FLASH_LOG_INVALID_OFFSET                                (0x0u)
+#define CY_APP_DEBUG_FLASH_LOG_INVALID_OFFSET                           (0x0u)
 
 /** Flash page size */
-#define CY_APP_DEBUG_FLASH_LOG_FLASH_PAGE_SIZE                              (256u)
+#define CY_APP_DEBUG_FLASH_LOG_FLASH_PAGE_SIZE                          (256u)
 
 /** Initial offset for first and last failure index */
-#define CY_APP_DEBUG_FLASH_LOG_OFFSETS_INITIAL_INDEX              (0xFFu)
+#define CY_APP_DEBUG_FLASH_LOG_OFFSETS_INITIAL_INDEX                    (0xFFu)
 
 /** Start offset for first and last failure index */
-#define CY_APP_DEBUG_FLASH_LOG_OFFSETS_START_INDEX              (0x00u)
+#define CY_APP_DEBUG_FLASH_LOG_OFFSETS_START_INDEX                      (0x00u)
 
 /** Last offset for first and last failure index */
-#define CY_APP_DEBUG_FLASH_LOG_OFFSETS_LAST_INDEX              (0xF3u)
+#define CY_APP_DEBUG_FLASH_LOG_OFFSETS_LAST_INDEX                       (0xF0u)
 
 /** Size of each failure details */
-#define CY_APP_DEBUG_FLASH_LOG_FAILURE_DETAILS_SIZE                      (0x03u)
+#define CY_APP_DEBUG_FLASH_LOG_FAILURE_DETAILS_SIZE                     (0x03u)
 
 /** Offset of MSB byte of opcode in failure details */
-#define CY_APP_DEBUG_FLASH_LOG_OPCODE_MSB_OFFSET                         (0x00u)
+#define CY_APP_DEBUG_FLASH_LOG_OPCODE_MSB_OFFSET                        (0x00u)
 
 /** Offset of LSB byte of opcode in failure details */
-#define CY_APP_DEBUG_FLASH_LOG_OPCODE_LSB_OFFSET                         (0x01u)
+#define CY_APP_DEBUG_FLASH_LOG_OPCODE_LSB_OFFSET                        (0x01u)
 
 /** Offset of additional information in failure details */
-#define CY_APP_DEBUG_FLASH_LOG_ADDITIONAL_INFO_OFFSET                         (0x02u)
+#define CY_APP_DEBUG_FLASH_LOG_ADDITIONAL_INFO_OFFSET                   (0x02u)
 
 /** Delay to write into row 2 after row 1 write */
-#define CY_APP_DEBUG_FLASH_LOG_ROW2_WRITE_DELAY                                    (100u)
+#define CY_APP_DEBUG_FLASH_LOG_ROW2_WRITE_DELAY                         (100u)
 
 /** \} group_pmg_app_common_log_macros */
 
@@ -348,9 +369,6 @@ typedef struct
 * \param timerCtx
 * Pointer to timer context used for flash logging
 *
-* \return
-* None
-*
 *******************************************************************************/
 void Cy_App_Debug_FlashInit(uint32_t flash_addr, uint32_t backup_flash_addr, uint16_t timerID, uint16_t deferTime, cy_stc_pdutils_sw_timer_t *timerCtx);
 
@@ -386,11 +404,8 @@ cy_en_debug_status_t Cy_App_Debug_FlashLog(uint8_t port, cy_en_debug_opcodes_t e
 * This function performs tasks associated with flash logging. It checks for pending flash writes, defer
 * the writes and finally write the logs to the flash.
 *
-* \return
-* None
-*
 *******************************************************************************/
-void Cy_App_Debug_FlashTask();
+void Cy_App_Debug_FlashTask(void);
 
 /*******************************************************************************
 * Function name: Cy_App_Debug_FlashReadLogs
@@ -408,6 +423,6 @@ cy_stc_app_flash_log_t * Cy_App_Debug_FlashReadLogs(void);
 
 #endif /* (CY_APP_FLASH_LOG_ENABLE || DOXYGEN) */
 
-#endif /* _CY_APP_FLASH_LOG_H_ */
+#endif /* CY_APP_FLASH_LOG_H */
 
 /* [] END OF FILE */

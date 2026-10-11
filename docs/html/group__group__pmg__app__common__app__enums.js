@@ -9,13 +9,10 @@ var group__group__pmg__app__common__app__enums =
       [ "CY_APP_PORT_V5V_SUPPLY_LOST", "group__group__pmg__app__common__app__enums.html#gga726b73ad3fef7a5eeb820bb4735416aaa3befe7d4c490e8653baabe290f05993a", null ],
       [ "CY_APP_PORT_DISABLE_IN_PROGRESS", "group__group__pmg__app__common__app__enums.html#gga726b73ad3fef7a5eeb820bb4735416aaaf30995db607df6d400180bae3e8847e9", null ]
     ] ],
-    [ "cy_en_app_nb_sys_pwr_state_t", "group__group__pmg__app__common__app__enums.html#gaa02f3a396d59de9280e505fa66e328a9", [
-      [ "CY_APP_NB_SYS_PWR_STATE_S0", "group__group__pmg__app__common__app__enums.html#ggaa02f3a396d59de9280e505fa66e328a9afcf497c2bcc9d9d6ded660d5015df2aa", null ],
-      [ "CY_APP_NB_SYS_PWR_STATE_S3", "group__group__pmg__app__common__app__enums.html#ggaa02f3a396d59de9280e505fa66e328a9adfd7b323313f0a6ace9608dd7d680b2e", null ],
-      [ "CY_APP_NB_SYS_PWR_STATE_S4", "group__group__pmg__app__common__app__enums.html#ggaa02f3a396d59de9280e505fa66e328a9ac61e053d8a2eb85e8cf597ce8ca56648", null ],
-      [ "CY_APP_NB_SYS_PWR_STATE_S5", "group__group__pmg__app__common__app__enums.html#ggaa02f3a396d59de9280e505fa66e328a9a8a3bb62d1a3861a9bc158171a473edca", null ],
-      [ "CY_APP_NB_SYS_PWR_STATE_MOD_STBY", "group__group__pmg__app__common__app__enums.html#ggaa02f3a396d59de9280e505fa66e328a9aa68c8236ae22488f02142c9834f416f5", null ],
-      [ "CY_APP_NB_SYS_PWR_STATE_G3", "group__group__pmg__app__common__app__enums.html#ggaa02f3a396d59de9280e505fa66e328a9a3f5dfd8994dda4aeedef47ee0643dc9b", null ]
+    [ "cy_en_app_alt_modes_dis_state_t", "group__group__pmg__app__common__app__enums.html#gac46f8e9c5bd831631e8608e731af5f51", [
+      [ "CY_APP_ALT_MODES_DIS_NONE", "group__group__pmg__app__common__app__enums.html#ggac46f8e9c5bd831631e8608e731af5f51a49f1afa264e5ef07cf5d431698513908", null ],
+      [ "CY_APP_ALT_MODES_DIS_USB4_TBT_MODE", "group__group__pmg__app__common__app__enums.html#ggac46f8e9c5bd831631e8608e731af5f51a51fd7ae6e25b411a05ae9f637b9cc2ee", null ],
+      [ "CY_APP_ALT_MODES_DIS_ALL_ALT_MODES", "group__group__pmg__app__common__app__enums.html#ggac46f8e9c5bd831631e8608e731af5f51ab16a82681c7a117e272aba88f729568b", null ]
     ] ],
     [ "cy_en_timer_id_t", "group__group__pmg__app__common__app__enums.html#gac12adba12168afca062900541d49fd62", [
       [ "CY_APP_TIMERS_START_ID", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a3e47a1b4f31f53096364ecf33219db63", null ],
@@ -63,7 +60,7 @@ var group__group__pmg__app__common__app__enums =
       [ "CY_APP_CCG_LS_HEART_BEAT_TIMER_ID", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62ad9b2a0ba94f470aa848077dcc3ba35cb", null ],
       [ "CY_APP_THROTTLE_TIMER_ID", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62acadb4e4d7cc2f2cd55267151e5e54bb0", null ],
       [ "CY_APP_THROTTLE_WAIT_FOR_PD_TIMER_ID", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a69670a4bc4d6e3c383126452961dd1a0", null ],
-      [ "CY_APP_RESERVED_TIMER_ID", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a406132b7878e26a4cbf3f0eae95ac575", null ],
+      [ "CY_APP_SINK_REQUEST_TIMER_ID", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a067cc52a5c453ec1706eae96d39f6cb5", null ],
       [ "CY_APP_LINS_BUS_INACTIVE_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62ab11d10859e7a54f9f309f42909a32b4b", null ],
       [ "CY_APP_LINS_BUS_LISTEN_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a217c7787c040e249e3cd2a6a13fc2a08", null ],
       [ "CY_APP_LINS_MULTIFRAME_DROP_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62ab08d72b727fe728e886fe78c1526130c", null ],
@@ -86,6 +83,10 @@ var group__group__pmg__app__common__app__enums =
       [ "CY_APP_PD_GET_REVISION_COMMAND_RETRY_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a21f7c6d7ed62a69752e3bc693a715c0e", null ],
       [ "CY_APP_GOSHEN_AUTH_RESP_WAIT_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62af67d9d20ddd906b1b0a3e91c6da9ed45", null ],
       [ "CY_APP_FXVL_UPD_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a0a515678e636aa28f6e214b46a4849e6", null ],
-      [ "CY_APP_FXVL_SMBUS_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62aed914ff44d75efd5113adb6a00ed902a", null ]
+      [ "CY_APP_FXVL_SMBUS_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62aed914ff44d75efd5113adb6a00ed902a", null ],
+      [ "CY_APP_BR_RIDGE_UPDATE_AFTER_ATTACH_WAIT_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62ae1581a93ada652feca7e88d2c4af7c63", null ],
+      [ "CY_APP_VBUS_DIV_TURN_OFF_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62aa3efc756ea02ad6576982cc5c5802778", null ],
+      [ "CY_APP_HX2G3_APPL_TIMER", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62a863e11e20b26942f76c87c862836a63f", null ],
+      [ "CY_APP_PSRC_VOUTBB_RCP_DELAY_TIMER_ID", "group__group__pmg__app__common__app__enums.html#ggac12adba12168afca062900541d49fd62aa22f092d83f6fcd0070ba258cc03ee20", null ]
     ] ]
 ];

@@ -1,25 +1,47 @@
 /***************************************************************************//**
 * \file cy_app_boot.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Bootloader support header file
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_BOOT_H_
-#define _CY_APP_BOOT_H_
+#ifndef CY_APP_BOOT_H
+#define CY_APP_BOOT_H
 
 #include <stdint.h>
 #include <stdbool.h>
 #include "cy_app_status.h"
+#include "cy_app_config.h"
 #include "cy_app_system.h"
 #include "cy_app_flash.h"
 #include "cy_cryptolite_sha.h"
@@ -36,42 +58,37 @@
 /**
  *  @brief Mask for image 1 FW status bit in boot mode reason byte
  */
-#define CY_APP_SYS_IMG1_FW_STATUS_BIT_MASK                     (0x08)
-
-/**
- *  @brief Signature used for firmware to indicate boot mode request
- */
-#define CY_APP_SYS_BOOT_MODE_RQT_SIG                           (0x424C)
+#define CY_APP_SYS_IMG1_FW_STATUS_BIT_MASK                     (0x08u)
 
 /**
  *  @brief Signature used to indicate boot FW1 request
  */
-#define CY_APP_SYS_FW1_BOOT_RQT_SIG                            (0x4231)
+#define CY_APP_SYS_FW1_BOOT_RQT_SIG                            (0x4231u)
 
 /**
  *  @brief Signature used to indicate boot FW2 request
  */
-#define CY_APP_SYS_FW2_BOOT_RQT_SIG                            (0x4232)
+#define CY_APP_SYS_FW2_BOOT_RQT_SIG                            (0x4232u)
 
 /**
  *  @brief Firmware boot sequence number offset
  */
-#define CY_APP_SYS_FW_METADATA_BOOTSEQ_OFFSET                  (0x14)
+#define CY_APP_SYS_FW_METADATA_BOOTSEQ_OFFSET                  (0x14u)
 
 /**
  *  @brief Default boot-wait window for bootloader: 50 ms
  */
-#define CY_APP_SYS_BL_WAIT_DEFAULT                             (50)
+#define CY_APP_SYS_BL_WAIT_DEFAULT                             (50u)
 
 /**
  *  @brief Minimum boot-wait window duration supported: 20 ms
  */
-#define CY_APP_SYS_BL_WAIT_MINUMUM                             (20)
+#define CY_APP_SYS_BL_WAIT_MINUMUM                             (20u)
 
 /**
  *  @brief Maximum boot-wait window duration supported: 1000 ms
  */
-#define CY_APP_SYS_BL_WAIT_MAXIMUM                             (1000)
+#define CY_APP_SYS_BL_WAIT_MAXIMUM                             (1000u)
 
 /**
  *  @brief FW metadata application ID value requesting default boot-wait window
@@ -81,32 +98,32 @@
 /**
  *  @brief FW metadata application ID value requesting a zero boot-wait window
  */
-#define CY_APP_SYS_FWMETA_APPID_WAIT_0                         (0x4359)
+#define CY_APP_SYS_FWMETA_APPID_WAIT_0                         (0x4359u)
 
 /**
  * @brief Configuration table signature used for validation
  */
-#define CY_APP_SYS_CONFIG_TABLE_SIGNATURE                      (0x4946)
+#define CY_APP_SYS_CONFIG_TABLE_SIGNATURE                      (0x4946u)
 
 /**
  * @brief Configuration table size parameter offset
  */ 
-#define CY_APP_SYS_CONFIG_TABLE_SIZE_OFFSET                    (6)
+#define CY_APP_SYS_CONFIG_TABLE_SIZE_OFFSET                    (6u)
 
 /**
  * @brief Configuration table checksum offset
  */
-#define CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET                (8)
+#define CY_APP_SYS_CONFIG_TABLE_CHECKSUM_OFFSET                (8u)
 
 /**
  * @brief Configuration table data start offset for checksum calculation
  */
-#define CY_APP_SYS_CONFIG_TABLE_CHECKSUM_START                 (12)
+#define CY_APP_SYS_CONFIG_TABLE_CHECKSUM_START                 (12u)
 
 /**
  *  @brief Size of HASH in bytes
  */
-#define CY_APP_SYS_CRYPTO_SHA_2_HASH_SIZE_BYTES                (0x20)
+#define CY_APP_SYS_CRYPTO_SHA_2_HASH_SIZE_BYTES                (0x20u)
 
 /** \} group_pmg_app_common_system_boot_macros*/
 /** \} group_pmg_app_common_system_macros */
@@ -284,7 +301,6 @@ cy_stc_fw_img_status_t Cy_App_Boot_GetBootModeReason(void);
  * the firmware binary selected as the boot target by the Cy_App_Boot_Start function.
  * This is expected to be called after the boot-wait window has elapsed.
  *
- * @return None
  */
 void Cy_App_Boot_JumpToFw(void);
 
@@ -302,15 +318,16 @@ void Cy_App_Boot_JumpToFw(void);
  */
 uint32_t Cy_App_Boot_GetBootSeq(uint8_t fwid);
 
+#if (!CY_APP_BOOT_ENABLE)
 /**
  * @brief Function to validate firmware images and update image status
  *
  * This function is used to validate the firmware images in the device flash
  * and update their status in the image status/boot-mode reason field.
  *
- * @return None
  */
 void Cy_App_Boot_UpdateFwStatus(void);
+#endif /* (!CY_APP_BOOT_ENABLE) */
 
 #if (defined (CY_IP_M0S8CRYPTOLITE))
 /**
@@ -330,6 +347,6 @@ cy_en_app_status_t Cy_App_Boot_CalculateFwImageHash(cy_stc_sys_fw_metadata_t *fw
 /** \} group_pmg_app_common_system_boot_functions */
 /** \} group_pmg_app_common_system_functions */
 
-#endif /* _CY_APP_BOOT_H_ */
+#endif /* CY_APP_BOOT_H */
 
 /* [] END OF FILE */

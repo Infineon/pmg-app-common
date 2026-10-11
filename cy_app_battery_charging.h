@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_battery_charging.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines data structures and function prototypes associated with
@@ -8,15 +8,36 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_BATTERY_CHARGING_H_
-#define _CY_APP_BATTERY_CHARGING_H_
+#ifndef CY_APP_BATTERY_CHARGING_H
+#define CY_APP_BATTERY_CHARGING_H
 
 /*******************************************************************************
  * Header files including
@@ -110,12 +131,12 @@
         BC_SINK_AFC_MODE_ENABLE_MASK)
 
 /* QC DP/DM macros.*/
-#define QC_MODE_12V                                 ((((uint32_t)BC_D_0_6V) << 8) | (uint32_t)BC_D_0_6V)
-#define QC_MODE_9V                                  ((((uint32_t)BC_D_0_6V) << 8) | (uint32_t)BC_D_3_3V)
-#define QC_MODE_CONT                                ((((uint32_t)BC_D_3_3V) << 8) | (uint32_t)BC_D_0_6V)
-#define QC_MODE_20V                                 ((((uint32_t)BC_D_3_3V) << 8) | (uint32_t)BC_D_3_3V)
-#define QC_MODE_5V                                  ((((uint32_t)BC_D_GND) << 8) | (uint32_t)BC_D_0_6V)
-#define QC_MODE_RSVD                                ((((uint32_t)BC_D_ERR) << 8) | (uint32_t)BC_D_ERR)
+#define QC_MODE_12V                                 ((((uint32_t)BC_D_0_6V) << 8u) | (uint32_t)BC_D_0_6V)
+#define QC_MODE_9V                                  ((((uint32_t)BC_D_0_6V) << 8u) | (uint32_t)BC_D_3_3V)
+#define QC_MODE_CONT                                ((((uint32_t)BC_D_3_3V) << 8u) | (uint32_t)BC_D_0_6V)
+#define QC_MODE_20V                                 ((((uint32_t)BC_D_3_3V) << 8u) | (uint32_t)BC_D_3_3V)
+#define QC_MODE_5V                                  ((((uint32_t)BC_D_GND) << 8u) | (uint32_t)BC_D_0_6V)
+#define QC_MODE_RSVD                                ((((uint32_t)BC_D_ERR) << 8u) | (uint32_t)BC_D_ERR)
 
 /** @endcond */
 
@@ -158,7 +179,7 @@
  * @brief List of legacy battery charging schemes supported over a Type-C port.
  */
 typedef enum{
-    BC_CHARGE_NONE = 0,         /**< No active battery charging modes. */
+    BC_CHARGE_NONE = 0u,         /**< No active battery charging modes. */
     BC_CHARGE_DCP,              /**< Dedicated charging port as defined by BC 1.2 specification. */
     BC_CHARGE_QC2,              /**< QC 2.0 charger. */
     BC_CHARGE_QC3,              /**< QC 3.0 charger. */
@@ -174,7 +195,7 @@ typedef enum{
  */
 typedef enum
 {
-    BC_D_GND = 0,                       /**< DP/DM voltage < 0.325. */
+    BC_D_GND = 0u,                       /**< DP/DM voltage < 0.325. */
     BC_D_0_6V,                          /**< 0.325 < DP/DPM voltage < 2 V.  */
     BC_D_3_3V,                          /**< DP/DM voltage > 2 V. */
     BC_D_ERR                            /**< Error state. */
@@ -186,9 +207,9 @@ typedef enum
  */
 typedef enum
 {
-    APPLE_TERM1 = 1,                    /**< Termination 1 code: 1 V - 2.22 V. */
-    APPLE_TERM2 = 2,                    /**< Termination 2 code: 2.22 V - 2.89 V. */
-    APPLE_TERM3 = 3                     /**< Termination 3 code: 2.89+ V. */
+    APPLE_TERM1 = 1u,                    /**< Termination 1 code: 1 V - 2.22 V. */
+    APPLE_TERM2 = 2u,                    /**< Termination 2 code: 2.22 V - 2.89 V. */
+    APPLE_TERM3 = 3u                     /**< Termination 3 code: 2.89+ V. */
 } cy_en_bc_apple_term_t;
 
 /**
@@ -197,15 +218,15 @@ typedef enum
  */
 typedef enum
 {
-    APPLE_BRICK_ID_0 = 0x11,            /**< APPLE_TERM1 on DM, APPLE_TERM1 on DP. */
-    APPLE_BRICK_ID_1 = 0x12,            /**< APPLE_TERM1 on DM, APPLE_TERM2 on DP. */
-    APPLE_BRICK_ID_2 = 0x13,            /**< APPLE_TERM1 on DM, APPLE_TERM3 on DP. */
-    APPLE_BRICK_ID_3 = 0x21,            /**< APPLE_TERM2 on DM, APPLE_TERM1 on DP. */
-    APPLE_BRICK_ID_4 = 0x22,            /**< APPLE_TERM2 on DM, APPLE_TERM2 on DP. */
-    APPLE_BRICK_ID_5 = 0x23,            /**< APPLE_TERM2 on DM, APPLE_TERM3 on DP. */
-    APPLE_BRICK_ID_6 = 0x31,            /**< APPLE_TERM3 on DM, APPLE_TERM1 on DP. */
-    APPLE_BRICK_ID_7 = 0x32,            /**< APPLE_TERM3 on DM, APPLE_TERM2 on DP. */
-    APPLE_BRICK_ID_8 = 0x33,            /**< APPLE_TERM3 on DM, APPLE_TERM3 on DP. */
+    APPLE_BRICK_ID_0 = 0x11u,            /**< APPLE_TERM1 on DM, APPLE_TERM1 on DP. */
+    APPLE_BRICK_ID_1 = 0x12u,            /**< APPLE_TERM1 on DM, APPLE_TERM2 on DP. */
+    APPLE_BRICK_ID_2 = 0x13u,            /**< APPLE_TERM1 on DM, APPLE_TERM3 on DP. */
+    APPLE_BRICK_ID_3 = 0x21u,            /**< APPLE_TERM2 on DM, APPLE_TERM1 on DP. */
+    APPLE_BRICK_ID_4 = 0x22u,            /**< APPLE_TERM2 on DM, APPLE_TERM2 on DP. */
+    APPLE_BRICK_ID_5 = 0x23u,            /**< APPLE_TERM2 on DM, APPLE_TERM3 on DP. */
+    APPLE_BRICK_ID_6 = 0x31u,            /**< APPLE_TERM3 on DM, APPLE_TERM1 on DP. */
+    APPLE_BRICK_ID_7 = 0x32u,            /**< APPLE_TERM3 on DM, APPLE_TERM2 on DP. */
+    APPLE_BRICK_ID_8 = 0x33u,            /**< APPLE_TERM3 on DM, APPLE_TERM3 on DP. */
 } cy_en_bc_apple_brick_id_t;
 
 /**
@@ -214,7 +235,7 @@ typedef enum
  */
 typedef enum
 {
-    BC_FSM_EVT_ENTRY = 0,                   /**<  0: BC Event: State entry. */
+    BC_FSM_EVT_ENTRY = 0u,                   /**<  0: BC Event: State entry. */
     BC_FSM_EVT_CMP1_FIRE,                   /**<  1: BC Event: CMP1 interrupt. */
     BC_FSM_EVT_CMP2_FIRE,                   /**<  2: BC Event: CMP2 interrupt. */
     BC_FSM_EVT_QC_CHANGE,                   /**<  3: BC Event: QC state change. */
@@ -234,7 +255,7 @@ typedef enum
  * @brief List of states in the legacy battery charging state machine.
  */
 typedef enum{
-    BC_FSM_OFF = 0,                                     /**< BC state machine inactive. */
+    BC_FSM_OFF = 0u,                                     /**< BC state machine inactive. */
     BC_FSM_SRC_LOOK_FOR_CONNECT,                        /**< Look for connection as a DCP. */
     BC_FSM_SRC_INITIAL_CONNECT,                         /**< Initial BC 1.2 sink connection detected. */
     BC_FSM_SRC_APPLE_CONNECTED,                         /**< Connected to sink as an Apple power brick. */
@@ -263,10 +284,10 @@ typedef enum{
  */
 typedef enum
 {
-    BC_SINK_TIMER_NONE = 0,                             /**< No timers running. */
-    BC_SINK_DCD_DEBOUNCE_TIMER = 1,                      /**< DCD Debounce timer. */
-    BC_SINK_TIMER_BC_DONE = 2,                          /**< T_GLITCH_BC_DONE timer. */
-    BC_SINK_TIMER_DM_HIGH = 3
+    BC_SINK_TIMER_NONE = 0u,                             /**< No timers running. */
+    BC_SINK_DCD_DEBOUNCE_TIMER = 1u,                      /**< DCD Debounce timer. */
+    BC_SINK_TIMER_BC_DONE = 2u,                          /**< T_GLITCH_BC_DONE timer. */
+    BC_SINK_TIMER_DM_HIGH = 3u
 } cy_en_bc_sink_timer_t;
 
 /** \} group_pmg_app_common_bch_enums */
@@ -400,7 +421,6 @@ bool Cy_App_Bc_PrepareDeepSleep(cy_stc_usbpd_context_t *context);
  * PMG1 device wakes from deep sleep mode.
  *
  * @param context Pointer to USBPD context.
- * @return Void.
  */
 void Cy_App_Bc_Resume(cy_stc_usbpd_context_t *context);
 
@@ -420,7 +440,6 @@ const cy_stc_bc_status_t* Cy_App_Bc_GetStatus(cy_stc_usbpd_context_t *context);
  * @param context Pointer to USBPD context.
  * @param evt USB PD event ID.
  * @param dat Optional data associated with the event.
- * @return Void.
  */
 void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app_evt_t evt, const void* dat);
 
@@ -429,8 +448,6 @@ void Cy_App_Bc_PdEventHandler(cy_stc_usbpd_context_t *context, cy_en_pdstack_app
  *
  * @param context Pointer to USBPD context.
  * @param evt_mask Mask specifying events to be set.
- *
- * @return Void.
  */
 void Cy_App_Bc_FsmSetEvt(cy_stc_usbpd_context_t *context, uint32_t evt_mask);
 
@@ -440,13 +457,12 @@ void Cy_App_Bc_FsmSetEvt(cy_stc_usbpd_context_t *context, uint32_t evt_mask);
  *
  * @param context Pointer to USBPD context.
  * @param evt_mask Event Mask to be cleared.
- * @return Void.
  */
 void Cy_App_Bc_FsmClearEvt(cy_stc_usbpd_context_t *context, uint32_t evt_mask);
 
 /** \} group_pmg_app_common_bch_functions */
 /** \} group_pmg_app_common_bch */
 
-#endif /* _CY_APP_BATTERY_CHARGING_H_ */
+#endif /* CY_APP_BATTERY_CHARGING_H */
 
 /* End of File */

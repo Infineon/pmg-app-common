@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_moisture_detect.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements functions associated with corrosion mitigation.
@@ -8,11 +8,32 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
 #include "cy_pdstack_dpm.h"
@@ -43,7 +64,7 @@ bool Cy_App_MoistureDetect_IsMoisturePresent(cy_stc_usbpd_context_t * context)
 #endif /* (defined(CY_DEVICE_PMG1S3) && PMG1_PD_DUALPORT_ENABLE) */
     {
         /* Enables charger detect block. */
-        Cy_USBPD_Bch_Phy_En(context);
+        (void)Cy_USBPD_Bch_Phy_En(context);
 
         /* Enables pull-up on R_DP_UP. */
         Cy_USBPD_Bch_ApplyDpPu(context);
@@ -72,8 +93,8 @@ bool Cy_App_MoistureDetect_IsMoisturePresent(cy_stc_usbpd_context_t * context)
         }
 
         /* Restores everything back. */
-        Cy_USBPD_Bch_Phy_RemoveTerm(context);
-        Cy_USBPD_Bch_Phy_Dis(context);
+        (void)Cy_USBPD_Bch_Phy_RemoveTerm(context);
+        (void)Cy_USBPD_Bch_Phy_Dis(context);
 
         Cy_USBPD_Bch_RemoveDpPu(context);
     }
@@ -86,26 +107,26 @@ bool Cy_App_MoistureDetect_IsMoisturePresent(cy_stc_usbpd_context_t * context)
     bool adcRefVddd = context->adcRefVddd[CY_USBPD_ADC_ID_0];
 
     /* Connects SBU1 to AUXN and SBU2 to AUXP. */
-    Cy_USBPD_Mux_SbuSwitchConfigure(context, CY_USBPD_SBU_CONNECT_AUX2, CY_USBPD_SBU_CONNECT_AUX1);
-    Cy_USBPD_Mux_AuxTermConfigure(context, CY_USBPD_AUX_1_470K_PD_RESISTOR, CY_USBPD_AUX_2_100K_PU_RESISTOR);
+    (void)Cy_USBPD_Mux_SbuSwitchConfigure(context, CY_USBPD_SBU_CONNECT_AUX2, CY_USBPD_SBU_CONNECT_AUX1);
+    (void)Cy_USBPD_Mux_AuxTermConfigure(context, CY_USBPD_AUX_1_470K_PD_RESISTOR, CY_USBPD_AUX_2_100K_PU_RESISTOR);
 
     /* Connects SBU1 line to the AMUX-A. */
 #if (defined(CY_DEVICE_PMG1S3))
-    Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_AUX1_SBU1);
+    (void)Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_AUX1_SBU1);
 #elif (defined(CY_DEVICE_CCG6))
-    Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_GND_SBU1_INT);
+    (void)Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_GND_SBU1_INT);
 #elif (defined(CY_DEVICE_CCG3))
     uint32_t regVal = context->base->uvov_ctrl;
     /* Disconnects the UV/OV resistor divider from ADFT so that SBU voltage can be measured. */
     context->base->uvov_ctrl &= ~(PDSS_UVOV_CTRL_UVOV_ADFT_EN | PDSS_UVOV_CTRL_UVOV_ADFT_CTRL_MASK);
     Cy_SysLib_DelayUs (10);
-    Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_SBU1);
+    (void)Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_SBU1);
 #endif /* (defined(CY_DEVICE_PMG1S3)) */
 
     if(adcRefVddd != true)
     {
         /* Sets the ADC reference voltage to VDDD. */
-        Cy_USBPD_Adc_SelectVref(context, CY_USBPD_ADC_ID_0, CY_USBPD_ADC_VREF_VDDD);
+        (void)Cy_USBPD_Adc_SelectVref(context, CY_USBPD_ADC_ID_0, CY_USBPD_ADC_VREF_VDDD);
     }
 
     Cy_SysLib_DelayUs(100);
@@ -122,11 +143,11 @@ bool Cy_App_MoistureDetect_IsMoisturePresent(cy_stc_usbpd_context_t * context)
     {
         /* Connects SBU2 line to the AMUX-A. */
 #if (defined(CY_DEVICE_PMG1S3))
-        Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_AUX2_SBU2);
+        (void)Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_AUX2_SBU2);
 #elif (defined(CY_DEVICE_CCG6))
-        Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_ISNK_OVP_SBU2_INT);
+        (void)Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_ISNK_OVP_SBU2_INT);
 #elif (defined(CY_DEVICE_CCG3))
-        Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_SBU2);
+        (void)Cy_USBPD_Mux_SbuAdftEnable(context, CY_USBPD_SBU_ADFT_SBU2);
 #endif /* (defined(CY_DEVICE_PMG1S3)) */
         /** Allows for voltages to settle. */
         Cy_SysLib_DelayUs(20);
@@ -142,11 +163,11 @@ bool Cy_App_MoistureDetect_IsMoisturePresent(cy_stc_usbpd_context_t * context)
     if(adcRefVddd != true)
     {
         /* Sets the ADC reference to voltage from the RefGen block. */
-        Cy_USBPD_Adc_SelectVref(context, CY_USBPD_ADC_ID_0, CY_USBPD_ADC_VREF_PROG);
+        (void)Cy_USBPD_Adc_SelectVref(context, CY_USBPD_ADC_ID_0, CY_USBPD_ADC_VREF_PROG);
     }
     /* Removes SBU to AUX connection and terminations on AUX lines. */
-    Cy_USBPD_Mux_SbuSwitchConfigure(context, CY_USBPD_SBU_NOT_CONNECTED, CY_USBPD_SBU_NOT_CONNECTED);
-    Cy_USBPD_Mux_AuxTermConfigure(context, CY_USBPD_AUX_NO_RESISTOR, CY_USBPD_AUX_NO_RESISTOR);
+    (void)Cy_USBPD_Mux_SbuSwitchConfigure(context, CY_USBPD_SBU_NOT_CONNECTED, CY_USBPD_SBU_NOT_CONNECTED);
+    (void)Cy_USBPD_Mux_AuxTermConfigure(context, CY_USBPD_AUX_NO_RESISTOR, CY_USBPD_AUX_NO_RESISTOR);
     /* Removes AMUX-A connection. */
     Cy_USBPD_Mux_SbuAdftDisable(context);
 #if (defined(CY_DEVICE_CCG3))
@@ -164,7 +185,6 @@ bool Cy_App_MoistureDetect_IsMoisturePresent(cy_stc_usbpd_context_t * context)
  * @brief This function monitors DP and DM or SBU lines for moisture detection.
  *
  * @param ptrPdStackContext PDStack context.
- * @return None.
  */
 static void Cy_App_MoistureDetect_MonitorDpDmSbu(cy_stc_pdstack_context_t *ptrPdStackContext)
 {
@@ -221,14 +241,14 @@ void Cy_App_MoistureDetect_Run(cy_stc_pdstack_context_t * context)
         {
             /* Notifies application layer about moisture status. */
             Cy_App_EventHandler(context, APP_EVT_CORROSION_FAULT, (const void *)&context->typecStat.moistureDetected);
-            Cy_PdStack_Dpm_GoToErrorRecovery(context);
+            (void)Cy_PdStack_Dpm_GoToErrorRecovery(context);
         }
         else
         {
-           newState.state = 0;
+           newState.state = 0u;
            /* After one iteration, scan for active CC line and pull that down. */
            /* Scan CC1 with threshold vRa and vRdUsb. */
-           newState.cc[0] = Cy_USBPD_TypeC_GetRpRdStatus(context->ptrUsbPdContext, CY_PD_CC_CHANNEL_1, 0);
+           newState.cc[0] = Cy_USBPD_TypeC_GetRpRdStatus(context->ptrUsbPdContext, CY_PD_CC_CHANNEL_1, false);
 
            /* If CC1 status is not equal to RP_RA, then there is some voltage on that line and that is the active CC. */
            if(newState.cc[0] != (uint8_t)(CY_PD_RP_RA))
@@ -239,7 +259,7 @@ void Cy_App_MoistureDetect_Run(cy_stc_pdstack_context_t * context)
            {
                /* If CC2 status is not equal to RP_RA, then there is some voltage on that line and that is the active CC. */
                /* Scan CC2 again with vRdusb and vRd1. The 5 A to determine the correct Rp value. */
-               newState.cc[1] = Cy_USBPD_TypeC_GetRpRdStatus(context->ptrUsbPdContext, CY_PD_CC_CHANNEL_2, 0);
+               newState.cc[1] = Cy_USBPD_TypeC_GetRpRdStatus(context->ptrUsbPdContext, CY_PD_CC_CHANNEL_2, false);
 
                if(newState.cc[1] != (uint8_t)(CY_PD_RP_RA))
                {
@@ -254,7 +274,7 @@ void Cy_App_MoistureDetect_Run(cy_stc_pdstack_context_t * context)
         {
             /* Notifies the application layer about moisture status. */
             Cy_App_EventHandler(context, APP_EVT_CORROSION_FAULT, (const void *)&context->typecStat.moistureDetected);
-            Cy_PdStack_Dpm_GoToErrorRecovery(context);
+            (void)Cy_PdStack_Dpm_GoToErrorRecovery(context);
         }
     }
 }

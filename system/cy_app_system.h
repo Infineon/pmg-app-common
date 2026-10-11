@@ -1,21 +1,42 @@
 /***************************************************************************//**
 * \file cy_app_system.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Support functions and definitions for bootloader and flash updates
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_SYSTEM_H_
-#define _CY_APP_SYSTEM_H_
+#ifndef CY_APP_SYSTEM_H
+#define CY_APP_SYSTEM_H
 
 #include <stdint.h>
 
@@ -138,47 +159,47 @@
 /**
  * @brief Bootloader version address in FLASH
  */
-#define CY_APP_SYS_BOOT_VERSION_ADDRESS                              (0x000000E0)
+#define CY_APP_SYS_BOOT_VERSION_ADDRESS                              (0x000000E0u)
     
 /**
  * @brief Offset of FW version from the start address of FW image in flash
  */
-#define CY_APP_SYS_FW_VERSION_OFFSET                                 (0x000000E0)  
+#define CY_APP_SYS_FW_VERSION_OFFSET                                 (0x000000E0u)  
 
 /**
  * @brief Offset of app version from the start of firmware version
  */
-#define CY_APP_SYS_APP_VERSION_OFFSET                                 (0x00000004)
+#define CY_APP_SYS_APP_VERSION_OFFSET                                 (0x00000004u)
 
 /**
  * @brief Offset of silicon ID stored in FW image in flash
  */
-#define CY_APP_SYS_SILICON_ID_OFFSET                                 (0x000000EA)
+#define CY_APP_SYS_SILICON_ID_OFFSET                                 (0x000000EAu)
 
 /**
  * @brief Offset of bootloader type field in Bootloader flash region
  */
-#define CY_APP_SYS_BOOT_TYPE_FIELD_OFFSET                            (0x000000EC)
+#define CY_APP_SYS_BOOT_TYPE_FIELD_OFFSET                            (0x000000ECu)
 
 /**
  * @brief Offset of Customer Specific Info in flash from FW start address
  */
-#define CY_APP_SYS_FW_CUSTOM_INFO_OFFSET                             (0x000000C0)
+#define CY_APP_SYS_FW_CUSTOM_INFO_OFFSET                             (0x000000C0u)
 
 /**
  * @brief Metadata table valid signature : "CY"
  */
-#define CY_APP_SYS_METADATA_VALID_SIG                                (0x4359)
+#define CY_APP_SYS_METADATA_VALID_SIG                                (0x4359u)
 
 /**
  * @brief Pseudo-Metadata valid signature : "CP"
  */
-#define CY_APP_SYS_PSEUDO_METADATA_VALID_SIG                         (0x4350)  
+#define CY_APP_SYS_PSEUDO_METADATA_VALID_SIG                         (0x4350u)  
 
 /**
  * @brief Boot mode request signature : "BL"
  */
-#define CY_APP_SYS_BOOT_MODE_RQT_SIG                                 (0x424C)
+#define CY_APP_SYS_BOOT_MODE_RQT_SIG                                 (0x424Cu)
     
 /**
  * @brief Configuration table valid signature
@@ -188,32 +209,32 @@
 /**
  * @brief Invalid FW start address
  */
-#define CY_APP_SYS_INVALID_FW_START_ADDR                             (0x00000000)
+#define CY_APP_SYS_INVALID_FW_START_ADDR                             (0x00000000u)
 
 /**
  * @brief Bootloader type APP PRIORITY bit position
  */
-#define CY_APP_SYS_BOOT_TYPE_APP_PRIORITY_POS                        (0x02)
+#define CY_APP_SYS_BOOT_TYPE_APP_PRIORITY_POS                        (0x02u)
 
 /**
  * @brief Bootloader type FW update interface bit position
  */
-#define CY_APP_SYS_BOOT_TYPE_FW_UPDATE_INTERFACE_POS                 (0x01)
+#define CY_APP_SYS_BOOT_TYPE_FW_UPDATE_INTERFACE_POS                 (0x01u)
 
 /**
  * @brief Bootloader type secure Boot feature bit mask
  */
-#define CY_APP_SYS_BOOT_TYPE_SECURE_BOOT_MASK                        (0x01)
+#define CY_APP_SYS_BOOT_TYPE_SECURE_BOOT_MASK                        (0x01u)
 
 /**
  * @brief Bootloader type FW update interface bit mask
  */
-#define CY_APP_SYS_BOOT_TYPE_FW_UPDATE_INTERFACE_MASK                (0x02)
+#define CY_APP_SYS_BOOT_TYPE_FW_UPDATE_INTERFACE_MASK                (0x02u)
 
 /**
  * @brief Silicon ID bit mask
  */
-#define CY_APP_SYS_SILICON_ID_MASK                                   (0xFF00)
+#define CY_APP_SYS_SILICON_ID_MASK                                   (0xFF00u)
 
 /** \} group_pmg_app_common_system_system_macros*/
 /** \} group_pmg_app_common_system_macros */
@@ -233,7 +254,7 @@
  */
 typedef enum
 {
-    CY_APP_SYS_FW_MODE_BOOTLOADER = 0,     /**< Bootloader mode */
+    CY_APP_SYS_FW_MODE_BOOTLOADER = 0u,    /**< Bootloader mode */
     CY_APP_SYS_FW_MODE_FWIMAGE_1,          /**< Firmware image #1 */
     CY_APP_SYS_FW_MODE_FWIMAGE_2,          /**< Firmware image #2 */
     CY_APP_SYS_FW_MODE_INVALID             /**< Invalid value */
@@ -262,7 +283,6 @@ typedef enum
  *
  * @param fw_mode The active firmware mode to be set
  *
- * @return None
  */
 void Cy_App_Sys_SetDeviceMode(cy_en_sys_fw_mode_t fw_mode);
 
@@ -338,7 +358,7 @@ uint32_t Cy_App_Sys_GetFwImg2StartAddr(void);
  *
  * @return Firmware id: 1 for image 1 and 2 for image 2.
  */
-uint8_t Cy_App_Sys_GetRecentFwImage(void);
+cy_en_sys_fw_mode_t Cy_App_Sys_GetRecentFwImage(void);
 
 /**
  * @brief Get silicon ID of device
@@ -347,7 +367,6 @@ uint8_t Cy_App_Sys_GetRecentFwImage(void);
  * 
  * @param silicon_id Pointer to buffer to hold the silicon ID
  *
- * @return None
  */
 void Cy_App_Sys_GetSiliconId(uint32_t *silicon_id);
 
@@ -385,5 +404,5 @@ uint16_t Cy_App_Sys_GetBcdDeviceVersion(uint32_t ver_addr);
 /** \} group_pmg_app_common_system_system_functions */
 /** \} group_pmg_app_common_system_functions */
 
-#endif /* _CY_APP_SYSTEM_H_ */
+#endif /* CY_APP_SYSTEM_H */
 /* [] END OF FILE */

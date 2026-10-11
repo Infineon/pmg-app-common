@@ -1,17 +1,38 @@
 /***************************************************************************//**
 * \file cy_app_system.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Support functions for bootloader and flash updates
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
 #include <stdbool.h>
@@ -26,10 +47,10 @@
 #if (!CCG_SROM_CODE_ENABLE)
 
 /* Invalid FW version */
-uint8_t gl_invalid_version[8] = {0};
+static uint8_t gl_invalid_version[8] = {0};
 
 /* Variable representing the current firmware mode */
-cy_en_sys_fw_mode_t gl_active_fw = CY_APP_SYS_FW_MODE_INVALID;
+static cy_en_sys_fw_mode_t gl_active_fw = CY_APP_SYS_FW_MODE_INVALID;
 
 #endif /* (!CCG_SROM_CODE_ENABLE) */
 
@@ -41,6 +62,7 @@ ATTRIBUTES void Cy_App_Sys_SetDeviceMode(cy_en_sys_fw_mode_t fw_mode)
 ATTRIBUTES cy_en_sys_fw_mode_t Cy_App_Sys_GetDeviceMode(void)
 {
 #if (CY_APP_BOOT_ENABLE == 1)
+    CY_UNUSED_PARAMETER(gl_active_fw);
     return CY_APP_SYS_FW_MODE_BOOTLOADER;
 #else /* Firmware */
     return (GET_IN_VARIABLE(gl_active_fw));
@@ -70,7 +92,7 @@ ATTRIBUTES uint8_t* Cy_App_Sys_GetImg1FwVersion(void)
 {
 #if !CY_APP_FIRMWARE_APP_ONLY
     /* Check if image 1 is valid */
-    if ((CALL_OUT_FUNCTION(Cy_App_Boot_GetBootModeReason)()).status.fw1_invalid == 0)
+    if ((CALL_OUT_FUNCTION(Cy_App_Boot_GetBootModeReason)()).status.fw1_invalid == 0u)
     {
         return sys_get_fw_version (GET_IN_VARIABLE(gl_img1_fw_metadata));
     }
@@ -88,7 +110,7 @@ ATTRIBUTES uint8_t* Cy_App_Sys_GetImg2FwVersion(void)
 {
 #if !CY_APP_FIRMWARE_APP_ONLY
     /* Check if image 2 is valid */
-    if ((CALL_OUT_FUNCTION(Cy_App_Boot_GetBootModeReason)()).status.fw2_invalid == 0)
+    if ((CALL_OUT_FUNCTION(Cy_App_Boot_GetBootModeReason)()).status.fw2_invalid == 0u)
     {
         return sys_get_fw_version (GET_IN_VARIABLE(gl_img2_fw_metadata));
     }
@@ -106,7 +128,7 @@ ATTRIBUTES uint32_t Cy_App_Sys_GetFwImg1StartAddr(void)
 {
 #if !CY_APP_FIRMWARE_APP_ONLY
     /* Check if image 1 is valid */
-    if (((CALL_OUT_FUNCTION(Cy_App_Boot_GetBootModeReason)()).status.fw1_invalid) != 1)
+    if (((CALL_OUT_FUNCTION(Cy_App_Boot_GetBootModeReason)()).status.fw1_invalid) == 0u)
     {
         return (gl_img1_fw_metadata->fw_start);
     }
@@ -114,7 +136,7 @@ ATTRIBUTES uint32_t Cy_App_Sys_GetFwImg1StartAddr(void)
     {
         /* Image 1 is invalid. Can't use MD row info. Use boot last row info
          * from flash configuration and response. */
-        return ((CY_APP_BOOT_LOADER_LAST_ROW << CY_APP_SYS_FLASH_ROW_SHIFT_NUM)
+        return (((uint32_t)CY_APP_BOOT_LOADER_LAST_ROW << CY_APP_SYS_FLASH_ROW_SHIFT_NUM)
                 + CY_APP_SYS_FLASH_ROW_SIZE);
     }
 #else
@@ -127,7 +149,7 @@ ATTRIBUTES uint32_t Cy_App_Sys_GetFwImg2StartAddr(void)
 {
 #if !CY_APP_FIRMWARE_APP_ONLY
     /* Check if image 2 is valid */
-    if (((CALL_OUT_FUNCTION(Cy_App_Boot_GetBootModeReason)()).status.fw2_invalid) != 1)
+    if (((CALL_OUT_FUNCTION(Cy_App_Boot_GetBootModeReason)()).status.fw2_invalid) == 0u)
     {
         return (gl_img2_fw_metadata->fw_start);
     }
@@ -135,7 +157,7 @@ ATTRIBUTES uint32_t Cy_App_Sys_GetFwImg2StartAddr(void)
     {
         /* Image 2 is invalid. Can't use MD row info. Use last row FW1 info
          * from flash configuration and response. */
-        return ((CY_APP_IMG1_LAST_FLASH_ROW_NUM << CY_APP_SYS_FLASH_ROW_SHIFT_NUM)
+        return (((uint32_t)CY_APP_IMG1_LAST_FLASH_ROW_NUM << CY_APP_SYS_FLASH_ROW_SHIFT_NUM)
                 + CY_APP_SYS_FLASH_ROW_SIZE);
     }
 #else
@@ -143,16 +165,16 @@ ATTRIBUTES uint32_t Cy_App_Sys_GetFwImg2StartAddr(void)
 #endif /* CY_APP_FIRMWARE_APP_ONLY */
 }
 
-ATTRIBUTES uint8_t Cy_App_Sys_GetRecentFwImage(void)
+ATTRIBUTES cy_en_sys_fw_mode_t Cy_App_Sys_GetRecentFwImage(void)
 {
 #if (CY_APP_PRIORITY_FEATURE_ENABLE == 1)
     /* Read APP priority field to determine which image gets the priority */
     uint8_t app_priority;
 
-    app_priority = *((uint8_t *)(CY_APP_SYS_APP_PRIORITY_ROW_NUM << CY_APP_SYS_FLASH_ROW_SHIFT_NUM));
-    if (app_priority != 0)
+    app_priority = *((uint8_t *)((uint32_t)CY_APP_SYS_APP_PRIORITY_ROW_NUM << CY_APP_SYS_FLASH_ROW_SHIFT_NUM));
+    if (app_priority != 0u)
     {
-        if (app_priority == 0x01)
+        if (app_priority == 0x01u)
             return CY_APP_SYS_FW_MODE_FWIMAGE_1;
         else
             return CY_APP_SYS_FW_MODE_FWIMAGE_2;
@@ -162,9 +184,13 @@ ATTRIBUTES uint8_t Cy_App_Sys_GetRecentFwImage(void)
     {
         /* Prioritize FW2 over FW1 if no priority is defined */
         if ((GET_IN_VARIABLE(gl_img2_fw_metadata))->boot_seq >= (GET_IN_VARIABLE(gl_img1_fw_metadata))->boot_seq)
+        {
             return CY_APP_SYS_FW_MODE_FWIMAGE_2;
+        }    
         else
+        {
             return CY_APP_SYS_FW_MODE_FWIMAGE_1;
+        }
     }
 }
 #endif /* (!CY_APP_DUALAPP_DISABLE) */
@@ -175,7 +201,7 @@ ATTRIBUTES void Cy_App_Sys_GetSiliconId(uint32_t *silicon_id)
     /* Read silicon ID. */
     *silicon_id = SFLASH_SILICON_ID;
 #else
-    *silicon_id = 0;
+    *silicon_id = 0u;
 #endif /* CY_APP_SILICON_ID */
 }
 
@@ -187,11 +213,11 @@ ATTRIBUTES uint8_t Cy_App_Sys_SetSiliconRevision(void)
     /* Silicon revision is stored in core-sight tables.
      * Major revision = ROMTABLE_PID2(7:4)
      * Minor revision = ROMTABLE_PID3(7:4) */
-    srev = ROMTABLE_PID2 & 0xF0;
-    srev |= (ROMTABLE_PID3 & 0xF0) >> 4;
+    srev = ROMTABLE_PID2 & 0xF0u;
+    srev |= (ROMTABLE_PID3 & 0xF0u) >> 4u;
     return srev;
 #else
-    return 0;
+    return 0u;
 #endif /* CY_APP_SILICON_ID */
 }
 
@@ -228,12 +254,12 @@ ATTRIBUTES uint16_t Cy_App_Sys_GetBcdDeviceVersion(uint32_t ver_addr)
      * 4 Byte BASE_VERSION, 4 Byte APP_VERSION
      */
     
-    uint8_t base_major_minor = *((uint8_t *)(ver_addr + 3));
-    uint8_t app_cir_num = *((uint8_t *)(ver_addr + 6));
-    uint8_t app_major_minor = *((uint8_t *)(ver_addr + 7));
+    uint8_t base_major_minor = *((uint8_t *)(ver_addr + 3u));
+    uint8_t app_cir_num = *((uint8_t *)(ver_addr + 6u));
+    uint8_t app_major_minor = *((uint8_t *)(ver_addr + 7u));
     
-    return ((base_major_minor & 0x7F) | ((app_cir_num & 0x7F) << 7)
-        | ((app_major_minor & 0x30) << 10));
+    return (((uint16_t)base_major_minor & 0x007Fu) | (((uint16_t)app_cir_num & 0x007Fu) << 7u)
+        | (((uint16_t)app_major_minor & 0x0030u) << 10u));
 }
 
 /* [] END OF FILE */

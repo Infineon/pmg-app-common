@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_sink.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements functions associated with the power
@@ -8,20 +8,40 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#include "cybsp.h"
+#include <stdbool.h>
 #include "cy_app_config.h"
 #include "cy_app_sink.h"
 #include "cy_app.h"
 #include "cy_app_timer_id.h"
 #include "cy_pdutils_sw_timer.h"
-#include "cy_pdstack_timer_id.h"
 #include "cy_usbpd_vbus_ctrl.h"
 #include "cy_app_fault_handlers.h"
 
@@ -35,19 +55,15 @@
 #endif /* CY_APP_DEFER_SNK_VBUS_UVP_HANDLING */
 
 /* VBUS CONSUMER FET CONTROL REGISTER bit definitions.*/
-/**< VBUS consumer FET control register EC control enable bit position.*/
 #define VBUS_CFET_CTRL_EC_CTRL_EN_POS           (0u)
-
-/**< VBUS consumer FET control register EC control enable.*/
+/**< VBUS consumer FET control register EC control enable bit position.*/
 #define VBUS_CFET_CTRL_EC_CTRL_EN               (1u << VBUS_CFET_CTRL_EC_CTRL_EN_POS)
-
-/**< VBUS consumer FET control register EC CFET ON bit position.*/
+/**< VBUS consumer FET control register EC control enable.*/
 #define VBUS_CFET_CTRL_EC_CFET_ON_POS           (1u)
-
-/**< VBUS consumer FET control register EC CFET ON.*/
+/**< VBUS consumer FET control register EC CFET on bit position.*/
 #define VBUS_CFET_CTRL_EC_CFET_ON               (1u << VBUS_CFET_CTRL_EC_CFET_ON_POS)
 
-bool glAppPsnkEnabled[NO_OF_TYPEC_PORTS] = {
+static bool glAppPsnkEnabled[NO_OF_TYPEC_PORTS] = {
     false
 #if (NO_OF_TYPEC_PORTS > 1)
         ,
@@ -65,32 +81,30 @@ static uint8_t gl_vbus_cfet_on_ctrl[NO_OF_TYPEC_PORTS] = {
 };
 #endif /* CY_HPI_VBUS_C_CTRL_ENABLE */
 
-bool app_psnk_vbus_ovp_cbk(void * cbkContext, bool comp_out);
-
 __attribute__ ((weak)) void soln_sink_fet_off(cy_stc_pdstack_context_t * context)
 {
-    (void) context;
+    CY_UNUSED_PARAMETER(context);
 }
 
 __attribute__ ((weak)) void soln_sink_fet_on(cy_stc_pdstack_context_t * context)
 {
-    (void)context;
+    CY_UNUSED_PARAMETER(context);
 }
 
 #if ((CY_HPI_ENABLED) && (CY_HPI_VBUS_C_CTRL_ENABLE))
-void psnk_update_cfet_status (cy_stc_pdstack_context_t *ptrPdStackContext, bool cfet_on)
+static void psnk_update_cfet_status (cy_stc_pdstack_context_t *ptrPdStackContext, bool cfet_on)
 {
     uint8_t port = ptrPdStackContext->port;
 
     /* Update the FET status and write to HPI register. */
-    gl_vbus_cfet_on_ctrl[port] &= ~VBUS_CFET_CTRL_EC_CFET_ON;
-    gl_vbus_cfet_on_ctrl[port] |= (cfet_on << VBUS_CFET_CTRL_EC_CFET_ON_POS);
+    gl_vbus_cfet_on_ctrl[port] &= (uint8_t)(~VBUS_CFET_CTRL_EC_CFET_ON);
+    gl_vbus_cfet_on_ctrl[port] |= (uint8_t)((uint8_t)cfet_on << VBUS_CFET_CTRL_EC_CFET_ON_POS);
     Cy_Hpi_UpdateConsFetStatus((cy_stc_hpi_context_t *)ptrPdStackContext->ptrHpiContext, port, gl_vbus_cfet_on_ctrl[port]);
 }
 #endif /* ((CY_HPI_ENABLED) && (CY_HPI_VBUS_C_CTRL_ENABLE)) */
 
 #if (defined(CY_DEVICE_PMG1S3) && (CY_PD_SINK_ONLY) && (!CY_APP_SINK_FET_CTRL_GPIO_EN))
-void sink_fet_off_cbk (cy_timer_id_t id,  void * context)
+static void sink_fet_off_cbk (cy_timer_id_t id,  void * context)
 {
     cy_stc_pdstack_context_t *ptrPdStackContext = (cy_stc_pdstack_context_t *)context;
 
@@ -99,7 +113,7 @@ void sink_fet_off_cbk (cy_timer_id_t id,  void * context)
 }
 #endif /* defined(CY_DEVICE_PMG1S3) && (CY_PD_SINK_ONLY) && (!CY_APP_SINK_FET_CTRL_GPIO_EN)) */
 
-void sink_fet_off(cy_stc_pdstack_context_t * context)
+static void sink_fet_off(cy_stc_pdstack_context_t * context)
 {
 #if (defined(CY_DEVICE_PMG1S3) && (CY_PD_SINK_ONLY) && (!CY_APP_SINK_FET_CTRL_GPIO_EN))
     Cy_PdUtils_SwTimer_Stop(context->ptrTimerContext, CY_APP_GET_TIMER_ID(context, CY_APP_VBUS_FET_ON_TIMER));
@@ -107,11 +121,13 @@ void sink_fet_off(cy_stc_pdstack_context_t * context)
     Cy_USBPD_Vbus_NgdoG1Ctrl (context->ptrUsbPdContext, false);
     Cy_USBPD_Vbus_NgdoEqCtrl (context->ptrUsbPdContext, true);
 
-    Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
+    (void)Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
                     CY_APP_GET_TIMER_ID(context, CY_APP_VBUS_FET_OFF_TIMER),
-                    CY_APP_VBUS_FET_OFF_TIMER_PERIOD, sink_fet_off_cbk);
+                    CY_APP_VBUS_FET_OFF_TIMER_PERIOD, &sink_fet_off_cbk);
 #elif defined(CY_DEVICE_CCG3PA)
     Cy_USBPD_Vbus_GdrvCfetOff(context->ptrUsbPdContext, CY_APP_VBUS_C_FET_CTRL);
+#elif defined(CY_DEVICE_SERIES_PMG1B1)
+    Cy_USBPD_Vbus_GdrvPfetOff(context->ptrUsbPdContext, false);
 #else
     Cy_USBPD_Vbus_GdrvCfetOff(context->ptrUsbPdContext, false);
 #endif /* (defined(CY_DEVICE_PMG1S3) && (CY_PD_SINK_ONLY) && (!CY_APP_SINK_FET_CTRL_GPIO_EN)) */
@@ -132,15 +148,17 @@ void sink_fet_on_cbk (cy_timer_id_t id,  void * context)
 }
 #endif /* (defined(CY_DEVICE_PMG1S3) && (CY_PD_SINK_ONLY) && (!CY_APP_SINK_FET_CTRL_GPIO_EN)) */
 
-void sink_fet_on(cy_stc_pdstack_context_t * context)
+void Cy_App_Sink_FetOn(cy_stc_pdstack_context_t * context)
 {
 #if (defined(CY_DEVICE_PMG1S3) && (CY_PD_SINK_ONLY) && (!CY_APP_SINK_FET_CTRL_GPIO_EN))
     Cy_USBPD_Vbus_NgdoOn(context->ptrUsbPdContext, false);
-    Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
+    (void)Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
                         CY_APP_GET_TIMER_ID(context, CY_APP_VBUS_FET_ON_TIMER),
-                        CY_APP_VBUS_FET_ON_TIMER_PERIOD, sink_fet_on_cbk);
+                        CY_APP_VBUS_FET_ON_TIMER_PERIOD, &sink_fet_on_cbk);
 #elif defined(CY_DEVICE_CCG3PA)
     Cy_USBPD_Vbus_GdrvCfetOn(context->ptrUsbPdContext, CY_APP_VBUS_C_FET_CTRL);
+#elif defined(CY_DEVICE_SERIES_PMG1B1)
+    Cy_USBPD_Vbus_GdrvPfetOn(context->ptrUsbPdContext, false);
 #else
     Cy_USBPD_Vbus_GdrvCfetOn(context->ptrUsbPdContext, false);
 #endif /* (defined(CY_DEVICE_PMG1S3) && (CY_PD_SINK_ONLY) && (!CY_APP_SINK_FET_CTRL_GPIO_EN)) */
@@ -153,7 +171,7 @@ void sink_fet_on(cy_stc_pdstack_context_t * context)
 }
 
 #if VBUS_OVP_ENABLE
-bool app_psnk_vbus_ovp_cbk(void * cbkContext, bool comp_out)
+static bool app_psnk_vbus_ovp_cbk(void * cbkContext, bool compOut)
 {
     /* Get the PDStack context from the USB PD context */
     cy_stc_usbpd_context_t * context = (cy_stc_usbpd_context_t *) cbkContext;
@@ -164,16 +182,16 @@ bool app_psnk_vbus_ovp_cbk(void * cbkContext, bool comp_out)
 
     /* Set alert message */
     cy_pd_pd_do_t alert;
-    alert.val = 0;
-    alert.ado_alert.ovp = true;
+    alert.val = 0u;
+    alert.ado_alert.ovp = 1u;
     pdstack_ctx->dpmStat.alert = alert;
 
     /* Notify the application layer about the fault */
     Cy_App_EventHandler(pdstack_ctx, APP_EVT_VBUS_OVP_FAULT, NULL);
 
-    (void)comp_out;
+    CY_UNUSED_PARAMETER(compOut);
 
-    return 0;
+    return false;
 }
 #endif /* VBUS_OVP_ENABLE */
 
@@ -181,14 +199,15 @@ bool app_psnk_vbus_ovp_cbk(void * cbkContext, bool comp_out)
 #if CY_APP_DEFER_SNK_VBUS_UVP_HANDLING
 static void app_psnk_vbus_uvp_tmr_cbk(cy_timer_id_t id,  void *context)
 {
-    (void)id;
+    CY_UNUSED_PARAMETER(id);
 
     /* Notify the application layer about the fault */
     Cy_App_EventHandler((cy_stc_pdstack_context_t*)context, APP_EVT_VBUS_UVP_FAULT, NULL);
 }
 #endif /* CY_APP_DEFER_SNK_VBUS_UVP_HANDLING */
 
-bool app_psnk_vbus_uvp_cbk (void * context, bool comp_out)
+#if(PMG1B1_USB_CHARGER == 0)
+static bool app_psnk_vbus_uvp_cbk (void * context, bool compOut)
 {
     cy_stc_usbpd_context_t *ptrUsbPdContext = (cy_stc_usbpd_context_t *)context;
     /* Get the PDStack context from the USB PD context */
@@ -198,18 +217,19 @@ bool app_psnk_vbus_uvp_cbk (void * context, bool comp_out)
     sink_fet_off(pdstack_ctx);
 
 #if CY_APP_DEFER_SNK_VBUS_UVP_HANDLING
-    Cy_PdUtils_SwTimer_Start(pdstack_ctx->ptrTimerContext, pdstack_ctx,
+    (void)Cy_PdUtils_SwTimer_Start(pdstack_ctx->ptrTimerContext, pdstack_ctx,
             CY_APP_GET_TIMER_ID(pdstack_ctx, CY_APP_PSINK_VBUS_UVP_DEFER_TIMER),
-            APP_PSNK_VBUS_UVP_DEFER_TIMER_PERIOD, app_psnk_vbus_uvp_tmr_cbk);
+            APP_PSNK_VBUS_UVP_DEFER_TIMER_PERIOD, &app_psnk_vbus_uvp_tmr_cbk);
 #else
     /* Notify the application layer about the fault */
     Cy_App_EventHandler(pdstack_ctx, APP_EVT_VBUS_UVP_FAULT, NULL);
 #endif /* DEFER_VBUS_UVP_HANDLING */
 
-    (void)comp_out;
+    CY_UNUSED_PARAMETER(compOut);
 
-    return 0;
+    return false;
 }
+#endif /* PMG1B1_USB_CHARGER == 0 */
 #endif /* VBUS_UVP_ENABLE */
 
 void Cy_App_Sink_SetVoltage (cy_stc_pdstack_context_t * context, uint16_t volt_mV)
@@ -218,13 +238,13 @@ void Cy_App_Sink_SetVoltage (cy_stc_pdstack_context_t * context, uint16_t volt_m
     app_stat->psnk_volt = volt_mV;
 
     /* Disable VBus discharge when starting off as a SINK device. */
-    Cy_USBPD_Vbus_DischargeOff(context->ptrUsbPdContext);
+    Cy_App_VbusDischargeOff(context);
 
 #if VBUS_OVP_ENABLE
 #if defined(CY_DEVICE_CCG3PA)
-    Cy_App_Fault_OvpEnable(context, volt_mV, CY_APP_VBUS_C_FET_CTRL, app_psnk_vbus_ovp_cbk);
+    Cy_App_Fault_OvpEnable(context, volt_mV, CY_APP_VBUS_C_FET_CTRL, &app_psnk_vbus_ovp_cbk);
 #else
-    Cy_App_Fault_OvpEnable(context, volt_mV, false, app_psnk_vbus_ovp_cbk);
+    Cy_App_Fault_OvpEnable(context, volt_mV, false, &app_psnk_vbus_ovp_cbk);
 #endif /* defined(CY_DEVICE_CCG3PA) */
 #endif /* VBUS_OVP_ENABLE */
 }
@@ -261,43 +281,39 @@ void Cy_App_Sink_Enable (cy_stc_pdstack_context_t * context)
     uint32_t intr_state;
 
 #if VBUS_UVP_ENABLE
+#if(PMG1B1_USB_CHARGER == 0)
     cy_stc_app_status_t* app_stat = Cy_App_GetStatus(context->port);
 #if defined(CY_DEVICE_CCG3PA)
-    Cy_App_Fault_UvpEnable(context, app_stat->psnk_volt, CY_APP_VBUS_C_FET_CTRL, app_psnk_vbus_uvp_cbk);
+    Cy_App_Fault_UvpEnable(context, app_stat->psnk_volt, CY_APP_VBUS_C_FET_CTRL, &app_psnk_vbus_uvp_cbk);
 #else
-    Cy_App_Fault_UvpEnable(context, app_stat->psnk_volt, false, app_psnk_vbus_uvp_cbk);
+    Cy_App_Fault_UvpEnable(context, app_stat->psnk_volt, false, &app_psnk_vbus_uvp_cbk);
 #endif /* defined(CY_DEVICE_CCG3PA) */
+#endif /* (PMG1B1_USB_CHARGER == 0) */
 #endif /* VBUS_UVP_ENABLE */
 
     intr_state = Cy_SysLib_EnterCriticalSection();
 
     /* Make sure discharge path is disabled at this stage */
-    Cy_USBPD_Vbus_DischargeOff(context->ptrUsbPdContext);
+    Cy_App_VbusDischargeOff(context);
 
     /* Turn on FETs only if dpm is enabled and there is no active fault condition. */
     if ((context->dpmConfig.dpmEnabled) && (context->dpmStat.faultActive == false))
     {
-        if(
+        if( (!glAppPsnkEnabled[context->port])
 #if (CY_APP_SNK_STANDBY_FET_SHUTDOWN_ENABLE)
         /* Enable the sink path only if we are allowed to draw more than 0.5A of current */
-            (Cy_App_GetStatus(context->port)->psnk_cur > CY_PD_ISAFE_DEF)
-#else
-            (1)
+            && (Cy_App_GetStatus(context->port)->psnk_cur > CY_PD_ISAFE_DEF)
 #endif /* (CY_APP_SNK_STANDBY_FET_SHUTDOWN_ENABLE) */
-            &&
 #if (CY_HPI_VBUS_C_CTRL_ENABLE)
             /* Do not enable sink path if EC control is enabled.*/
-            (0u == (gl_vbus_cfet_on_ctrl[context->port] & VBUS_CFET_CTRL_EC_CTRL_EN))
-#else
-            (1)
+            && (0u == (gl_vbus_cfet_on_ctrl[context->port] & VBUS_CFET_CTRL_EC_CTRL_EN))
 #endif /* CY_HPI_VBUS_C_CTRL_ENABLE */
         )
         {
-            if (!glAppPsnkEnabled[context->port])
-            {
-                glAppPsnkEnabled[context->port] = true;
-                sink_fet_on(context);
-            }
+            glAppPsnkEnabled[context->port] = true;
+#if(PMG1B1_USB_CHARGER == 0)
+            Cy_App_Sink_FetOn(context);
+#endif /* (PMG1B1_USB_CHARGER == 0) */
         }
     }
 
@@ -316,12 +332,12 @@ static void app_psnk_tmr_cbk(cy_timer_id_t id,  void * callbackCtx)
         id = (cy_timer_id_t)((id & 0x00FFU) + CY_PDUTILS_TIMER_APP_PORT0_START_ID);
     }
 
-    switch((cy_timer_id_t)id)
+    switch((cy_en_timer_id_t)id)
     {
         case CY_APP_PSINK_DIS_TIMER:
             Cy_PdUtils_SwTimer_Stop(context->ptrTimerContext,
                     CY_APP_GET_TIMER_ID(context, CY_APP_PSINK_DIS_MONITOR_TIMER));
-            Cy_USBPD_Vbus_DischargeOff(context->ptrUsbPdContext);
+            Cy_App_VbusDischargeOff(context);
             break;
 
         case CY_APP_PSINK_DIS_MONITOR_TIMER:
@@ -329,19 +345,20 @@ static void app_psnk_tmr_cbk(cy_timer_id_t id,  void * callbackCtx)
             {
                 Cy_PdUtils_SwTimer_Stop(context->ptrTimerContext,
                         CY_APP_GET_TIMER_ID(context, CY_APP_PSINK_DIS_TIMER));
-                Cy_USBPD_Vbus_DischargeOff(context->ptrUsbPdContext);
+                Cy_App_VbusDischargeOff(context);
                 app_stat->snk_dis_cbk(context);
             }
             else
             {
                 /*Start monitor timer again*/
-                Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
+                (void)Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
                         CY_APP_GET_TIMER_ID(context, CY_APP_PSINK_DIS_MONITOR_TIMER),
-                        CY_APP_PSINK_DIS_MONITOR_TIMER_PERIOD, app_psnk_tmr_cbk);
+                        CY_APP_PSINK_DIS_MONITOR_TIMER_PERIOD, &app_psnk_tmr_cbk);
             }
             break;
 
         default:
+            /* No Operation Needed */
             break;
     }
 }
@@ -365,24 +382,24 @@ void Cy_App_Sink_Disable (cy_stc_pdstack_context_t * context, cy_pdstack_sink_di
     sink_fet_off(context);
     glAppPsnkEnabled[port] = false;
 
-    Cy_USBPD_Vbus_DischargeOff(context->ptrUsbPdContext);
+    Cy_App_VbusDischargeOff(context);
     Cy_PdUtils_SwTimer_StopRange(context->ptrTimerContext,
             CY_APP_GET_TIMER_ID(context, CY_APP_PSINK_DIS_TIMER),
             CY_APP_GET_TIMER_ID(context, CY_APP_PSINK_VBUS_UVP_DEFER_TIMER));
 
     if ((snk_discharge_off_handler != NULL) && (context->dpmConfig.dpmEnabled))
     {
-        Cy_USBPD_Vbus_DischargeOn(context->ptrUsbPdContext);
+        Cy_App_VbusDischargeOn(context);
 
         app_stat->snk_dis_cbk = snk_discharge_off_handler;
 
         /* Start power source enable and monitor timers */
-        Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
+        (void)Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
                 CY_APP_GET_TIMER_ID(context, CY_APP_PSINK_DIS_TIMER),
-                CY_APP_PSINK_DIS_TIMER_PERIOD, app_psnk_tmr_cbk);
-        Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
+                CY_APP_PSINK_DIS_TIMER_PERIOD, &app_psnk_tmr_cbk);
+        (void)Cy_PdUtils_SwTimer_Start(context->ptrTimerContext, context,
                 CY_APP_GET_TIMER_ID(context, CY_APP_PSINK_DIS_MONITOR_TIMER),
-                CY_APP_PSINK_DIS_MONITOR_TIMER_PERIOD, app_psnk_tmr_cbk);
+                CY_APP_PSINK_DIS_MONITOR_TIMER_PERIOD, &app_psnk_tmr_cbk);
     }
 
     /* Update the psnk_volt data structure so that we do not have stale value till the next sink attach. */
@@ -403,7 +420,7 @@ bool Cy_App_Sink_VbusCFetOnCtrl(cy_stc_pdstack_context_t *context, uint8_t *ctrl
 
     if (dpm_stat->deadBat == false)
     {
-        if ((ctrl_val & VBUS_CFET_CTRL_EC_CTRL_EN) != 0)
+        if ((ctrl_val & VBUS_CFET_CTRL_EC_CTRL_EN) != 0u)
         {
             if (
                     (dpm_cfg->attach) &&
@@ -412,9 +429,9 @@ bool Cy_App_Sink_VbusCFetOnCtrl(cy_stc_pdstack_context_t *context, uint8_t *ctrl
                )
             {
                 /* EC controlled mode while in sink connection: Turn FET ON/OFF based on command. */
-                if ((ctrl_val & VBUS_CFET_CTRL_EC_CFET_ON) != 0)
+                if ((ctrl_val & VBUS_CFET_CTRL_EC_CFET_ON) != 0u)
                 {
-                    sink_fet_on (context);
+                    Cy_App_Sink_FetOn(context);
                     glAppPsnkEnabled[context->port] = true;
                 }
                 else
@@ -425,10 +442,10 @@ bool Cy_App_Sink_VbusCFetOnCtrl(cy_stc_pdstack_context_t *context, uint8_t *ctrl
             }
             else
             {
-                if ((ctrl_val & VBUS_CFET_CTRL_EC_CFET_ON) != 0)
+                if ((ctrl_val & VBUS_CFET_CTRL_EC_CFET_ON) != 0u)
                 {
                     /* Clear the FET ON bit to indicate that FET could not be turned ON. */
-                    ctrl_val &= ~VBUS_CFET_CTRL_EC_CFET_ON;
+                    ctrl_val &= (uint8_t)(~VBUS_CFET_CTRL_EC_CFET_ON);
                     ret = false;
                 }
             }
@@ -445,8 +462,8 @@ bool Cy_App_Sink_VbusCFetOnCtrl(cy_stc_pdstack_context_t *context, uint8_t *ctrl
 
     ctrl_p[0] = ctrl_val;
 #else
-    (void)context;
-    (void)ctrl_p;
+    CY_UNUSED_PARAMETER(context);
+    CY_UNUSED_PARAMETER(ctrl_p);
 #endif /* CY_HPI_VBUS_C_CTRL_ENABLE */
     return ret;
 }

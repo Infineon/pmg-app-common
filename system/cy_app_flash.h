@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_flash.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines data structures and function prototypes
@@ -8,15 +8,36 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_FLASH_H_
-#define _CY_APP_FLASH_H_
+#ifndef CY_APP_FLASH_H
+#define CY_APP_FLASH_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -43,9 +64,9 @@
  */
 typedef enum
 {
-    CY_APP_FLASH_APP_PRIORITY_DEFAULT = 0,      /**< Default. Latest image gets priority */
-    CY_APP_FLASH_APP_PRIORITY_IMAGE_1,          /**< Image 1 gets priority over image 2 */
-    CY_APP_FLASH_APP_PRIORITY_IMAGE_2           /**< Image 2 gets priority over image 1 */
+    CY_APP_FLASH_APP_PRIORITY_DEFAULT = 0u,      /**< Default. Latest image gets priority */
+    CY_APP_FLASH_APP_PRIORITY_IMAGE_1u,          /**< Image 1 gets priority over image 2 */
+    CY_APP_FLASH_APP_PRIORITY_IMAGE_2u           /**< Image 2 gets priority over image 1 */
 } cy_en_flash_app_priority_t;
 
 /**
@@ -58,7 +79,7 @@ typedef enum
  */
 typedef enum
 {
-    CY_APP_FLASH_IF_HPI = 0,                   /**< HPI based flash update interface */
+    CY_APP_FLASH_IF_HPI = 0u,                   /**< HPI based flash update interface */
     CY_APP_FLASH_IF_UVDM,                      /**< UVDM based flash update interface */
     CY_APP_FLASH_IF_USB_HID,                   /**< USB flash update interface */
     CY_APP_FLASH_IF_IECS_UART,                 /**< IECS (UART) flash update interface */
@@ -137,7 +158,6 @@ typedef void (*cy_app_flash_cbk_t)(cy_en_flash_write_status_t status);
  * @param data_in_place Specifies whether the flash write data buffer can be
  * used in place as SROM API parameter buffer
  *
- * @return None
  */
 void Cy_App_Flash_EnterMode(bool is_enable, cy_en_flash_interface_t mode, bool data_in_place);
 
@@ -177,24 +197,8 @@ bool Cy_App_Flash_AccessGetStatus(uint8_t modes);
  * @param md_row Row containing metadata for the alternate firmware
  * @param bl_last_row Last bootloader row. Rows above this can be read
  *
- * @return None
  */
 void Cy_App_Flash_SetAccessLimits (uint16_t start_row, uint16_t last_row, uint16_t md_row, uint16_t bl_last_row);
-
-#if (CY_APP_FLASH_ENABLE_NB_MODE == 1)
-/**
- * @brief Handle flash write abort request
- *
- * This API is used by FW update interface to request abort of the ongoing non-blocking 
- * flash write request. This API sets a flag which is sampled in the next SPCIF interrupt
- * and abort sequence is started.
- *
- * @param None
- *
- * @return None
- */
-void Cy_App_Flash_NonBlockingWriteAbort(void);
-#endif /* CY_APP_FLASH_ENABLE_NB_MODE */
 
 /**
  * @brief Erase the contents of the specified flash row
@@ -260,7 +264,7 @@ cy_en_app_status_t Cy_App_Flash_SetAppPriority(cy_en_flash_app_priority_t app_pr
 /** \} group_pmg_app_common_system_flash_functions */
 /** \} group_pmg_app_common_system_functions */
 
-#endif /* _CY_APP_FLASH_H_ */
+#endif /* CY_APP_FLASH_H */
 
 /* [] END OF FILE */
 

@@ -17,9 +17,11 @@ var group__group__pmg__app__common__usb__data__structures =
       [ "vendor_req_handler", "group__group__pmg__app__common__usb__data__structures.html#a19f762721c8ecb0713005e5a28f497c8", null ],
       [ "usb_drvContext", "group__group__pmg__app__common__usb__data__structures.html#a620c8615094b99ad94caf3cd85c510eb", null ],
       [ "usb_devContext", "group__group__pmg__app__common__usb__data__structures.html#afead7219d7d311c756da5cb2314d7003", null ],
-      [ "usb_hidContext", "group__group__pmg__app__common__usb__data__structures.html#aebfdec51bef813c52a8d0f696314eb7a", null ]
+      [ "usb_hidContext", "group__group__pmg__app__common__usb__data__structures.html#aebfdec51bef813c52a8d0f696314eb7a", null ],
+      [ "update_usb_descriptors", "group__group__pmg__app__common__usb__data__structures.html#abb31a372ee0dc00d4a354d16c4fe03f5", null ]
     ] ],
     [ "cy_app_usb_ep_index_t", "group__group__pmg__app__common__usb__data__structures.html#ga124d2a8a1ef569201d3985902bba298c", null ],
     [ "cy_app_usb_setup_cbk_t", "group__group__pmg__app__common__usb__data__structures.html#ga07ecf230df9b5904414eb21b4cfb0581", null ],
-    [ "cy_app_vendor_req_hdlr_cbk_t", "group__group__pmg__app__common__usb__data__structures.html#gac5bfa063b65fa76021781c32eb2b9d68", null ]
+    [ "cy_app_vendor_req_hdlr_cbk_t", "group__group__pmg__app__common__usb__data__structures.html#gac5bfa063b65fa76021781c32eb2b9d68", null ],
+    [ "cy_usb_desc_update_cbk_t", "group__group__pmg__app__common__usb__data__structures.html#ga23f980e3f86d5e2249c044f9c568c548", null ]
 ];

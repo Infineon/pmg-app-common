@@ -3,6 +3,7 @@ var group__group__pmg__app__common__dmc__enums =
     [ "cy_en_dmc_state_t", "group__group__pmg__app__common__dmc__enums.html#gab2b1d3e6d66ae8eba4cff73f0e2bb448", [
       [ "CY_APP_DMC_STATE_WAIT_FOR_START", "group__group__pmg__app__common__dmc__enums.html#ggab2b1d3e6d66ae8eba4cff73f0e2bb448a6c1b20b94a8eb06777e5095a4caf5049", null ],
       [ "CY_APP_DMC_STATE_POWER_ON", "group__group__pmg__app__common__dmc__enums.html#ggab2b1d3e6d66ae8eba4cff73f0e2bb448a2c1b133fb4d697feffa6bd5a8e31b2b1", null ],
+      [ "CY_APP_DMC_STATE_WAIT_FOR_SPI_FLASH_MD_ERASE", "group__group__pmg__app__common__dmc__enums.html#ggab2b1d3e6d66ae8eba4cff73f0e2bb448ab9b9541226e679a5389b19126d4f3668", null ],
       [ "CY_APP_DMC_STATE_PHASE2_FACTORY_BACKUP", "group__group__pmg__app__common__dmc__enums.html#ggab2b1d3e6d66ae8eba4cff73f0e2bb448a178d4aa38aa7c4bb2267a89ab91f6ea2", null ],
       [ "CY_APP_DMC_STATE_PHASE2_FACTORY_BACKUP_COPY", "group__group__pmg__app__common__dmc__enums.html#ggab2b1d3e6d66ae8eba4cff73f0e2bb448ac8304f624d1a6148487460d80aa7d820", null ],
       [ "CY_APP_DMC_STATE_PHASE2_CHECKS", "group__group__pmg__app__common__dmc__enums.html#ggab2b1d3e6d66ae8eba4cff73f0e2bb448abf36ae853a9a4a7ac453450828b9c330", null ],
@@ -58,14 +59,12 @@ var group__group__pmg__app__common__dmc__enums =
       [ "CY_APP_DMC_PHASE2_UPDATE_FAIL_RAM_INIT_FAILED", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9ae471f451f91982b583c635c3024170e3", null ],
       [ "CY_APP_DMC_PHASE2_UPDATE_FAIL_FACTORY_BACKUP_FAILED", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9a99d70e0e377140b19026ba6e655ab276", null ],
       [ "CY_APP_DMC_PHASE2_UPDATE_FAIL_NO_VALID_FACTORY_PACKAGE", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9a619848d48f07b1cc47d60e9ec93539ac", null ],
+      [ "CY_APP_DMC_PHASE1_UPDATE_FAIL_INVALID_FWCT", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9a161973f4c12a8b328ff773432b17b072", null ],
+      [ "CY_APP_DMC_PHASE1_UPDATE_FAIL_INVALID_DOCK_IDENTITY", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9aeba5ff9dbb40474286e242e244c31a0c", null ],
+      [ "CY_APP_DMC_PHASE1_UPDATE_FAIL_INVALID_COMPOSITE_VER", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9a45ab1e2572329db0571562c23399b6f1", null ],
+      [ "CY_APP_DMC_PHASE1_UPDATE_FAIL_AUTHENTICATION_FAILED", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9a4fcdeb4807f0a3e933bd5ff56304b2c4", null ],
+      [ "CY_APP_DMC_PHASE1_UPDATE_FAIL_INVALID_ALGORITHM", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9aa63c9975c86bab4afd7987f6e25977fe", null ],
       [ "CY_APP_DMC_PHASE1_UPDATE_FAIL", "group__group__pmg__app__common__dmc__enums.html#gga90a4c3f519eeba45955f418fe85b08b9a1eb032fabb8017cc4a83f0c28eda48e8", null ]
-    ] ],
-    [ "cy_en_dmc_fwct_status_t", "group__group__pmg__app__common__dmc__enums.html#gaf0a0c23cd000978cb9540ee9a5f1fa2a", [
-      [ "CY_APP_DMC_FWCT_INVALID_FWCT", "group__group__pmg__app__common__dmc__enums.html#ggaf0a0c23cd000978cb9540ee9a5f1fa2aa37a63ef1a33ca76365b26870b31f3c26", null ],
-      [ "CY_APP_DMC_FWCT_INVALID_DOCK_IDENTITY", "group__group__pmg__app__common__dmc__enums.html#ggaf0a0c23cd000978cb9540ee9a5f1fa2aaba8f3c0a94d45da24ce4b6e22825fb2f", null ],
-      [ "CY_APP_DMC_FWCT_INVALID_COMPOSITE_VER", "group__group__pmg__app__common__dmc__enums.html#ggaf0a0c23cd000978cb9540ee9a5f1fa2aabd57ff9f047711f4ad756ba5bff30829", null ],
-      [ "CY_APP_DMC_AUTHENTICATION_FAILED", "group__group__pmg__app__common__dmc__enums.html#ggaf0a0c23cd000978cb9540ee9a5f1fa2aa2c09bf3332de7e7c8de0b2c5ee6b0a3b", null ],
-      [ "CY_APP_DMC_INVALID_ALGORITHM", "group__group__pmg__app__common__dmc__enums.html#ggaf0a0c23cd000978cb9540ee9a5f1fa2aaffe4de8e967ebaa8921f0369595d920c", null ]
     ] ],
     [ "cy_en_dmc_img_status_t", "group__group__pmg__app__common__dmc__enums.html#ga39ac1cb80ce04e04fec7a565f61486c1", [
       [ "CY_APP_DMC_IMG_STATUS_UNKNOWN", "group__group__pmg__app__common__dmc__enums.html#gga39ac1cb80ce04e04fec7a565f61486c1afd50720d4e46c135fe8506cedc96d527", null ],
@@ -140,8 +139,12 @@ var group__group__pmg__app__common__dmc__enums =
       [ "CY_APP_DMC_DEV_TYPE_RESERVED_3D", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a883d6eb78c1b4bf35973155c6dcb1487", null ],
       [ "CY_APP_DMC_DEV_TYPE_RESERVED_3E", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a268b7d0f9f2b27e754c29205eda92a6b", null ],
       [ "CY_APP_DMC_DEV_TYPE_RESERVED_3F", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a9d3552d5427e60eca6faab62387394dd", null ],
+      [ "CY_APP_DMC_DEV_TYPE_BARLOW_RIDGE", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a2178d971d724165e1e04e2e0cfeef058", null ],
       [ "CY_APP_DMC_DEV_TYPE_DMC_PMG1S3", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a3a7923b4d859940dbf5870ecb807cbf9", null ],
       [ "CY_APP_DMC_DEV_TYPE_CCG7SC", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a8b6a140747025cd068c54a33150a67ea", null ],
+      [ "CY_APP_DMC_DEV_TYPE_CCG8D", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a2726745755d3b15c509e90a265ef9836", null ],
+      [ "CY_APP_DMC_DEV_TYPE_CCG6CFP", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a78f7a2b0dd20975d251c7f5c976dcec0", null ],
+      [ "CY_APP_DMC_DEV_TYPE_HX2G3", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9aa8f3cb94c7669f1c56b6d9a60264ed82", null ],
       [ "CY_APP_DMC_DEV_TYPE_SPI_COMPONENT", "group__group__pmg__app__common__dmc__enums.html#gga65fb639b8a05069b1a6d6d12b18a96e9a07a6e6a45f3198df03b241462ebc4844", null ]
     ] ],
     [ "cy_en_dmc_img_mode_t", "group__group__pmg__app__common__dmc__enums.html#ga5cc9f22bff84e09c1dc8c76d3059b2a5", [
@@ -167,12 +170,6 @@ var group__group__pmg__app__common__dmc__enums =
       [ "CY_APP_DMC_STATUS_IN_PROGRESS", "group__group__pmg__app__common__dmc__enums.html#gga8c528937cd559c7e66a072a89b089e19aafcfb37f6bb21500f3b074d04c4686b5", null ],
       [ "CY_APP_DMC_STATUS_IDLE", "group__group__pmg__app__common__dmc__enums.html#gga8c528937cd559c7e66a072a89b089e19a2d4fd40fbd02041afd75a34dce05e651", null ],
       [ "CY_APP_DMC_STATUS_FAIL", "group__group__pmg__app__common__dmc__enums.html#gga8c528937cd559c7e66a072a89b089e19ab1b7cd1b8927806711aa1e5772b4d95b", null ]
-    ] ],
-    [ "cy_en_dmc_fw_mode_t", "group__group__pmg__app__common__dmc__enums.html#gae431291656d8922f2924d8b0bf22625f", [
-      [ "CY_APP_DMC_FW_MODE_BOOTLOADER", "group__group__pmg__app__common__dmc__enums.html#ggae431291656d8922f2924d8b0bf22625fa4d2ca6b85a70fe467bd05377f25ce138", null ],
-      [ "CY_APP_DMC_FW_MODE_FWIMAGE_1", "group__group__pmg__app__common__dmc__enums.html#ggae431291656d8922f2924d8b0bf22625fa6e3d78cbb3278a30a7426aca8d4e9ea0", null ],
-      [ "CY_APP_DMC_FW_MODE_FWIMAGE_2", "group__group__pmg__app__common__dmc__enums.html#ggae431291656d8922f2924d8b0bf22625fa632c0790b463225508248f6475ff7ab4", null ],
-      [ "CY_APP_DMC_FW_MODE_INVALID", "group__group__pmg__app__common__dmc__enums.html#ggae431291656d8922f2924d8b0bf22625fad6c6c2a463afac52cbfd1c976314adc0", null ]
     ] ],
     [ "cy_en_dmc_led_mode_t", "group__group__pmg__app__common__dmc__enums.html#gaabd532c1cd176699976edfd999f64e54", [
       [ "CY_APP_DMC_LED_OFF", "group__group__pmg__app__common__dmc__enums.html#ggaabd532c1cd176699976edfd999f64e54a41fe4d949ce434c0b87e6a6fa0870e96", null ],

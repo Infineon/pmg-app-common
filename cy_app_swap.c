@@ -1,6 +1,6 @@
 /***************************************************************************//**
 * \file cy_app_swap.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements the functions for handling of USB Power Delivery 
@@ -8,20 +8,38 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
 #include "cy_app_config.h"
 #include "cy_app_swap.h"
 #include "cy_app.h"
-
-#if (DFP_ALT_MODE_SUPP || UFP_ALT_MODE_SUPP)
-#include "cy_pdaltmode_mngr.h"
-#endif /* (DFP_ALT_MODE_SUPP || UFP_ALT_MODE_SUPP) */
+#include "cy_app_internal.h"
 
 #define APP_PD_SWAP_RESP_ACCEPT         (0u)
 #define APP_PD_SWAP_RESP_REJECT         (1u)
@@ -39,16 +57,6 @@
 /**< Macro to extract the default VCONN_SWAP command response from the swap_response field
      in the configuration table. */
 
-#if (CY_APP_ROLE_PREFERENCE_ENABLE)
-#if (CY_APP_POWER_ROLE_PREFERENCE_ENABLE)
-/* Variable storing current preference for power role. */
-extern volatile uint8_t glAppPrefPowerRole[NO_OF_TYPEC_PORTS];
-#endif /* (CY_APP_POWER_ROLE_PREFERENCE_ENABLE) */
-
-/* Variable storing current preference for data role */
-extern volatile uint8_t glAppPrefDataRole[NO_OF_TYPEC_PORTS];
-#endif /* (CY_APP_ROLE_PREFERENCE_ENABLE) */
-
 static cy_en_pdstack_app_req_status_t get_response(cy_stc_pdstack_context_t * context, uint8_t raw_resp)
 {
 #if CY_PD_REV3_ENABLE
@@ -56,7 +64,7 @@ static cy_en_pdstack_app_req_status_t get_response(cy_stc_pdstack_context_t * co
 #endif /* CCG_PD_REV3_ENABLE */
 
     cy_en_pdstack_app_req_status_t retVal;
-    switch(raw_resp)
+    switch((app_swap_resp_t)raw_resp)
     {
         case APP_RESP_ACCEPT:
             retVal = CY_PDSTACK_REQ_ACCEPT;
@@ -87,6 +95,20 @@ void Cy_App_Swap_EvalDrSwap (cy_stc_pdstack_context_t * context, cy_pdstack_app_
 {
     cy_en_pdstack_app_req_status_t result = CY_PDSTACK_REQ_REJECT;
     
+    /*
+     * Default response is NOT_SUPPORTED instead of REJECT if the current mode
+     * is PD REV3 and port role is source/sink only.
+     */
+#if CY_PD_REV3_ENABLE
+    if (
+            (context->dpmConfig.specRevSopLive >= CY_PD_REV3) &&
+            (context->dpmStat.portRole != CY_PD_PRT_DUAL)
+       )
+    {
+        result = CY_PDSTACK_REQ_NOT_SUPPORTED;
+    }
+#endif /* CY_PD_REV3_ENABLE */
+
 #if (DFP_ALT_MODE_SUPP || UFP_ALT_MODE_SUPP)
     cy_stc_pdaltmode_context_t * pdAltModeContext = context->ptrAltModeContext;
 
@@ -99,7 +121,7 @@ void Cy_App_Swap_EvalDrSwap (cy_stc_pdstack_context_t * context, cy_pdstack_app_
     {
 #if (CY_APP_ROLE_PREFERENCE_ENABLE)
         /* DR_SWAP from preferred role is not accepted */
-        if (context->dpmConfig.curPortType != glAppPrefDataRole[context->port])
+        if ((uint8_t)(context->dpmConfig.curPortType) != glAppPrefDataRole[context->port])
 #endif /* (CY_APP_ROLE_PREFERENCE_ENABLE) */
         {
             result = get_response(context, GET_DR_SWAP_RESP(context->dpmStat.swapResponse));
@@ -151,15 +173,18 @@ void Cy_App_Swap_EvalPrSwap (cy_stc_pdstack_context_t * context, cy_pdstack_app_
 
 #if (CY_APP_POWER_ROLE_PREFERENCE_ENABLE)
     /* Do not allow PR_SWAP to a non-preferred role */
-    if (glAppPrefPowerRole[context->port] != context->dpmConfig.curPortRole)
+    if (glAppPrefPowerRole[context->port] != (uint8_t)(context->dpmConfig.curPortRole))
 #endif /* (CY_APP_POWER_ROLE_PREFERENCE_ENABLE) */
     {
         if (
                 (dpm->deadBat == false) && (dpm->portRole == CY_PD_PRT_DUAL) &&
                 (
-                 ((pdo_mask & (0x1 << CY_PD_EXTERNALLY_POWERED_BIT_POS)) == 0) ||
+                 ((pdo_mask & (0x1u << CY_PD_EXTERNALLY_POWERED_BIT_POS)) == 0u) ||
                  (context->dpmConfig.curPortRole == CY_PD_PRT_ROLE_SINK)
                 )
+#if CY_PD_REV3_ENABLE
+                && (context->dpmExtStat.eprActive == false)
+#endif /* CY_PD_REV3_ENABLE */
            )
         {
             result = get_response(context, GET_PR_SWAP_RESP(context->dpmStat.swapResponse));
@@ -174,7 +199,7 @@ void Cy_App_Swap_EvalPrSwap (cy_stc_pdstack_context_t * context, cy_pdstack_app_
         }
         else
         {
-            result = get_response(context, APP_RESP_NOT_SUPPORTED);
+            result = get_response(context, (uint8_t)APP_RESP_NOT_SUPPORTED);
         }
     }
 #endif /* (CY_APP_POWER_ROLE_PREFERENCE_ENABLE) */
@@ -196,7 +221,7 @@ void Cy_App_Swap_EvalVconnSwap (cy_stc_pdstack_context_t * context, cy_pdstack_a
 {
     cy_en_pdstack_app_req_status_t result = CY_PDSTACK_REQ_REJECT;
 
-#if !CY_PD_VCONN_DISABLE
+#if (!CY_PD_VCONN_DISABLE)
     const cy_stc_pd_dpm_config_t* dpm = &(context->dpmConfig);
 
     if (dpm->vconnLogical == true)
@@ -218,7 +243,7 @@ void Cy_App_Swap_EvalVconnSwap (cy_stc_pdstack_context_t * context, cy_pdstack_a
 
 #if VCONN_OCP_ENABLE
             /* Do not allow VCONN_SWAP to become VConn source if fault is active. */
-            if ((Cy_App_GetPdAppStatus(context->port)->faultStatus & CY_APP_PORT_VCONN_FAULT_ACTIVE) != 0)
+            if ((Cy_App_GetPdAppStatus(context->port)->faultStatus & (uint8_t)CY_APP_PORT_VCONN_FAULT_ACTIVE) != 0u)
             {
                 result = CY_PDSTACK_REQ_REJECT;
             }
@@ -236,8 +261,7 @@ void Cy_App_Swap_EvalVconnSwap (cy_stc_pdstack_context_t * context, cy_pdstack_a
     app_resp_handler(context, Cy_App_GetRespBuffer(context->port));
 }
 
-#if ((!CY_PD_SOURCE_ONLY) && (!CY_PD_SINK_ONLY))
-#if (CY_PD_REV3_ENABLE && CY_PD_FRS_TX_ENABLE)
+#if ((!CY_PD_SOURCE_ONLY) && (!CY_PD_SINK_ONLY) && CY_PD_REV3_ENABLE && CY_PD_FRS_TX_ENABLE)
 void Cy_App_Swap_EvalFrSwap (cy_stc_pdstack_context_t* context, cy_pdstack_app_resp_cbk_t app_resp_handler)
 {
     /* Accept FRS support is enabled/disabled by separate bit in configuration table.  */
@@ -246,8 +270,7 @@ void Cy_App_Swap_EvalFrSwap (cy_stc_pdstack_context_t* context, cy_pdstack_app_r
     Cy_App_GetRespBuffer(context->port)->reqStatus = result;
     app_resp_handler(context, Cy_App_GetRespBuffer(context->port));
 }
-#endif /* (CY_PD_REV3_ENABLE && CY_PD_FRS_TX_ENABLE) */
-#endif /* ((!CY_PD_SOURCE_ONLY) && (!CY_PD_SINK_ONLY)) */
+#endif /* ((!CY_PD_SOURCE_ONLY) && (!CY_PD_SINK_ONLY) && CY_PD_REV3_ENABLE && CY_PD_FRS_TX_ENABLE) */
 
 /* [] END OF FILE */
 

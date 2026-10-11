@@ -1,17 +1,38 @@
 /***************************************************************************//**
 * \file cy_app_hpi.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements functions for handling the HPI PD response register read/write operation.
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
 #if (CY_HPI_ENABLED && CY_HPI_RW_PD_RESP_MSG_DATA)
@@ -70,6 +91,7 @@ static uint8_t Cy_App_Hpi_GetPdRespMatchIndex(cy_stc_app_pd_resp_data_t *ptrPdRe
     /* Gets the index where the new field can be stored. */
     while (index < CY_APP_PD_RESP_DATA_BUFF_LEN - CY_APP_PD_RESP_DATA_HDR_SIZE)
     {
+        CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');
         cy_stc_app_pd_resp_stored_t *ptrPdRespTmp = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[index];
         /* Gets the local response ID and length. */
         uint8_t localRespId = ptrPdRespTmp->respId;
@@ -92,20 +114,20 @@ static uint8_t Cy_App_Hpi_GetPdRespMatchIndex(cy_stc_app_pd_resp_data_t *ptrPdRe
             localRespLen &= (uint8_t)(~CY_APP_PD_RESP_ALIGN_LEN_ADD_VALUE);
 
             /* Checks if the respId is reserved, then it indicates as an available slot. */
-            if (localRespId == CY_APP_PD_RESP_ID_RESERVED)
+            if (localRespId == (uint8_t)CY_APP_PD_RESP_ID_RESERVED)
             {
                 /* Checks if this record can be fit in here. */
-                uint8_t matchLen = ptrPdRespData->respLen;
-                matchLen += CY_APP_PD_RESP_ALIGN_LEN_ADD_VALUE;
-                matchLen &= (uint8_t)(~CY_APP_PD_RESP_ALIGN_LEN_ADD_VALUE);
-                if (0x00u == (localRespLen - matchLen))
+                uint8_t localMatchLen = ptrPdRespData->respLen;
+                localMatchLen += CY_APP_PD_RESP_ALIGN_LEN_ADD_VALUE;
+                localMatchLen &= (uint8_t)(~CY_APP_PD_RESP_ALIGN_LEN_ADD_VALUE);
+                if (0x00u == (localRespLen - localMatchLen))
                 {
                     /* Responses can be fit in. However, search for other records as well.*/
                     matchIdx = index;
                 }
                 else
                 {
-                    if (localRespLen > (matchLen + CY_APP_PD_RESP_DATA_HDR_SIZE))
+                    if (localRespLen > (localMatchLen + CY_APP_PD_RESP_DATA_HDR_SIZE))
                     {
                         /* Responses can be fit in. However, search for other records as well.*/
                         /* Checks if an exact match is not found. */
@@ -121,22 +143,12 @@ static uint8_t Cy_App_Hpi_GetPdRespMatchIndex(cy_stc_app_pd_resp_data_t *ptrPdRe
                 /* Checks if the respId is matching. */
                 if (localRespId == ptrPdRespData->respId)
                 {
-                    uint8_t i;
-                    /* Checks if the data is matching. */
-                    for (i = 0u; i < matchLen; i ++)
-                    {
-                        uint8_t *ptrData = (uint8_t*)&ptrPdRespTmp->respData;
-                        uint8_t *respData = (uint8_t*)&ptrPdRespData->respData;
-                        if (ptrData[i] != respData[i])
-                        {
-                            break;
-                        }
-                    }
-                    if (i == matchLen)
+                    /* Checks if the data is matching */
+                    if (memcmp(&ptrPdRespTmp->respData, &ptrPdRespData->respData, matchLen) == 0)
                     {
                         uint8_t portCheck = ptrPdRespData->cmdVal ^ ptrPdRespTmp->portFlag;
                         portCheck &= (uint8_t)(portCheck >> CY_APP_PD_RESP_DATA_PORT_FLAG_POS);
-                        if (false == portCheck)
+                        if (portCheck == 0u)
                         {
                             /* Matches found, then replace the existing response. */
                             matchIdx = index;
@@ -175,6 +187,7 @@ static void Cy_App_Hpi_ResetPdRespIdx (void)
     /* Gets the index where the new field can be stored. */
     while (index < CY_APP_PD_RESP_DATA_BUFF_LEN - CY_APP_PD_RESP_DATA_HDR_SIZE)
     {
+        CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');        
         cy_stc_app_pd_resp_stored_t *ptrPdRespTmp = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[index];
         /* Gets the local response ID and length. */
         uint8_t localRespId = ptrPdRespTmp->respId;
@@ -186,6 +199,7 @@ static void Cy_App_Hpi_ResetPdRespIdx (void)
             if(CY_APP_PD_RESP_DATA_BUFF_LEN != prev_free_idx)
             {
                 /* No more records found. Clear the length to make it available. */
+                CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');                
                 cy_stc_app_pd_resp_stored_t *ptrPdRespPrev = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[prev_free_idx];
                 ptrPdRespPrev->respLen = 0x00u;
             }
@@ -198,7 +212,7 @@ static void Cy_App_Hpi_ResetPdRespIdx (void)
         else
         {
             /* Checks if the respId is reserved, then it indicates as an available slot. */
-            if (CY_APP_PD_RESP_ID_RESERVED == localRespId)
+            if ((uint8_t)CY_APP_PD_RESP_ID_RESERVED == localRespId)
             {
                 if(CY_APP_PD_RESP_DATA_BUFF_LEN == prev_free_idx)
                 {
@@ -215,6 +229,7 @@ static void Cy_App_Hpi_ResetPdRespIdx (void)
                 if(CY_APP_PD_RESP_DATA_BUFF_LEN != prev_free_idx)
                 {
                     uint8_t newRespLen = index - prev_free_idx - CY_APP_PD_RESP_DATA_HDR_SIZE;
+                    CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');    
                     cy_stc_app_pd_resp_stored_t *ptrPdRespPrev = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[prev_free_idx];
                     ptrPdRespPrev->respLen = newRespLen;
                     /* Invalidate the previous free index.*/
@@ -243,9 +258,9 @@ static void Cy_App_Hpi_ResetPdRespIdx (void)
  * @param cmd PD response command ID.
  * @return PD response command minimum length.
  */
-const uint8_t Cy_App_Hpi_GetResponseMinLen(uint8_t cmd)
+uint8_t Cy_App_Hpi_GetResponseMinLen(uint8_t cmd)
 {
-    return cmd < CY_APP_PD_RESP_ID_MAX_NUM ? gl_pdRespMinLen[cmd] : 0u ;
+    return cmd < (uint8_t)CY_APP_PD_RESP_ID_MAX_NUM ? gl_pdRespMinLen[cmd] : 0u ;
 }
 
 /**
@@ -256,9 +271,9 @@ const uint8_t Cy_App_Hpi_GetResponseMinLen(uint8_t cmd)
  * @param cmd PD response command ID.
  * @return PD response command match length.
  */
-const uint8_t Cy_App_Hpi_GetResponseMatchLen(uint8_t cmd)
+uint8_t Cy_App_Hpi_GetResponseMatchLen(uint8_t cmd)
 {
-    return cmd < CY_APP_PD_RESP_ID_MAX_NUM ? gl_pdRespMatchLen[cmd] : 0u ;
+    return cmd < (uint8_t)CY_APP_PD_RESP_ID_MAX_NUM ? gl_pdRespMatchLen[cmd] : 0u ;
 }
 
 /**
@@ -283,6 +298,7 @@ cy_stc_app_pd_resp_stored_t * Cy_App_Hpi_StorePdRespData(cy_stc_app_pd_resp_data
 
     if (storeIdx < CY_APP_PD_RESP_DATA_BUFF_LEN - CY_APP_PD_RESP_DATA_HDR_SIZE)
     {
+        CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');    
         ptrPdResp = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[storeIdx];
         /* Checks if the record already exists. */
         if (ptrPdResp->respId == ptrPdRespData->respId)
@@ -296,12 +312,13 @@ cy_stc_app_pd_resp_stored_t * Cy_App_Hpi_StorePdRespData(cy_stc_app_pd_resp_data
             else
             {
                 /* Deletes the old one and find a new place. */
-                ptrPdResp->respId = CY_APP_PD_RESP_ID_RESERVED;
+                ptrPdResp->respId = (uint8_t)CY_APP_PD_RESP_ID_RESERVED;
                 Cy_App_Hpi_ResetPdRespIdx();
                 storeIdx = Cy_App_Hpi_GetPdRespMatchIndex(ptrPdRespData, matchLen);
                 if ((CY_APP_PD_RESP_DATA_BUFF_LEN - CY_APP_PD_RESP_DATA_HDR_SIZE - storeIdx) >= ptrPdRespData->respLen)
                 {
                     /* Place available. Therefore, store it. */
+                    CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');    
                     ptrPdResp = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[storeIdx];
                 }
                 else
@@ -333,16 +350,18 @@ cy_stc_app_pd_resp_stored_t * Cy_App_Hpi_StorePdRespData(cy_stc_app_pd_resp_data
             uint8_t nextIdx = storeIdx + newLen + CY_APP_PD_RESP_DATA_HDR_SIZE;
             if (nextIdx < CY_APP_PD_RESP_DATA_BUFF_LEN - CY_APP_PD_RESP_DATA_HDR_SIZE)
             {
+                CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');    
                 cy_stc_app_pd_resp_stored_t * ptrNxtPdResp = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[nextIdx];
                 ptrNxtPdResp->respLen = 0x00u;
-                ptrNxtPdResp->respId = CY_APP_PD_RESP_ID_RESERVED;
+                ptrNxtPdResp->respId = (uint8_t)CY_APP_PD_RESP_ID_RESERVED;
             }
         }
         /* If the allocated size is higher then split into two. */
         if (oldLen > newLen)
         {
+            CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');    
             cy_stc_app_pd_resp_stored_t *splitPdresp = (cy_stc_app_pd_resp_stored_t *)(ptrData + newLen);
-            splitPdresp->respId = CY_APP_PD_RESP_ID_RESERVED;
+            splitPdresp->respId = (uint8_t)CY_APP_PD_RESP_ID_RESERVED;
             splitPdresp->respLen = oldLen - newLen;
         }
         for (uint8_t i = 0u; i < ptrPdRespData->respLen + CY_APP_PD_RESP_DATA_HDR_SIZE; i ++)
@@ -373,6 +392,7 @@ cy_stc_app_pd_resp_stored_t * Cy_App_Hpi_RetrievePdRespData(cy_stc_app_pd_resp_d
     uint8_t retrieveIdx = Cy_App_Hpi_GetPdRespMatchIndex(ptrPdRespData, matchLen);
     if (retrieveIdx < CY_APP_PD_RESP_DATA_BUFF_LEN - CY_APP_PD_RESP_DATA_HDR_SIZE)
     {
+        CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');    
         cy_stc_app_pd_resp_stored_t *ptrPdRespTmp = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[retrieveIdx];
         /* Checks if the response ID is matching to check if the returned index is free one or actually present. */
         if (ptrPdRespTmp->respId == ptrPdRespData->respId)
@@ -403,12 +423,13 @@ cy_stc_app_pd_resp_stored_t * Cy_App_Hpi_DeletePdRespData(cy_stc_app_pd_resp_dat
     uint8_t deleteIdx = Cy_App_Hpi_GetPdRespMatchIndex(ptrPdRespData, matchLen);;
     if (deleteIdx < CY_APP_PD_RESP_DATA_BUFF_LEN - CY_APP_PD_RESP_DATA_HDR_SIZE)
     {
+        CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');    
         cy_stc_app_pd_resp_stored_t *ptrPdRespTmp = (cy_stc_app_pd_resp_stored_t *)&glPdRespMsgData[deleteIdx];
         /* Checks if the response ID is matching to check if the returned index is free one or actually present. */
         if (ptrPdRespTmp->respId == ptrPdRespData->respId)
         {
             ptrPdResp = ptrPdRespTmp;
-            ptrPdResp->respId = CY_APP_PD_RESP_ID_RESERVED;
+            ptrPdResp->respId = (uint8_t)CY_APP_PD_RESP_ID_RESERVED;
             /* Re-calculate the free space available. */
             Cy_App_Hpi_ResetPdRespIdx();
         }
@@ -434,29 +455,30 @@ cy_stc_app_pd_resp_stored_t * Cy_App_Hpi_DeletePdRespData(cy_stc_app_pd_resp_dat
 cy_en_pdstack_status_t Cy_App_Hpi_HandlePdRespDataRw(cy_stc_hpi_context_t *ptrHpiContext, cy_stc_pdstack_context_t *ptrPdStackContext, uint8_t *data)
 {
     cy_en_pdstack_status_t cmdStat = CY_PDSTACK_STAT_SUCCESS;
+    CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');    
     cy_stc_app_pd_resp_data_t *ptrPdRespData = (cy_stc_app_pd_resp_data_t *)data;
     cy_stc_app_pd_resp_stored_t *ptrPdResp;
 
     do
     {
         /* Byte 0 - Response Data ID. */
-        if ((CY_APP_PD_RESP_ID_RESERVED == ptrPdRespData->respId) || (CY_APP_PD_RESP_ID_MAX_NUM <= ptrPdRespData->respId))
+        if (((uint8_t)CY_APP_PD_RESP_ID_RESERVED == ptrPdRespData->respId) || ((uint8_t)CY_APP_PD_RESP_ID_MAX_NUM <= ptrPdRespData->respId))
         {
             /* Not supported Data ID. */
             cmdStat = CY_PDSTACK_STAT_INVALID_ARGUMENT;
             break;
         }
         /* Data command. */
-        uint8_t portFlag = false;
+        uint8_t portFlag = 0u;
         /* Checks if the command is specific to port or not. */
-        if (false == ptrPdRespData->portFlag)
+        if (ptrPdRespData->portFlag == 0u)
         {
             portFlag = (CY_APP_PD_RESP_DATA_PORT_FLAG_MSK << ptrPdStackContext->port);
         }
         uint8_t dataCmd = ptrPdRespData->dataCmd;
         /* Stores the port flag in the dataCmd so that it will be stored. */
         ptrPdRespData->cmdVal = portFlag;
-        if (CY_APP_PD_RESP_DATA_CMD_WRITE == dataCmd)
+        if ((uint8_t)CY_APP_PD_RESP_DATA_CMD_WRITE == dataCmd)
         {/* Write command. */
             /* Checks for minimum response length before storing it. */
             if(ptrPdRespData->respLen >= CY_APP_PD_RESP_MIN_DATA_LEN)
@@ -473,7 +495,7 @@ cy_en_pdstack_status_t Cy_App_Hpi_HandlePdRespDataRw(cy_stc_hpi_context_t *ptrHp
                 cmdStat = CY_PDSTACK_STAT_INVALID_ARGUMENT;
             }
         }
-        else if (CY_APP_PD_RESP_DATA_CMD_READ == dataCmd)
+        else if ((uint8_t)CY_APP_PD_RESP_DATA_CMD_READ == dataCmd)
         {/* Read command. */
             /* Gets the stored data from the common buffer. */
             ptrPdResp = Cy_App_Hpi_RetrievePdRespData(ptrPdRespData, CY_APP_PD_RESP_MATCH_LENGTH);
@@ -485,16 +507,17 @@ cy_en_pdstack_status_t Cy_App_Hpi_HandlePdRespDataRw(cy_stc_hpi_context_t *ptrHp
             else
             {
                 /* Response is found. Send the data that has been read back. */
-                ptrPdRespData->cmdVal = false;
-                memcpy(&ptrPdRespData->respLen, &ptrPdResp->respData, ptrPdResp->respLen);
-                Cy_Hpi_RegEnqueueEvent(ptrHpiContext,
-                        (cy_en_hpi_reg_section_t)(ptrPdStackContext->port + 1),
-                        CY_HPI_RESPONSE_PD_RESP_DATA,
-                        ptrPdResp->respLen + 2u, &ptrPdRespData->respId);
+                uint8_t reg_section = ptrPdStackContext->port + 1u;
+                ptrPdRespData->cmdVal = 0u;
+                (void)memcpy(&ptrPdRespData->respLen, &ptrPdResp->respData, ptrPdResp->respLen);
+                (void)Cy_Hpi_RegEnqueueEvent(ptrHpiContext,
+                        (cy_en_hpi_reg_section_t)reg_section,
+                        (uint8_t)CY_HPI_RESPONSE_PD_RESP_DATA,
+                        (uint16_t)ptrPdResp->respLen + 2u, &ptrPdRespData->respId);
                 cmdStat = CY_PDSTACK_STAT_NO_RESPONSE;
             }
         }
-        else if (CY_APP_PD_RESP_DATA_CMD_DELETE == dataCmd)
+        else if ((uint8_t)CY_APP_PD_RESP_DATA_CMD_DELETE == dataCmd)
         {/* Delete command. */
             /* Deletes the response if found in the common buffer. */
             ptrPdResp = Cy_App_Hpi_DeletePdRespData(ptrPdRespData, CY_APP_PD_RESP_MATCH_LENGTH);

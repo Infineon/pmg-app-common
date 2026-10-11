@@ -1,4 +1,4 @@
-# PmgAppCommon Middleware Library 2.0
+# PmgAppCommon Middleware Library 3.0.0
 
 ## What's included?
 
@@ -6,10 +6,7 @@ See the [README.md](./README.md) and the [API reference guide](https://infineon.
 
 ## New features
 
-* Added support for Legacy charging protocols BC 1.2, Quick Charge (QC) 2.0 and 3.0, Adaptive Fast Charge (AFC), and Apple Charging.
-* Added support for Liquid Corrosion Mitigation mode.
-* Removed buck-boost drivers from the middleware.
-
+* Added support for PMG1-B1 and PMG1-B2 devices.
 
 ## Supported software and tools
 
@@ -17,15 +14,15 @@ This version of the PmgAppCommon middleware is validated for the compatibility w
 
 | Software and tools                                      | Version |
 | :---                                                    | :----:  |
-| ModusToolbox&trade;                                     | 3.3.0   |
-| CAT2 Peripheral Driver Library                          | 2.13.0  |
-| PDStack middleware                                      | 4.0.0   |
+| ModusToolbox&trade;                                     | 3.7.0   |
+| CAT2 Peripheral Driver Library                          | 2.21.0  |
+| PDStack middleware                                      | 6.0.0   |
 | PDUtils middleware                                      | 1.30.0  |
-| PdAltMode middleware                                    | 1.0.0   |
+| PdAltMode middleware                                    | 2.0.0   |
 | USB device middleware library                           | 2.10.0  |
-| HPI middleware                                          | 1.1.0   |
+| HPI middleware                                          | 1.2.0   |
 | Core library                                            | 1.4.1   |
-| GCC Compiler                                            | 11.3.1  |
+| GCC Compiler                                            | 14.2.1  |
 
 ## More information
 
@@ -37,4 +34,4 @@ For more information, see the following documents:
 * [Infineon Technologies AG](https://www.infineon.com)
 
 ---
-© 2024, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.
+© 2024-2026, Infineon Technologies AG or an affiliate of Infineon Technologies AG.

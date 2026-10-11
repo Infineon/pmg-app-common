@@ -65,7 +65,8 @@ var group__group__pmg__app__common__log__enums =
       [ "CY_APP_DEBUG_HPI_MASTER_QUEUE_PUSH_ERROR", "group__group__pmg__app__common__log__enums.html#gga84d0d37ae0e54730bcbbceb755a0603ea4ea84f94759a5ca7da29dc76a234267b", null ],
       [ "CY_APP_DEBUG_INFO_TRACE", "group__group__pmg__app__common__log__enums.html#gga84d0d37ae0e54730bcbbceb755a0603ea52f91783e999450e0b4ecf524c57cd5b", null ],
       [ "CY_APP_DEBUG_PA_SIZE", "group__group__pmg__app__common__log__enums.html#gga84d0d37ae0e54730bcbbceb755a0603ea6dcedcd330a9c62e14fed8ec9bdb3a47", null ],
-      [ "CY_APP_DEBUG_CURRENT_RUNNING_APP", "group__group__pmg__app__common__log__enums.html#gga84d0d37ae0e54730bcbbceb755a0603ea2974f4c76e5131aeb49a5aec935f59b0", null ]
+      [ "CY_APP_DEBUG_CURRENT_RUNNING_APP", "group__group__pmg__app__common__log__enums.html#gga84d0d37ae0e54730bcbbceb755a0603ea2974f4c76e5131aeb49a5aec935f59b0", null ],
+      [ "CY_APP_DEBUG_HX2G3_UPDATE", "group__group__pmg__app__common__log__enums.html#gga84d0d37ae0e54730bcbbceb755a0603ea96b14ad852a6c23d2a6d756ea7b46864", null ]
     ] ],
     [ "cy_en_uart_debug_log_level_t", "group__group__pmg__app__common__log__enums.html#gaa30bb0b2387a42f063fd7917629f2399", [
       [ "CY_APP_DEBUG_LOGLEVEL_INFO", "group__group__pmg__app__common__log__enums.html#ggaa30bb0b2387a42f063fd7917629f2399aa93d0e9947d2ea9155d9f24241579f0c", null ],

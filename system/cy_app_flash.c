@@ -1,17 +1,38 @@
 /***************************************************************************//**
 * \file cy_app_flash.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements the flash module functions
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury..
 *******************************************************************************/
 
 #include <stdint.h>
@@ -32,19 +53,19 @@
  * access can be done. The default values prevent any write or
  * read.
  */
-static uint8_t gl_flash_mode_en = 0;
+static uint8_t gl_flash_mode_en = 0u;
 
 /* Lowest flash row number that can be accessed */
-static uint16_t gl_flash_access_first = CY_APP_SYS_FLASH_LAST_ROW_NUM + 1;
+static uint16_t gl_flash_access_first = (uint16_t)CY_APP_SYS_FLASH_LAST_ROW_NUM + 1u;
 
 /* Highest flash row number that can be accessed */
-static uint16_t gl_flash_access_last = CY_APP_SYS_FLASH_LAST_ROW_NUM + 1;
+static uint16_t gl_flash_access_last = (uint16_t)CY_APP_SYS_FLASH_LAST_ROW_NUM + 1u;
 
 /* Flash row containing metadata for the alternate firmware image */
-static uint16_t gl_flash_metadata_row = CY_APP_SYS_FLASH_LAST_ROW_NUM + 1;
+static uint16_t gl_flash_metadata_row = (uint16_t)CY_APP_SYS_FLASH_LAST_ROW_NUM + 1u;
 
 /* Last boot loader flash row. Used for read protection */
-static uint16_t gl_flash_bl_last_row = CY_APP_SYS_FLASH_LAST_ROW_NUM + 1;
+static uint16_t gl_flash_bl_last_row = (uint16_t)CY_APP_SYS_FLASH_LAST_ROW_NUM + 1u;
 
 #if (!CY_APP_BOOT_ENABLE)
 /* Whether flash write data can be used in-place as SROM API parameter */
@@ -59,33 +80,33 @@ static volatile bool gl_flash_write_in_place = false;
      (CY_FLASH_CPUSS_SYSARG_REG & 0x0000000Fu))
 
 /* Keys used in SROM APIs */
-#define SROM_FLASH_API_KEY_ONE          (0xB6)
-#define SROM_FLASH_API_KEY_TWO(x)       (uint32_t)(0xD3u + x)
-#define SROM_FLASH_KEY_TWO_OFFSET       (0x08)
+#define SROM_FLASH_API_KEY_ONE          (0xB6u)
+#define SROM_FLASH_API_KEY_TWO(x)       ((uint32_t)0xD3u + (x))
+#define SROM_FLASH_KEY_TWO_OFFSET       (0x08u)
 
 /* Offset of argument 1 and 2 (words) for SROM APIs in SRAM buffer */
-#define SROM_API_ARG0_OFFSET            (0x00)
-#define SROM_API_ARG1_OFFSET            (0x01)
+#define SROM_API_ARG0_OFFSET            (0x00u)
+#define SROM_API_ARG1_OFFSET            (0x01u)
 
 /* SROM LOAD FLASH API */
-#define SROM_LOAD_FLASH_API_OPCODE              (0x04)
-#define SROM_LOAD_FLASH_DATA_OFFSET             (0x02)
-#define SROM_LOAD_FLASH_BYTE_ADDR               (0x00)
-#define SROM_LOAD_FLASH_BYTE_ADDR_OFFSET        (0x10)
-#define SROM_LOAD_FLASH_MACRO_OFFSET            (0x18)
+#define SROM_LOAD_FLASH_API_OPCODE              (0x04u)
+#define SROM_LOAD_FLASH_DATA_OFFSET             (0x02u)
+#define SROM_LOAD_FLASH_BYTE_ADDR               (0x00u)
+#define SROM_LOAD_FLASH_BYTE_ADDR_OFFSET        (0x10u)
+#define SROM_LOAD_FLASH_MACRO_OFFSET            (0x18u)
 
 /* FLASH ROW PROGRAM API */
-#define SROM_FLASH_PROGRAM_API_OPCODE           (0x05)
+#define SROM_FLASH_PROGRAM_API_OPCODE           (0x05u)
 
 /* Non-blocking write flash row API */
-#define SROM_NB_FLASH_ROW_API_OPCODE    (0x07)
-#define SROM_NB_FLASH_ROW_NUM_OFFSET    (0x10)
+#define SROM_NB_FLASH_ROW_API_OPCODE    (0x07u)
+#define SROM_NB_FLASH_ROW_NUM_OFFSET    (0x10u)
 
 /* Resume non-blocking API */
-#define SROM_RESUME_NB_API_OPCODE       (0x09)
+#define SROM_RESUME_NB_API_OPCODE       (0x09u)
     
 /* Abort non-blocking flash row write API opcode */
-#define SROM_ABORT_FLASH_WRITE_OPCODE   (0x1C)
+#define SROM_ABORT_FLASH_WRITE_OPCODE   (0x1Cu)
 
 /* CPUSS SYSARG return value mask */
 #define CPUSS_SYSARG_RETURN_VALUE_MASK  (0xF0000000u)
@@ -98,7 +119,7 @@ static volatile bool gl_flash_write_in_place = false;
     
 #define CPUSS_FLASH_PARAM_SIZE          (8u)
 
-#if (!CY_APP_BOOT_ENABLE)
+#if ((!CY_APP_BOOT_ENABLE) && CY_APP_PRIORITY_FEATURE_ENABLE)
 /*
  * This function invokes the SROM API to do a flash row write.
  * This function is used instead of the CySysFlashWriteRow, so as to avoid
@@ -114,16 +135,16 @@ static cy_en_app_status_t flash_trig_row_write_in_place(uint32_t row_num, uint8_
     cy_en_app_status_t status = CY_APP_STAT_SUCCESS;
 
     /* Connect the charge pump to IMO clock for flash write */
-    SRSSLT->CLK_SELECT = (SRSSLT->CLK_SELECT & ~SRSSLT_CLK_SELECT_PUMP_SEL_Msk) | (1 << SRSSLT_CLK_SELECT_PUMP_SEL_Pos);
+    SRSSLT->CLK_SELECT = (SRSSLT->CLK_SELECT & ~SRSSLT_CLK_SELECT_PUMP_SEL_Msk) | (1u << SRSSLT_CLK_SELECT_PUMP_SEL_Pos);
 
     /* Set the parameters for load data into latch operation */
     params[0] = SROM_FLASH_API_KEY_ONE |
         (SROM_FLASH_API_KEY_TWO(SROM_LOAD_FLASH_API_OPCODE) << SROM_FLASH_KEY_TWO_OFFSET);
-    params[1] = CY_FLASH_SIZEOF_ROW - 1;
+    params[1] = CY_FLASH_SIZEOF_ROW - 1u;
 #if (CY_APP_IP_FLASH_MACROS > 1)
     if (CY_FLASH_GET_MACRO_FROM_ROW(row_num) != 0)
     {
-        params[0] |= (1 << SROM_LOAD_FLASH_MACRO_OFFSET);
+        params[0] |= (1u << SROM_LOAD_FLASH_MACRO_OFFSET);
     }
 #endif /* (CY_APP_IP_FLASH_MACROS > 1) */
 
@@ -163,42 +184,47 @@ static cy_en_app_status_t flash_trig_row_write_in_place(uint32_t row_num, uint8_
 
     return status;
 }
-#endif /* (!CY_APP_BOOT_ENABLE) */
+#endif /* (!CY_APP_BOOT_ENABLE) && CY_APP_PRIORITY_FEATURE_ENABLE */
 
+
+#if (CY_APP_PRIORITY_FEATURE_ENABLE) && ((!CY_HPI_ENABLE) || (CY_APP_BOOT_ENABLE))
 /*
  * This function invokes the SROM API to do a flash row write.
  * This function is used instead of the CySysFlashWriteRow, so as to avoid
  * the clock trim updates that are done as part of that API.
  */
-cy_en_app_status_t flash_trig_row_write(uint32_t row_num, uint8_t *data_p)
+static cy_en_app_status_t flash_trig_row_write(uint32_t row_num, uint8_t *data_p)
 {
     volatile uint32_t params[(CY_FLASH_SIZEOF_ROW + CPUSS_FLASH_PARAM_SIZE) / sizeof(uint32_t)];
     cy_en_app_status_t status = CY_APP_STAT_SUCCESS;
 
     /* Connect the charge pump to IMO clock for flash write */
-    SRSSLT->CLK_SELECT = (SRSSLT->CLK_SELECT & ~SRSSLT_CLK_SELECT_PUMP_SEL_Msk) | (1 << SRSSLT_CLK_SELECT_PUMP_SEL_Pos);
+    SRSSLT->CLK_SELECT = (SRSSLT->CLK_SELECT & ~SRSSLT_CLK_SELECT_PUMP_SEL_Msk) | (1u << SRSSLT_CLK_SELECT_PUMP_SEL_Pos);
 
     /* Copy the data into the parameter buffer */
-    memcpy ((uint8_t *)(&params[2]), data_p, CY_FLASH_SIZEOF_ROW);
+    (void)memcpy ((uint8_t *)(&params[2]), data_p, CY_FLASH_SIZEOF_ROW);
 
     /* Set the parameters for load data into latch operation */
     params[0] = SROM_FLASH_API_KEY_ONE |
         (SROM_FLASH_API_KEY_TWO(SROM_LOAD_FLASH_API_OPCODE) << SROM_FLASH_KEY_TWO_OFFSET);
-    params[1] = CY_FLASH_SIZEOF_ROW - 1;
+    params[1] = CY_FLASH_SIZEOF_ROW - 1u;
 #if (CY_APP_IP_FLASH_MACROS > 1)
     if (CY_FLASH_GET_MACRO_FROM_ROW(row_num) != 0)
     {
-        params[0] |= (1 << SROM_LOAD_FLASH_MACRO_OFFSET);
+        params[0] |= (1u << SROM_LOAD_FLASH_MACRO_OFFSET);
     }
 #endif /* (CY_APP_IP_FLASH_MACROS > 1) */
 
     CPUSS->SYSARG = (uint32_t)(&params[0]);
     CPUSS->SYSREQ = (CPUSS_SYSREQ_SYSCALL_REQ_Msk | SROM_LOAD_FLASH_API_OPCODE);
+
+    CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Directive 4.3', 1, 'Intentional assembly code used inside of C code API');    
     __asm(
             "NOP\n"
             "NOP\n"
             "NOP\n"
          );
+    CY_MISRA_BLOCK_END('MISRA C-2012 Directive 4.3');
 
     /* If load latch is successful */
     if ((CPUSS->SYSARG & CPUSS_SYSARG_RETURN_VALUE_MASK) == CPUSS_SYSARG_PASS_RETURN_VALUE)
@@ -208,12 +234,16 @@ cy_en_app_status_t flash_trig_row_write(uint32_t row_num, uint8_t *data_p)
             (SROM_FLASH_API_KEY_TWO(SROM_FLASH_PROGRAM_API_OPCODE) << SROM_FLASH_KEY_TWO_OFFSET));
         CPUSS->SYSARG = (uint32_t)(&params[0]);
         CPUSS->SYSREQ = (CPUSS_SYSREQ_SYSCALL_REQ_Msk | SROM_FLASH_PROGRAM_API_OPCODE);
+
+        CY_MISRA_DEVIATE_BLOCK_START('MISRA C-2012 Directive 4.3', 1, 'Intentional assembly code used inside of C code API');    
         __asm(
                 "NOP\n"
                 "NOP\n"
                 "NOP\n"
              );
-        if ((CPUSS->SYSARG & CPUSS_SYSARG_RETURN_VALUE_MASK) != CPUSS_SYSARG_PASS_RETURN_VALUE)
+        CY_MISRA_BLOCK_END('MISRA C-2012 Directive 4.3');
+
+             if ((CPUSS->SYSARG & CPUSS_SYSARG_RETURN_VALUE_MASK) != CPUSS_SYSARG_PASS_RETURN_VALUE)
         {
             status = CY_APP_STAT_FAILURE;
         }
@@ -228,32 +258,33 @@ cy_en_app_status_t flash_trig_row_write(uint32_t row_num, uint8_t *data_p)
 
     return status;
 }
+#endif /* (CY_APP_PRIORITY_FEATURE_ENABLE) && ((!CY_HPI_ENABLE) || (CY_APP_BOOT_ENABLE)) */
 
 void Cy_App_Flash_EnterMode(bool is_enable, cy_en_flash_interface_t mode, bool data_in_place)
 {
     /* Enter or exit the flashing mode. Only one mode will be active at a time. */
     if (is_enable)
     {
-        gl_flash_mode_en = (1 << mode);
+        gl_flash_mode_en = (1u << (uint8_t)mode);
 #if (!CY_APP_BOOT_ENABLE)
         gl_flash_write_in_place = data_in_place;
 #endif /* (!CY_APP_BOOT_ENABLE) */
     }
     else
     {
-        gl_flash_mode_en = 0;
+        gl_flash_mode_en = 0u;
 #if (!CY_APP_BOOT_ENABLE)
         gl_flash_write_in_place = false;
 #endif /* (!CY_APP_BOOT_ENABLE) */
     }
 #if (CY_APP_BOOT_ENABLE)
-    (void)data_in_place;
+    CY_UNUSED_PARAMETER(data_in_place);
 #endif /* (CY_APP_BOOT_ENABLE) */
 }
 
 bool Cy_App_Flash_AccessGetStatus (uint8_t modes)
 {
-    return ((bool)((gl_flash_mode_en & modes) != 0));
+    return ((gl_flash_mode_en & modes) != 0u);
 }
 
 void Cy_App_Flash_SetAccessLimits (uint16_t start_row, uint16_t last_row, uint16_t md_row,
@@ -270,7 +301,8 @@ void Cy_App_Flash_SetAccessLimits (uint16_t start_row, uint16_t last_row, uint16
     gl_flash_bl_last_row = bl_last_row;
 }
 
-cy_en_app_status_t flash_blocking_row_write(uint16_t row_num, uint8_t *data)
+#if CY_APP_PRIORITY_FEATURE_ENABLE
+static cy_en_app_status_t flash_blocking_row_write(uint16_t row_num, uint8_t *data)
 {
     cy_en_app_status_t stat = CY_APP_STAT_SUCCESS;
 
@@ -298,6 +330,7 @@ cy_en_app_status_t flash_blocking_row_write(uint16_t row_num, uint8_t *data)
 
     return stat;
 }
+#endif /* CY_APP_PRIORITY_FEATURE_ENABLE */
 
 /*
  * @brief Handle clear flash row operation.
@@ -310,9 +343,10 @@ cy_en_app_status_t flash_blocking_row_write(uint16_t row_num, uint8_t *data)
  */
 cy_en_app_status_t Cy_App_Flash_RowClear(uint16_t row_num)
 {
-    uint32_t row_address = row_num << CY_APP_SYS_FLASH_ROW_SHIFT_NUM;
+    uint32_t row_address = (uint32_t)row_num << CY_APP_SYS_FLASH_ROW_SHIFT_NUM;
 
     uint8_t buffer[CY_APP_SYS_FLASH_ROW_SIZE + CPUSS_FLASH_PARAM_SIZE] = {0};
+    CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');            
     return (cy_en_app_status_t)Cy_Flash_WriteRow(row_address, (uint32_t *)buffer);
 }
 
@@ -320,7 +354,7 @@ cy_en_app_status_t Cy_App_Flash_RowWrite(uint16_t row_num, uint8_t *data, cy_app
 {
     /* Initialize return status value */
     cy_en_app_status_t status = CY_APP_STAT_NO_RESPONSE;
-    uint32_t row_address = row_num << CY_APP_SYS_FLASH_ROW_SHIFT_NUM;
+    uint32_t row_address = (uint32_t)row_num << CY_APP_SYS_FLASH_ROW_SHIFT_NUM;
 
 #if (!CY_APP_DUALAPP_DISABLE)
 #if ((CY_APP_BOOT_ENABLE != 0) || (CY_APP_PSEUDO_METADATA_DISABLE != 0))
@@ -332,7 +366,7 @@ cy_en_app_status_t Cy_App_Flash_RowWrite(uint16_t row_num, uint8_t *data, cy_app
 #endif /* CY_APP_DUALAPP_DISABLE */
 
     /* Can't handle flash update request if flashing mode is not active */
-    if (gl_flash_mode_en == 0)
+    if (gl_flash_mode_en == 0u)
     {
         return CY_APP_STAT_NOT_READY;
     }
@@ -344,12 +378,12 @@ cy_en_app_status_t Cy_App_Flash_RowWrite(uint16_t row_num, uint8_t *data, cy_app
 #else
     if ((data == NULL) || (row_num < gl_flash_access_first) ||
             ((row_num > gl_flash_access_last) && (row_num != gl_flash_metadata_row) &&
-            ((row_num < CY_APP_SYS_DMC_METADATA_START_ROW_ID) || 
+            ((row_num < CY_APP_SYS_DMC_METADATA_START_ROW_ID) ||
+            (row_num > CY_APP_SYS_DMC_METADATA_END_ROW_ID))
 #if (CY_APP_USR_DEFINED_SN_SUPPORT)            
-            (row_num > DOCK_METADATA_END_ROW_ID_WITH_SN))))
-#else
-            (row_num > CY_APP_SYS_DMC_METADATA_END_ROW_ID))))
-#endif /* CY_APP_USR_DEFINED_SN_SUPPORT */    
+            && (row_num != CY_APP_DMC_SERIAL_NUMBER_ROW_NUM)
+#endif /* CY_APP_USR_DEFINED_SN_SUPPORT */
+            ))
 #endif /* CY_APP_DMC_ENABLE */
     {
         return CY_APP_STAT_INVALID_ARGUMENT;
@@ -375,25 +409,27 @@ cy_en_app_status_t Cy_App_Flash_RowWrite(uint16_t row_num, uint8_t *data, cy_app
     {
 #if CY_APP_PRIORITIZE_FW2
         /* Set sequence number to 0 */
-        seq_num = 0;
+        seq_num = 0u;
 #else /* !CY_APP_PRIORITIZE_FW2 */
         /* Set sequence number to 1 + that of FW2. */
-        seq_num = Cy_App_Boot_GetBootSeq (CY_APP_SYS_FW_MODE_FWIMAGE_2) + 1;
+        seq_num = Cy_App_Boot_GetBootSeq (CY_APP_SYS_FW_MODE_FWIMAGE_2) + 1u;
 #endif /* CY_APP_PRIORITIZE_FW2 */
 
-        ((uint32_t *)data)[offset / 4] = seq_num;
+        CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');            
+        ((uint32_t *)data)[offset / 4u] = seq_num;
     }
     if (row_num == CY_APP_SYS_IMG2_METADATA_ROW_NUM)
     {
 #if CY_APP_PRIORITIZE_FW1
         /* Set sequence number to 0 */
-        seq_num = 0;
+        seq_num = 0u;
 #else /* !CY_APP_PRIORITIZE_FW1 */
         /* Set sequence number to 1 + that of FW1 */
-        seq_num = Cy_App_Boot_GetBootSeq (CY_APP_SYS_FW_MODE_FWIMAGE_1) + 1;
+        seq_num = Cy_App_Boot_GetBootSeq ((uint8_t)CY_APP_SYS_FW_MODE_FWIMAGE_1) + 1u;
 #endif /* CY_APP_PRIORITIZE_FW1 */
 
-        ((uint32_t *)data)[offset / 4] = seq_num;
+        CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');            
+        ((uint32_t *)data)[offset / 4u] = seq_num;
     }
 #else /* ((CY_APP_BOOT_ENABLE != 0) || (CY_APP_PSEUDO_METADATA_DISABLE != 0)) */
     /*
@@ -429,16 +465,17 @@ cy_en_app_status_t Cy_App_Flash_RowWrite(uint16_t row_num, uint8_t *data, cy_app
 
     /* Blocking flash row write in bootloader mode */
     /* Handle only if flashing mode is active */
+    CY_MISRA_DEVIATE_LINE('MISRA C-2012 Rule 11.3', 'Intentional pointer type conversion.');            
     status = (cy_en_app_status_t)Cy_Flash_WriteRow(row_address, (uint32_t *)data);
 
-    (void)cbk;
+    CY_UNUSED_PARAMETER(&cbk);
     return status;
 }
 
 cy_en_app_status_t Cy_App_Flash_RowRead(uint16_t row_num, uint8_t* data)
 {
     /* Can't handle flash update request if flashing mode is not active */
-    if (gl_flash_mode_en == 0)
+    if (gl_flash_mode_en == 0u)
     {
         return CY_APP_STAT_NOT_READY;
     }
@@ -450,7 +487,7 @@ cy_en_app_status_t Cy_App_Flash_RowRead(uint16_t row_num, uint8_t* data)
         return CY_APP_STAT_INVALID_ARGUMENT;
     }
 
-    memcpy (data, (void *)(row_num << CY_APP_SYS_FLASH_ROW_SHIFT_NUM), CY_APP_SYS_FLASH_ROW_SIZE);
+    (void)memcpy (data, (uint8_t *)((uint32_t)row_num << CY_APP_SYS_FLASH_ROW_SHIFT_NUM), CY_APP_SYS_FLASH_ROW_SIZE);
     return CY_APP_STAT_SUCCESS;
 }
 

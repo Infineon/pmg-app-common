@@ -1,4 +1,4 @@
-# PmgAppCommon Middleware Library 2.0
+# PmgAppCommon Middleware Library 3.0
 
 ## Overview
 
@@ -47,4 +47,4 @@ For more information, see the following documents:
 * [Infineon Technologies AG](https://www.infineon.com)
 
 ---
-© 2024, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.
+© 2024-2026, Infineon Technologies AG or an affiliate of Infineon Technologies AG.

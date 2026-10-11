@@ -1,29 +1,49 @@
 /***************************************************************************//**
 * \file cy_app_usb.c
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements the function for USB operation
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
 #if CY_APP_USB_ENABLE
 #include "cy_pdl.h"
-#include "cybsp.h"
-
 #include "cy_app_status.h"
 #include "cy_app_usb.h"
 #include "cy_app_dmc_vendor.h"
 #include "cy_app_flash_log.h"
 #include "cy_pdutils.h"
 #include "cy_pdstack_dpm.h"
+#include "cy_app_internal.h"
 
 /*******************************************************************************
 * Macro definitions
@@ -33,8 +53,8 @@
 /*******************************************************************************
 * Global variables
 ********************************************************************************/
-cy_stc_app_usb_handle_t gl_usb;
-uint8_t gl_ep0_buffer[516];
+static cy_stc_app_usb_handle_t gl_usb;
+static uint8_t gl_ep0_buffer[1536];
 cy_stc_usb_init_ctxt_t *glUsbInitCtx;
 
 /*******************************************************************************
@@ -45,17 +65,17 @@ static void usb_medium_isr(void);
 static void usb_low_isr(void);
 
 /* USB interrupt configuration */
-const cy_stc_sysint_t usb_high_interrupt_cfg =
+static const cy_stc_sysint_t usb_high_interrupt_cfg =
 {
     .intrSrc = (IRQn_Type) usb_interrupt_hi_IRQn,
     .intrPriority = 0U,
 };
-const cy_stc_sysint_t usb_medium_interrupt_cfg =
+static const cy_stc_sysint_t usb_medium_interrupt_cfg =
 {
     .intrSrc = (IRQn_Type) usb_interrupt_med_IRQn,
     .intrPriority = 1U,
 };
-const cy_stc_sysint_t usb_low_interrupt_cfg =
+static const cy_stc_sysint_t usb_low_interrupt_cfg =
 {
     .intrSrc = (IRQn_Type) usb_interrupt_lo_IRQn,
     .intrPriority = 2U,
@@ -110,7 +130,7 @@ void Cy_App_Usb_Init (cy_stc_usb_init_ctxt_t *usbInitCtx)
 {
     glUsbInitCtx = usbInitCtx;
 
-    if((Cy_PdStack_Dpm_GetContext(TYPEC_PORT_0_IDX))->ptrUsbPdContext->adcVdddMv[CY_USBPD_ADC_ID_0] > 3700)
+    if((Cy_PdStack_Dpm_GetContext(TYPEC_PORT_0_IDX))->ptrUsbPdContext->adcVdddMv[CY_USBPD_ADC_ID_0] > 3700u)
     {
         Cy_USBFS_Dev_Drv_RegEnable(glUsbInitCtx->base, glUsbInitCtx->usb_drvContext);
     }
@@ -119,21 +139,21 @@ void Cy_App_Usb_Init (cy_stc_usb_init_ctxt_t *usbInitCtx)
         Cy_USBFS_Dev_Drv_RegDisable(glUsbInitCtx->base, glUsbInitCtx->usb_drvContext);
     }
 
-    Cy_USB_Dev_Init(glUsbInitCtx->base, glUsbInitCtx->drvConfig, glUsbInitCtx->usb_drvContext,
+    (void)Cy_USB_Dev_Init(glUsbInitCtx->base, glUsbInitCtx->drvConfig, glUsbInitCtx->usb_drvContext,
                     glUsbInitCtx->usbDevice, glUsbInitCtx->usbDevConfig, glUsbInitCtx->usb_devContext);
 
 #if CY_APP_USB_HID_INTF_ENABLE
     /* Initialize the HID class */
-    Cy_USB_Dev_HID_Init(glUsbInitCtx->hidConfig, glUsbInitCtx->usb_hidContext, glUsbInitCtx->usb_devContext);
+    (void)Cy_USB_Dev_HID_Init(glUsbInitCtx->hidConfig, glUsbInitCtx->usb_hidContext, glUsbInitCtx->usb_devContext);
 
     Cy_USB_Dev_HID_RegisterGetReportCallback(glUsbInitCtx->getReportCallback, glUsbInitCtx->usb_hidContext);
     Cy_USB_Dev_HID_RegisterSetReportCallback(glUsbInitCtx->setReportCallback, glUsbInitCtx->usb_hidContext);
 #endif /* CY_APP_USB_HID_INTF_ENABLE */
 
     /* Initialize the USB interrupts */
-    Cy_SysInt_Init(&usb_high_interrupt_cfg,   &usb_high_isr);
-    Cy_SysInt_Init(&usb_medium_interrupt_cfg, &usb_medium_isr);
-    Cy_SysInt_Init(&usb_low_interrupt_cfg,    &usb_low_isr);
+    (void)Cy_SysInt_Init(&usb_high_interrupt_cfg,   &usb_high_isr);
+    (void)Cy_SysInt_Init(&usb_medium_interrupt_cfg, &usb_medium_isr);
+    (void)Cy_SysInt_Init(&usb_low_interrupt_cfg,    &usb_low_isr);
 
     /* Enable the USB interrupts */
     NVIC_EnableIRQ(usb_high_interrupt_cfg.intrSrc);
@@ -143,26 +163,26 @@ void Cy_App_Usb_Init (cy_stc_usb_init_ctxt_t *usbInitCtx)
 
 bool Cy_App_Usb_IsIdle (void)
 {
-    static uint8_t debounce = 0;
+    static uint8_t debounce = 0u;
     
     if (glUsbInitCtx->usb_devContext->state == CY_USB_DEV_DISABLED)
     {
         return true;
     }
 
-    if (0U == Cy_USBFS_Dev_Drv_CheckActivity(glUsbInitCtx->base))
+    if (false == Cy_USBFS_Dev_Drv_CheckActivity(glUsbInitCtx->base))
     {
         debounce ++;
 
-        if (debounce >= 6)
+        if (debounce >= 6u)
         {
-            debounce = 0;
+            debounce = 0u;
             return true;
         }
     }
     else
     {
-        debounce = 0;
+        debounce = 0u;
     }
 
     return false;
@@ -195,7 +215,7 @@ void Cy_App_Usb_Enable (void)
     /* Makes device appear on the bus. This function call is blocked,
      * till the device enumerates.
      */
-    Cy_USB_Dev_Connect(false, 1, glUsbInitCtx->usb_devContext);
+    (void)Cy_USB_Dev_Connect(false, 1, glUsbInitCtx->usb_devContext);
 
     Cy_USB_Dev_RegisterVendorCallbacks(&Cy_App_Usb_VendorReqReceived, &Cy_App_Usb_VendorReqCompleted, glUsbInitCtx->usb_devContext);
 }
@@ -213,11 +233,13 @@ void Cy_App_Usb_GetEp0State(void)
     switch (USB_drv_context->ep0CtrlState)
     {
         case CY_USBFS_DEV_DRV_EP0_CTRL_STATE_IDLE:
-                gl_usb.ep0_state = CY_APP_USB_EP0_STATE_DISABLED;
+            gl_usb.ep0_state = CY_APP_USB_EP0_STATE_DISABLED;
             break;
+
         case CY_USBFS_DEV_DRV_EP0_CTRL_STATE_SETUP:
-                gl_usb.ep0_state = CY_APP_USB_EP0_STATE_SETUP;
+            gl_usb.ep0_state = CY_APP_USB_EP0_STATE_SETUP;
             break;
+
         case CY_USBFS_DEV_DRV_EP0_CTRL_STATE_DATA:
             if(transfer->direction == CY_USB_DEV_DIR_DEVICE_TO_HOST)
             {
@@ -227,14 +249,18 @@ void Cy_App_Usb_GetEp0State(void)
                 gl_usb.ep0_state = CY_APP_USB_EP0_STATE_DATA_OUT;
             }
             break;
+
         case CY_USBFS_DEV_DRV_EP0_CTRL_STATE_STATUS_IN:
-                gl_usb.ep0_state = CY_APP_USB_EP0_STATE_STATUS_IN;
+            gl_usb.ep0_state = CY_APP_USB_EP0_STATE_STATUS_IN;
             break;
+
         case CY_USBFS_DEV_DRV_EP0_CTRL_STATE_STATUS_OUT:
-                gl_usb.ep0_state = CY_APP_USB_EP0_STATE_STATUS_OUT;
+            gl_usb.ep0_state = CY_APP_USB_EP0_STATE_STATUS_OUT;
             break;
+
         default:
-                gl_usb.ep0_state = CY_APP_USB_EP0_STATE_STALL;
+            gl_usb.ep0_state = CY_APP_USB_EP0_STATE_STALL;
+            break;    
     }
 }
 
@@ -263,14 +289,14 @@ cy_en_usb_dev_status_t Cy_App_Usb_Ep0SetupWrite(uint8_t *data, uint16_t length, 
     transfer->ptr = (uint8_t *)data;
     transfer->remaining = length;
 
-    if(length == 0)
+    if(length == 0u)
     {
         transfer->zlp = true;
     }
 
     gl_usb.ep0_xfer_cb = cb;
 
-    (void) last;
+    CY_UNUSED_PARAMETER(last);
     return CY_USB_DEV_SUCCESS;
 }
 
@@ -279,7 +305,7 @@ cy_en_usb_dev_status_t Cy_App_Usb_Ep0SetupRead(uint8_t *data, uint16_t length, c
     cy_stc_usb_dev_control_transfer_t *transfer = &glUsbInitCtx->usb_devContext->ControlTransfer;
 
     /* All read should be multiple of EP0 size. */
-    if ((data == NULL) || ((length & (USB_EP0_SIZE - 1)) != 0))
+    if ((data == NULL) || ((length & (USB_EP0_SIZE - 1u)) != 0u))
     {
         return CY_USB_DEV_BAD_PARAM;
     }
@@ -324,7 +350,7 @@ cy_en_usb_dev_status_t Cy_App_Usb_WriteSingle(cy_app_usb_ep_index_t ep_index, ui
     uint8_t len;
 
     /* Send status functions which are always <64B. If it is changed, multiple writes occurs.*/
-    len = CY_PDUTILS_GET_MIN(64, count);
+    len = CY_PDUTILS_GET_MIN(64u, count);
 
     status = Cy_USB_Dev_WriteEpNonBlocking(ep_index, data, len, glUsbInitCtx->usb_devContext);
     if (status != CY_USB_DEV_SUCCESS)
@@ -348,7 +374,7 @@ cy_en_usb_dev_status_t Cy_App_Usb_ReadSingle(cy_app_usb_ep_index_t ep_index, uin
     if (ep_state == CY_USB_DEV_EP_COMPLETED)
     {
         len = Cy_USB_Dev_GetEpNumToRead(ep_index, glUsbInitCtx->usb_devContext);
-        status = Cy_USB_Dev_ReadEpNonBlocking(ep_index, data, len, &readLen,glUsbInitCtx->usb_devContext);
+        status = Cy_USB_Dev_ReadEpNonBlocking(ep_index, data, len, &readLen, glUsbInitCtx->usb_devContext);
 
         if (status != CY_USB_DEV_SUCCESS)
         {
@@ -356,7 +382,7 @@ cy_en_usb_dev_status_t Cy_App_Usb_ReadSingle(cy_app_usb_ep_index_t ep_index, uin
         }
         else
         {
-            *count = readLen;
+            *count = (uint8_t)readLen;
         }
     }
     return status;
@@ -395,7 +421,7 @@ cy_en_usb_dev_status_t Cy_App_Usb_ReceiveData(cy_app_usb_ep_index_t ep_index, ui
 {
     cy_en_usb_dev_status_t status = CY_USB_DEV_REQUEST_NOT_HANDLED;
 
-    *recd_bytes = 0;
+    *recd_bytes = 0u;
 
     /* This is the first state. Wait for the USB data. */
     if (Cy_App_Usb_IsEpReady(ep_index) == true)
@@ -420,14 +446,14 @@ cy_en_usb_dev_status_t Cy_App_Usb_VendorReqReceived (cy_stc_usb_dev_control_tran
     {  
 #if CY_APP_FLASH_LOG_ENABLE
         /** Application handling */
-        if(transfer->setup.bRequest == CY_APP_DMC_VDR_RQT_RETRIEVE_FLASH_LOG)
+        if(transfer->setup.bRequest == (uint8_t)CY_APP_DMC_VDR_RQT_RETRIEVE_FLASH_LOG)
         {
             uint8_t *ptr = Cy_App_Usb_GetEp0Buffer();
             cy_stc_app_flash_log_t *flash_log_ptr;
             flash_log_ptr = Cy_App_Debug_FlashReadLogs();
             if(flash_log_ptr != NULL)
             {
-                memcpy(ptr, (uint8_t *)flash_log_ptr, CY_APP_DEBUG_FLASH_LOG_SIZE);
+                (void)memcpy(ptr, (uint8_t *)flash_log_ptr, CY_APP_DEBUG_FLASH_LOG_SIZE);
                 status = Cy_App_Usb_Ep0SetupWrite(ptr, CY_APP_DEBUG_FLASH_LOG_SIZE, true, NULL);
             }
 
@@ -440,8 +466,8 @@ cy_en_usb_dev_status_t Cy_App_Usb_VendorReqReceived (cy_stc_usb_dev_control_tran
         }
     }
 
-    (void) classContext;
-    (void) devContext;
+    CY_UNUSED_PARAMETER(classContext);
+    CY_UNUSED_PARAMETER(devContext);
     return status;
 }
 
@@ -455,15 +481,15 @@ cy_en_usb_dev_status_t Cy_App_Usb_VendorReqCompleted (cy_stc_usb_dev_control_tra
 {
     cy_en_usb_dev_status_t status = CY_USB_DEV_REQUEST_NOT_HANDLED;
 
-    memcpy(gl_usb.ep0_buffer, transfer->ptr, gl_usb.ep0_length);
+    (void)memcpy(gl_usb.ep0_buffer, transfer->ptr, gl_usb.ep0_length);
 
     if (gl_usb.ep0_xfer_cb != NULL)
     {
         status = gl_usb.ep0_xfer_cb(transfer);
     }
 
-    (void) classContext;
-    (void) devContext;
+    CY_UNUSED_PARAMETER(classContext);
+    CY_UNUSED_PARAMETER(devContext);
     return status;
 }
 

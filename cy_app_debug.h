@@ -1,21 +1,42 @@
 /***************************************************************************//**
 * \file cy_app_debug.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines APIs and macros for the debug module
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_DEBUG_H_
-#define _CY_APP_DEBUG_H_
+#ifndef CY_APP_DEBUG_H
+#define CY_APP_DEBUG_H
 
 #include "cy_pdutils_sw_timer.h"
 
@@ -121,7 +142,7 @@
 typedef enum
 {
     /** Opcode for logging UART structure version information */
-    CY_APP_DEBUG_STRUCTURE_VERSION = 0x00,
+    CY_APP_DEBUG_STRUCTURE_VERSION = 0x00u,
 
     /** Opcode for logging watchdog reset */
     CY_APP_DEBUG_WDT,
@@ -136,7 +157,7 @@ typedef enum
     CY_APP_DEBUG_VDDD_BROWN_OUT_FAULT,
 
     /** Opcode for logging firmware update failures */
-    CY_APP_DEBUG_FW_UPD_FAILURE = 0x20,
+    CY_APP_DEBUG_FW_UPD_FAILURE = 0x20u,
     
     /** Opcode for logging count of Phase 1 authentication failures */
     CY_APP_DEBUG_FW_UPD_P1_AUTH_FAILURE,
@@ -151,7 +172,7 @@ typedef enum
     CY_APP_DEBUG_HPI_EVENT,
 
     /** Opcode for logging VBUS OV corresponding to port 0 */
-    CY_APP_DEBUG_PD_P0_VBUS_OV = 0x80,
+    CY_APP_DEBUG_PD_P0_VBUS_OV = 0x80u,
 
     /** Opcode for logging VBUS UV corresponding to port 0 */
     CY_APP_DEBUG_PD_P0_VBUS_UV,
@@ -208,7 +229,7 @@ typedef enum
     CY_APP_DEBUG_PD_P0_PORT_DISABLE,
 
     /** Opcode for logging VBUS OV corresponding to port 1 */
-    CY_APP_DEBUG_PD_P1_VBUS_OV = 0xC0,
+    CY_APP_DEBUG_PD_P1_VBUS_OV = 0xC0u,
     
     /** Opcode for logging VBUS UV corresponding to port 1 */
     CY_APP_DEBUG_PD_P1_VBUS_UV,
@@ -265,7 +286,7 @@ typedef enum
     CY_APP_DEBUG_PD_P1_PORT_DISABLE,
 
     /** Opcode to trace start of Phase 2 update */
-    CY_APP_DEBUG_FW_UPD_PHASE2_START = 0x100,
+    CY_APP_DEBUG_FW_UPD_PHASE2_START = 0x100u,
     
     /** Opcode to trace authentication success */
     CY_APP_DEBUG_FW_UPD_PHASE2_AUTH_SUCCESS,
@@ -315,6 +336,9 @@ typedef enum
     /** Opcode for sending currently running App ID */
     CY_APP_DEBUG_CURRENT_RUNNING_APP,
 
+    /** Opcode for sending debug prints related to Hx2G3 */
+    CY_APP_DEBUG_HX2G3_UPDATE,
+
 }cy_en_debug_opcodes_t;
 
 /** Enumeration defining the UART debug log levels */
@@ -338,7 +362,7 @@ typedef enum
 typedef enum
 {
     /** Failure is caused by the I2C interface */
-    CY_APP_DEBUG_SCB_I2C = 0x00,
+    CY_APP_DEBUG_SCB_I2C = 0x00u,
 
     /** Failure is caused by the SPI Interface */
     CY_APP_DEBUG_SCB_SPI,
@@ -355,7 +379,7 @@ typedef enum
 typedef enum
 {
     /** SCB failure occurs during read operation */
-    CY_APP_DEBUG_SCB_READ = 0x00,
+    CY_APP_DEBUG_SCB_READ = 0x00u,
 
     /** SCB failure occurs during write operation */
     CY_APP_DEBUG_SCB_WRITE,
@@ -369,7 +393,7 @@ typedef enum
 typedef enum
 {
     /** Operation successful */
-    CY_APP_DEBUG_STAT_SUCCESS = 0x00,
+    CY_APP_DEBUG_STAT_SUCCESS = 0x00u,
 
     /** Not ready for operation */
     CY_APP_DEBUG_STAT_NOT_READY,
@@ -517,6 +541,6 @@ CySCB_Type * Cy_App_Debug_GetScbBaseAddr(void);
 #define CY_APP_DEBUG_LOG(port, evt, data, data_size, log_level, is_std)   NULL
 #endif /* (CY_APP_DEBUG_ENABLE || DOXYGEN) */
 
-#endif /* _CY_APP_DEBUG_H_ */
+#endif /* CY_APP_DEBUG_H */
 
 /* [] END OF FILE */

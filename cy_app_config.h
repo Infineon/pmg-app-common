@@ -1,21 +1,42 @@
 /***************************************************************************//**
 * \file cy_app_config.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Defines the pmg-app-common configurations
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_CONFIG_H_
-#define _CY_APP_CONFIG_H_
+#ifndef CY_APP_CONFIG_H
+#define CY_APP_CONFIG_H
 
 #include "cy_scb_i2c.h"
 
@@ -28,6 +49,13 @@
 * \addtogroup group_pmg_app_common_app_features
 * \{
 */
+
+#ifndef DOXYGEN
+/** Expose conditionally compiled API to be discoverable by Doxygen.
+ *  Doxygen defines this macro when analyses sources.
+ */
+#define DOXYGEN                                                 (0u)
+#endif /* DOXYGEN */
 
 #ifndef CY_APP_ROLE_PREFERENCE_ENABLE
 /** Power and Data Role preference control enable. If this option is disabled, 
@@ -76,6 +104,10 @@
 #define CCG_SRC_FET                                             (0u)
 #endif /* CCG_SRC_FET */
 
+#ifndef CY_APP_EXTD_MSG_HANDLER_ENABLE
+#define CY_APP_EXTD_MSG_HANDLER_ENABLE                         (0u)
+#endif /* CY_APP_EXTD_MSG_HANDLER_ENABLE */
+
 /** VBUS PGDO FET control selection based on the FET control pin used in the
  * system hardware */
 #if defined(CY_DEVICE_CCG3PA)
@@ -100,6 +132,18 @@
 #define CY_APP_USB_ENABLE                                       (0u)
 #endif /* CY_APP_USB_ENABLE */
 
+#ifndef CCG_BB_ENABLE
+/** Enable/disable the Billboard USB feature at the application level. 
+ * If the USB feature is disabled CCG_BB_ENABLE shall be also disabled. */
+#define CCG_BB_ENABLE                                           (0u)
+#endif /* CCG_BB_ENABLE */
+
+#ifndef CY_APP_USB_HID_INTF_ENABLE
+/** Enable/disable the HID USB feature at the application level.
+ * If the USB feature is disabled CY_APP_USB_HID_INTF_ENABLE shall be also disabled. */
+#define CY_APP_USB_HID_INTF_ENABLE                              (0u)
+#endif /* CY_APP_USB_HID_INTF_ENABLE */
+
 #ifndef CY_APP_PD_USB4_SUPPORT_ENABLE
 /** Enable/disable the USB4 support feature at the application level */
 #define CY_APP_PD_USB4_SUPPORT_ENABLE                           (0u)
@@ -109,6 +153,21 @@
 /** This macro should be set to '1' if consumer path is controlled by GPIO */
 #define CY_APP_SINK_FET_CTRL_GPIO_EN                            (0u)
 #endif /* CY_APP_SINK_FET_CTRL_GPIO_EN */
+
+/** Number of swap attempts to be made when port partner is sending a WAIT response. */
+#ifndef CY_APP_MAX_SWAP_ATTEMPT_COUNT
+#define CY_APP_MAX_SWAP_ATTEMPT_COUNT                           (10u)
+#endif /* CY_APP_MAX_SWAP_ATTEMPT_COUNT */
+
+/** Override value for the maximum current in RDO. */
+#ifndef RDO_MAXCUR_OVERRIDE
+#define RDO_MAXCUR_OVERRIDE                                     (0u)
+#endif /* RDO_MAXCUR_OVERRIDE */
+
+/** Enables or disables bi-directional buck-boost opertaions with external switches in PMG1B1. */
+#ifndef PMG1B1_BI_DIRECTION
+#define PMG1B1_BI_DIRECTION                                     (0u)
+#endif /* PMG1B1_BI_DIRECTION */
 
 /*******************************************************************************
  * VBUS monitor configuration
@@ -144,6 +203,21 @@
 #ifndef CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE
 #define CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE                      (0u)
 #endif /* CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE */
+
+#ifndef VBUS_OPP_ENABLE
+/** Set to '1' to enable over power protection */
+#define VBUS_OPP_ENABLE                                         (0u)
+#endif /* VBUS_OPP_ENABLE */
+
+#ifndef CY_APP_USE_EXTERNAL_CURRENT_MON
+/** Set to '1' to use external current monitor, to detect OCP on Type-C VBUS */
+#define CY_APP_USE_EXTERNAL_CURRENT_MON                         (0u)
+#endif /* CY_APP_USE_EXTERNAL_CURRENT_MON */
+
+#ifndef CY_APP_POWER_ON_UPDATE_SUPPORT
+/** Set to '1' to keep track of power on firmware update status */
+#define CY_APP_POWER_ON_UPDATE_SUPPORT                          (0u)
+#endif /* CY_APP_POWER_ON_UPDATE_SUPPORT */
 
 /*******************************************************************************
  * Firmware feature configuration
@@ -191,10 +265,30 @@
 #define CY_APP_MOISTURE_DETECT_USING_DP_DM                      (0u)
 #endif /* CY_APP_MOISTURE_DETECT_USING_DP_DM */
 
+#ifndef CY_APP_BB_DISABLE_SUPPORT
+/** Set this to 1 to support turn-off billboard interface. */
+#define CY_APP_BB_DISABLE_SUPPORT                               (0u)
+#endif /* CY_APP_BB_DISABLE_SUPPORT */
+
+#ifndef CCG_SROM_CODE_ENABLE
+/** Set this to 1 to support CCG ROM code. */
+#define CCG_SROM_CODE_ENABLE                                    (0u)
+#endif /* CCG_SROM_CODE_ENABLE */
+
+#ifndef CY_APP_SILICON_ID
+/** Set this to 1 to support reading of Silicon ID and Silicon revision. */
+#define CY_APP_SILICON_ID                                       (0u)
+#endif /* CY_APP_SILICON_ID */
+
 /*******************************************************************************
  * Battery Charging configuration
  ******************************************************************************/
-#if CCG_TYPE_A_PORT_ENABLE
+#ifndef CCG_TYPE_A_PORT_ENABLE
+/** Set this to 1 to enable legacy charging using type A port */
+#define CCG_TYPE_A_PORT_ENABLE                                  (0u)
+#endif /* CCG_TYPE_A_PORT_ENABLE */
+
+ #if CCG_TYPE_A_PORT_ENABLE
 /** TYPE-A port ID. */
 #define TYPE_A_PORT_ID                                          (1u)
 #endif /* CCG_TYPE_A_PORT_ENABLE */
@@ -224,40 +318,57 @@
 /** @cond DOXYGEN_HIDE */
 #define CySoftwareReset()                                       NVIC_SystemReset()
 
+#ifndef CY_APP_RIDGE_SLAVE_I2C_HW
+#define CY_APP_RIDGE_SLAVE_I2C_HW                               SCB1
+#endif /* CY_APP_RIDGE_SLAVE_I2C_HW */
+
 #ifndef CY_APP_HPI_I2C_HW
 #define CY_APP_HPI_I2C_HW                                       SCB5
 #endif /* CY_APP_HPI_I2C_HW */
+
+#ifndef CY_APP_DEBUG_UART_TX_PORT
+#define CY_APP_DEBUG_UART_TX_PORT                               GPIO_PRT5
+#endif /* CY_APP_DEBUG_UART_TX_PORT */
+
+#ifndef CY_APP_DEBUG_UART_TX_PIN
+#define CY_APP_DEBUG_UART_TX_PIN                                1U
+#endif /* CY_APP_DEBUG_UART_TX_PIN */
+
+#ifndef CY_APP_DEBUG_UART_TX_HSIOM
+#define CY_APP_DEBUG_UART_TX_HSIOM                              P5_1_SCB2_UART_TX
+#endif /* CY_APP_DEBUG_UART_TX_HSIOM */
+
 /** @endcond */
 
 #ifndef CY_APP_FLASH_LOG_ROW_NUM
 /** Flash address row number where the logs are stored */
-#define CY_APP_FLASH_LOG_ROW_NUM                                (0x3F5)
+#define CY_APP_FLASH_LOG_ROW_NUM                                (0x3F5u)
 #endif /* CY_APP_FLASH_LOG_ROW_NUM */
 
 #ifndef CY_APP_FLASH_LOG_BACKUP_ROW_NUM
 /** Flash address row number where a redundant copy of the logs are stored */
-#define CY_APP_FLASH_LOG_BACKUP_ROW_NUM                         (0x3F7)
+#define CY_APP_FLASH_LOG_BACKUP_ROW_NUM                         (0x3F7u)
 #endif /* CY_APP_FLASH_LOG_BACKUP_ROW_NUM */
 
 #ifndef CY_APP_FW1_CONFTABLE_MAX_ADDR 
 /** Flash address within which the FW1's configuration table address is 
  * located */
-#define CY_APP_FW1_CONFTABLE_MAX_ADDR                           (0x8000)
+#define CY_APP_FW1_CONFTABLE_MAX_ADDR                           (0x8000u)
 #endif /* CY_APP_FW1_CONFTABLE_MAX_ADDR  */
 
 #ifndef CY_APP_BOOT_LOADER_LAST_ROW
 /** Last flash row number of the bootloader image space */
-#define CY_APP_BOOT_LOADER_LAST_ROW                             (0x0F)
+#define CY_APP_BOOT_LOADER_LAST_ROW                             (0x0Fu)
 #endif /* CY_APP_BOOT_LOADER_LAST_ROW */
 
 #ifndef CY_APP_IMG1_LAST_FLASH_ROW_NUM
 /** Last flash row number of FW1 image  */
-#define CY_APP_IMG1_LAST_FLASH_ROW_NUM                          (0x010F)
+#define CY_APP_IMG1_LAST_FLASH_ROW_NUM                          (0x010Fu)
 #endif /* CY_APP_IMG1_LAST_FLASH_ROW_NUM */
 
 #ifndef CY_APP_IMG2_LAST_FLASH_ROW_NUM
 /** Last flash row number of FW2 image  */
-#define CY_APP_IMG2_LAST_FLASH_ROW_NUM                          (0x3EF)
+#define CY_APP_IMG2_LAST_FLASH_ROW_NUM                          (0x3EFu)
 #endif /* CY_APP_IMG2_LAST_FLASH_ROW_NUM */
 
 #ifndef CY_APP_UART_DEBUG_ENABLE
@@ -321,6 +432,16 @@
 #define CY_APP_SMART_POWER_ENABLE                               (0u)
 #endif /* CY_APP_SMART_POWER_ENABLE */
 
+#ifndef CY_APP_I2CM_BRIDGE_ENABLE
+/** Enable/disable I2C-Master Bridge */
+#define CY_APP_I2CM_BRIDGE_ENABLE                               (0u)
+#endif /* CY_APP_I2CM_BRIDGE_ENABLE */
+
+#ifndef CY_APP_FLASHING_MODE_USB_ENABLE
+/** Enable/disable USB flashing mode */
+#define CY_APP_FLASHING_MODE_USB_ENABLE                         (0u)
+#endif /* CY_APP_FLASHING_MODE_USB_ENABLE */
+
 #if CY_APP_DMC_ENABLE
 
 #ifndef CY_APP_DEBUG_PULLUP_ON_UART
@@ -374,15 +495,20 @@
 #define CY_APP_BOOT_WAIT_WINDOW_DISABLE                         (0u)
 #endif /* CY_APP_BOOT_WAIT_WINDOW_DISABLE */
 
-#ifndef CY_APP_FLASH_ENABLE_NB_MODE
-/** Set to '1' to enable the flash operation in non-blocking mode */
-#define CY_APP_FLASH_ENABLE_NB_MODE                             (0u)
-#endif /* CY_APP_FLASH_ENABLE_NB_MODE */
+#ifndef CY_PD_BAT_STATUS_HANDLER_ENABLE
+/** Set to '1' to enable the battery status handler */
+#define CY_PD_BAT_STATUS_HANDLER_ENABLE                         (0u)
+#endif /* CY_PD_BAT_STATUS_HANDLER_ENABLE */
 
-#ifndef CY_APP_DUALAPP_DISABLE
-/** Macro enable/disable the dual application architecture */
-#define CY_APP_DUALAPP_DISABLE                                  (0u)
-#endif /* CY_APP_DUALAPP_DISABLE */
+#ifndef CY_PD_BAT_CAPS_HANDLER_ENABLE
+/** Set to '1' to enable the battery capabilities handler */
+#define CY_PD_BAT_CAPS_HANDLER_ENABLE                           (0u)
+#endif /* CY_PD_BAT_CAPS_HANDLER_ENABLE */
+
+#ifndef CY_APP_RW_PD_RESP_MSG_DATA
+/** Set to '1' to enable the read/write PD response message data */
+#define CY_APP_RW_PD_RESP_MSG_DATA                              (0u)
+#endif /* CY_APP_RW_PD_RESP_MSG_DATA */
 
 #ifndef CY_APP_BOOT_ENABLE
 /** Set to '1' to enable the boot features */
@@ -396,14 +522,41 @@
 
 #endif /* CY_APP_DMC_ENABLE */
 
+#ifndef CY_APP_DUALAPP_DISABLE
+/** Macro enable/disable the dual application architecture */
+#define CY_APP_DUALAPP_DISABLE                                  (0u)
+#endif /* CY_APP_DUALAPP_DISABLE */
+
 #ifndef CY_APP_RTOS_ENABLED
 /** Set '1' to enable the RTOS support. */
-#define CY_APP_RTOS_ENABLED                                        (0u)
+#define CY_APP_RTOS_ENABLED                                     (0u)
 #endif /* CY-APP_RTOS_ENABLED */
 
+#if CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE
+
+#ifndef EPR_PERCENTAGE
+/** Set '100' to calculate percentage */
+#define EPR_PERCENTAGE                                          (100u)
+#endif /* EPR_PERCENTAGE */
+
+#ifndef EPR_MAX_VOLTAGE_DIV_RATIO
+/** Set '50' for VBUS divider ration for EPR high voltage */
+#define EPR_MAX_VOLTAGE_DIV_RATIO                               (50u)
+#endif /* EPR_PERCENTAGE */
+
+#ifndef EPR_MAX_VOLTAGE_FET_VGS_MIN_THRESHOLD_IN_MILLI_VOLT
+/** Set '1.1V' as the minimum VGS threshold for the FET */
+#define EPR_MAX_VOLTAGE_FET_VGS_MIN_THRESHOLD_IN_MILLI_VOLT     (1100u)
+#endif /* EPR_MAX_VOLTAGE_FET_VGS_MIN_THRESHOLD_IN_MILLI_VOLT */
+
+#ifndef EPR_MAX_VBUS_DIV_OFF_MARGIN_IN_MILLI
+/** Set '500' mV offset to check if VBUS is above requested voltage */
+#define EPR_MAX_VBUS_DIV_OFF_MARGIN_IN_MILLI                    (500u)
+#endif /* EPR_MAX_VBUS_DIV_OFF_MARGIN_IN_MILLI */
+#endif /* CY_APP_VBUS_EPR_MAX_VOLTAGE_ENABLE */
 /** \} group_pmg_app_common_app_features */
 /** \} group_pmg_app_common_app */
 
-#endif /* _CY_APP_CONFIG_H_ */
+#endif /* CY_APP_CONFIG_H */
 
 /* [] End of file */

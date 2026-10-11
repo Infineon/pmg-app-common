@@ -1,21 +1,42 @@
 /***************************************************************************//**
 * \file cy_app_timer_id.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Provides application software timer identifier definitions
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_TIMER_ID_H_
-#define _CY_APP_TIMER_ID_H_
+#ifndef CY_APP_TIMER_ID_H
+#define CY_APP_TIMER_ID_H
 
 #include <stdint.h>
 
@@ -167,8 +188,8 @@ typedef enum {
     CY_APP_THROTTLE_WAIT_FOR_PD_TIMER_ID,
     /**< Power throttling timer ID */
 
-    CY_APP_RESERVED_TIMER_ID,
-    /**< Timer ID reserved for future use */
+    CY_APP_SINK_REQUEST_TIMER_ID,
+    /**< Timer to repeat sending Request after Wait */
 
     CY_APP_LINS_BUS_INACTIVE_TIMER,
     /**< Bus inactivity timeout for LIN */
@@ -236,12 +257,23 @@ typedef enum {
     CY_APP_FXVL_UPD_TIMER,
     /**< Foxville update timer ID */
 
-    CY_APP_FXVL_SMBUS_TIMER
+    CY_APP_FXVL_SMBUS_TIMER,
     /**< Foxville SM BUS timer ID */
 
+    CY_APP_BR_RIDGE_UPDATE_AFTER_ATTACH_WAIT_TIMER,
+    /**< 50mS DFP Debounce timer ID for Barlow Ridge based docks. */
+
+    CY_APP_VBUS_DIV_TURN_OFF_TIMER,
+    /**< For EPR Max Voltages divider will be enabled, for SPR this timer is used until VBUS enter SPR range. */
+
+    CY_APP_HX2G3_APPL_TIMER,
+    /**< Wait duration for hx2g3 update activities */
+
+    CY_APP_PSRC_VOUTBB_RCP_DELAY_TIMER_ID
+    /**< Timer used for providing delay for VoutBB RCP enable. */
 } cy_en_timer_id_t;
 
 /** \} group_pmg_app_common_app_enums */
-#endif /* _CY_APP_TIMER_ID_H_ */
+#endif /* CY_APP_TIMER_ID_H */
 
 /* [] End of file */

@@ -34,7 +34,6 @@ var group__group__pmg__app__common__app__macros =
     [ "CY_APP_PSOURCE_EPR_EN_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#gac89fa59a318f5fd8d7d6d34cf9699d63", null ],
     [ "CY_APP_EPR_SNK_ENTRY_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#ga2cd190a080e82e2ad13406d0f25aa216", null ],
     [ "CY_APP_ADC_VBUS_MIN_OVP_LEVEL", "group__group__pmg__app__common__app__macros.html#ga65004669ea1c4df9e96984eafb85147f", null ],
-    [ "CY_APP_MAX_SWAP_ATTEMPT_COUNT", "group__group__pmg__app__common__app__macros.html#ga9924a6ded77d4f253a5d9d483ee04b9f", null ],
     [ "CY_APP_PSOURCE_CF_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#ga38d9f6ada7010ee063950a48ac0cb2a4", null ],
     [ "CY_APP_PSOURCE_DIS_EXT_DIS_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#ga29606b78458df35cffc0ca73ec687b52", null ],
     [ "CY_APP_PSINK_DIS_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#ga8baf8799d4be6b1f27e0c11e436c4efe", null ],
@@ -58,5 +57,10 @@ var group__group__pmg__app__common__app__macros =
     [ "CY_APP_DATA_RESET_FAIL_TIMEOUT", "group__group__pmg__app__common__app__macros.html#gaf0ae13b82e80a8ca951253d7d46fa1a9", null ],
     [ "CY_APP_MOISTURE_DETECT_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#gaf3ac18d88196227649656da6a6227a85", null ],
     [ "CCG_ACTIVITY_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#ga2cab124e91cc9acc71c6f7adb9038cf3", null ],
-    [ "CY_APP_MIN_PD_SPEC_VERSION_FOR_EXTD_ALERT_SUPPORT", "group__group__pmg__app__common__app__macros.html#gafbc092fa228181ee9875bc716ff6a425", null ]
+    [ "CY_APP_MIN_PD_SPEC_VERSION_FOR_EXTD_ALERT_SUPPORT", "group__group__pmg__app__common__app__macros.html#gafbc092fa228181ee9875bc716ff6a425", null ],
+    [ "CY_APP_RIDGE_UPDATE_CC_DEBOUNCE_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#ga736c162f1bd3ea90e76a4a5af78738f8", null ],
+    [ "CY_APP_IS_VBUSON_ON_HR_SENT_RCVD_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#gaf4f33dbed4b2238e05c9ce660ff7c6f0", null ],
+    [ "CY_APP_VBUS_DIV_TURN_OFF_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#gab94f64a2532f9391563e2db0b8851ac7", null ],
+    [ "CY_APP_SINK_REQUEST_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#gaef3d729b55134cea259c84d0691d22cb", null ],
+    [ "CY_APP_PSRC_VOUTBB_RCP_DELAY_TIMER_PERIOD", "group__group__pmg__app__common__app__macros.html#gaab60d516a5d57af13dc7c85774495f67", null ]
 ];

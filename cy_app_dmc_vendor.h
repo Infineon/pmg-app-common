@@ -1,21 +1,42 @@
 /***************************************************************************//**
 * \file cy_app_dmc_vendor.h
-* \version 2.0
+* \version 3.0
 *
 * \brief
 * Implements the DMC USB vendor interfaces
 *
 ********************************************************************************
 * \copyright
-* Copyright 2024, Cypress Semiconductor Corporation (an Infineon company)
-* or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
-* You may use this file only in accordance with the license, terms, conditions,
-* disclaimers, and limitations in the end user license agreement accompanying
-* the software package with which this file was provided.
+* Copyright(c) 2024-2026, Infineon Technologies AG, or an affiliate of Infineon
+* Technologies AG. All rights reserved.
+* This software, associated documentation and materials ("Software") is owned
+* by Infineon Technologies AG or one of its affiliates ("Infineon") and is
+* protected by and subject to worldwide patent protection, worldwide copyright
+* laws, and international treaty provisions. Therefore, you may use this
+* Software only as provided in the license agreement accompanying the software
+* package from which you obtained this Software. If no license agreement
+* applies, then any use, reproduction, modification, translation, or
+* compilation of this Software is prohibited without the express written
+* permission of Infineon.
+* Disclaimer: UNLESS OTHERWISE EXPRESSLY AGREED WITH INFINEON, THIS SOFTWARE IS 
+* PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING, 
+* BUT NOT LIMITED TO, ALL WARRANTIES OF NON-INFRINGEMENT OF THIRD-PARTY RIGHTS 
+* AND IMPLIED WARRANTIES SUCH AS WARRANTIES OF FITNESS FOR A SPECIFIC 
+* USE/PURPOSE OR MERCHANTABILITY. Infineon reserves the right to make changes
+* to the Software without notice. You are responsible for properly designing,
+* programming, and testing the functionality and safety of your intended 
+* application of the Software, as well as complying with any legal requirements
+* related to its use. Infineon does not guarantee that the Software will be 
+* free from intrusion, data theft or loss, or other breaches ("Security 
+* Breaches"), and Infineon shall have no liability arising out of any Security
+* Breaches. Unless otherwise explicitly approved by Infineon, the Software may
+* not be used in any application where a failure of the Product or any 
+* consequences of the use thereof can reasonably be expected to result in
+* personal injury.
 *******************************************************************************/
 
-#ifndef _CY_APP_DMC_VENDOR_H_
-#define _CY_APP_DMC_VENDOR_H_
+#ifndef CY_APP_DMC_VENDOR_H
+#define CY_APP_DMC_VENDOR_H
 
 #if (CY_APP_DMC_ENABLE || DOXYGEN)
 #include "cy_usb_dev.h"
@@ -38,7 +59,7 @@
  */
 typedef enum
 {
-    CY_APP_DMC_VDR_RQT_UPGRADE_START = 0xD0,   /**< Firmware upgrade start. Also send ECDSA signature
+    CY_APP_DMC_VDR_RQT_UPGRADE_START = 0xD0u,   /**< Firmware upgrade start. Also send ECDSA signature
                                               in case of signed FW update>
                                               CMD_CODE: 0xD0
                                               VALUE:
@@ -50,7 +71,7 @@ typedef enum
                                               EP0 DATA: None. In case of non-signed update.
                                                       : ECDSA Signature; in case of signed update.
                                         */
-    CY_APP_DMC_VDR_RQT_FWCT_WRITE = 0xD2,       /**< FWCT Write >
+    CY_APP_DMC_VDR_RQT_FWCT_WRITE = 0xD2u,       /**< FWCT Write >
                                               CMD_CODE: 0xD2
                                               VALUE: 0
                                               INDEX: 0.
@@ -134,21 +155,21 @@ typedef enum
                                               Reserved - Not implemented
                                         */
 #if (CY_APP_USR_DEFINED_SN_SUPPORT)
-    CY_APP_DMC_VDR_RQT_SN_UPDATE,              /**< Update the user provided serial number in HX3 >
+    CY_APP_DMC_VDR_RQT_SN_UPDATE,              /**< Update the user provided serial number in DMC >
                                               CMD_CODE: 0xD9
                                               VALUE: 0
                                               INDEX: 0
                                               LENGTH: Length of the serial number(SN) in bytes
                                         */
 #endif /* CY_APP_USR_DEFINED_SN_SUPPORT */
-    CY_APP_DMC_VDR_RQT_TRIGGER_PHASE2_UPDATE = 0xDA,  /**< Update the user provided serial number in HX3 >
+    CY_APP_DMC_VDR_RQT_TRIGGER_PHASE2_UPDATE = 0xDAu,  /**< Update the user provided serial number in HX3 >
                                               CMD_CODE: 0xDA
                                               VALUE: 0
                                               INDEX: 0
                                               LENGTH: Length of the serial number(SN) in bytes
                                         */
     
-    CY_APP_DMC_VDR_RQT_RETRIEVE_FLASH_LOG    = 0xDE, /**< Read the logs stored in the internal flash >
+    CY_APP_DMC_VDR_RQT_RETRIEVE_FLASH_LOG    = 0xDEu, /**< Read the logs stored in the internal flash >
                                                CMD_CODE: 0xDE
                                               VALUE: 0
                                               INDEX: 0
@@ -157,31 +178,46 @@ typedef enum
                                         
     /* Debug vendor commands */
 #if (CY_APP_DEBUG_VENDOR_CMD_ENABLE == 1)
-    CY_APP_DMC_DBG_FLASH_WRITE = 0xE0,
+    CY_APP_DMC_DBG_FLASH_WRITE = 0xE0u,
 
-    CY_APP_DMC_DBG_GET_IMG_VERSION = 0xE1,
+    CY_APP_DMC_DBG_GET_IMG_VERSION = 0xE1u,
 
-    CY_APP_DMC_DBG_OVERRIDE_STATE = 0xE2,       /* Pass state number in wValue */
+    CY_APP_DMC_DBG_OVERRIDE_STATE = 0xE2u,       /* Pass state number in wValue */
 
-    CY_APP_DMC_DBG_JUMP_TO_ALT = 0xE3,
+    CY_APP_DMC_DBG_JUMP_TO_ALT = 0xE3u,
 
-    CY_APP_DMC_DBG_ADC_CTRL = 0xE4,
+    CY_APP_DMC_DBG_ADC_CTRL = 0xE4u,
 
-    CY_APP_DMC_DBG_SHA2_CALC = 0xE5,
+    CY_APP_DMC_DBG_SHA2_CALC = 0xE5u,
 
-    CY_APP_DMC_DBG_SPI_COMMANDS = 0xE7,
+    CY_APP_DMC_DBG_SPI_COMMANDS = 0xE7u,
 
-    CY_APP_DMC_DBG_TRIGGER_PHASE = 0xE8,
+    CY_APP_DMC_DBG_TRIGGER_PHASE = 0xE8u,
 
-    CY_APP_DMC_DBG_SOFT_RESET = 0xE9,
+    CY_APP_DMC_DBG_SOFT_RESET = 0xE9u,
 
-    CY_APP_DMC_DBG_CUSTOM_CMD = 0xEA,
+    CY_APP_DMC_DBG_CUSTOM_CMD = 0xEAu,
 
 #endif /* (CY_APP_DEBUG_VENDOR_CMD_ENABLE == 1) */
 
 } cy_en_usb_dmc_vdr_rqt_t;
 
-/* \} group_pmg_app_common_dmc_enums */
+#if (CY_APP_USR_DEFINED_SN_SUPPORT)
+/**
+ * @typedef cy_en_dmc_sn_state_t
+ * @brief State of serial number for DMC
+ * @warning Do not edit this enum value
+ */
+typedef enum
+{
+    SN_NOT_IMPLEMENTED = 0x00u,      /**< 0x00 - SN is not implemented */
+    SN_VALID,                       /**< 0x01 - SN is valid and updated */
+    SN_INVALID,                     /**< 0x02 - SN is invalid */
+} cy_en_dmc_sn_state_t;
+#endif /* CY_APP_USR_DEFINED_SN_SUPPORT */
+
+
+/** \} group_pmg_app_common_dmc_enums */
 
 /**
 * \addtogroup group_pmg_app_common_dmc_data_structures
@@ -198,7 +234,7 @@ typedef struct
 
 }cy_stc_app_dmc_int_ep_status_t;
 
-/* \} group_pmg_app_common_dmc_data_structures */
+/** \} group_pmg_app_common_dmc_data_structures */
 
 /**
 * \addtogroup group_pmg_app_common_dmc_functions
@@ -213,10 +249,10 @@ typedef struct
  * CY_USB_DEV_REQUEST_NOT_HANDLED
  * */
 cy_en_usb_dev_status_t Cy_App_Dmc_VendorRequestHandler (cy_stc_dmc_params_t *params, cy_stc_usb_dev_control_transfer_t *transfer);
-/* \} group_pmg_app_common_dmc_functions */
-/* \} group_pmg_app_common_dmc */
+/** \} group_pmg_app_common_dmc_functions */
+/** \} group_pmg_app_common_dmc */
 #endif /* (CY_APP_DMC_ENABLE || DOXYGEN) */
 
-#endif /* _CY_APP_DMC_VENDOR_H_ */
+#endif /* CY_APP_DMC_VENDOR_H */
 
 /* [] END OF FILE */
